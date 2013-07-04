@@ -1,0 +1,27 @@
+create table supercategoria(
+   idsupercategoria SERIAL,
+   nombre VARCHAR(45) NOT NULL,
+   icono VARCHAR(200),
+   hijos INTEGER NOT NULL,
+   CONSTRAINT pk_supercategoria PRIMARY KEY (idsupercategoria)
+);
+
+
+create table categoria(
+   idcategoria SERIAL,
+   idsupercategoria INTEGER NOT NULL,
+   nombre VARCHAR(45) NOT NULL,
+   icono VARCHAR(200), 
+   hijos INTEGER NOT NULL,  
+   CONSTRAINT pk_categoria PRIMARY KEY (idcategoria),
+   CONSTRAINT fk_categoria_idsupercategoria FOREIGN KEY (idsupercategoria) REFERENCES supercategoria (idsupercategoria)   
+);
+
+create table subcategoria(
+   idsubcategoria SERIAL,
+   idcategoria INTEGER NOT NULL,
+   nombre VARCHAR(45) NOT NULL,
+   icono VARCHAR(200),   
+   CONSTRAINT pk_subcategoria PRIMARY KEY (idsubcategoria),
+   CONSTRAINT fk_subcategoria_idcategoria FOREIGN KEY (idcategoria) REFERENCES categoria (idcategoria)   
+);
