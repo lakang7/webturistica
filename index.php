@@ -11,35 +11,16 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
+
 </head>
 
 <body style="background:#F9F9F9;">
 
-<div id="myCarousel" class="carousel slide">
-  <ol class="carousel-indicators">
-    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-    <li data-target="#myCarousel" data-slide-to="1"></li>
-    <li data-target="#myCarousel" data-slide-to="2"></li>
-  </ol>
-  <!-- Carousel items -->
-  <div class="carousel-inner">
-    <div class="active item"><img src="slide-01.jpg" width="1500" height="550" /></div>
-    <div class="item"><img src="slide-02.jpg" width="1500" height="550" /></div>
-    <div class="item"><img src="slide-03.jpg" width="1500" height="550" /></div>
-  </div>
-  <!-- Carousel nav -->
-  <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-</div>
-
-
-<div class='container'>
-	
-   
-    <div class="navbar" style="font-family: 'PT Sans Narrow', sans-serif; font-size:16px;">
-		<div class="navbar-inner">
-        	<div class="container">
-            
+  
+    
+    	<div class="navbar navbar-static-top" style="font-family: 'PT Sans Narrow', sans-serif; font-size:16px;">        	
+            <div class="navbar-inner">
+            <div class="container">
       			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 			        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
 			    </a>            
@@ -82,23 +63,38 @@
 	                </ul>
                     
                     <button class="btn" style="font-family: 'PT Sans Narrow', sans-serif; float:right;">Registrate</button>                    
-	            </div>                
-            </div><!-- Final de container -->
+	            </div>              
+            
+            
+            </div>
         </div>
-	</div>
+    </div>  
+
+	
+   
 
 
-		
-<!--<div class="container-fluid" >
-  <div class="row-fluid">
-    <div class="span12" style="background:#CCC;">
-      <img src="blog-header.jpg" width="1130" height="300" />
-    </div>
-  </div>
-</div>-->
+
+	
+	<div id="myCarousel" class="carousel slide">
+	  <ol class="carousel-indicators">
+	    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+	    <li data-target="#myCarousel" data-slide-to="1"></li>
+	    <li data-target="#myCarousel" data-slide-to="2"></li>
+	  </ol>
+
+	  <div class="carousel-inner">
+	    <div class="active item"><img src="slide-01.jpg" width="1500" height="550" /></div>
+	    <div class="item"><img src="slide-02.jpg" width="1500" height="550" /></div>
+	    <div class="item"><img src="slide-03.jpg" width="1500" height="550" /></div>
+	  </div>
+	
+	  <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+	  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+	</div>  
     
 
-</div>
+
 
 
     
