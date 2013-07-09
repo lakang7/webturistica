@@ -26,12 +26,12 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Super Categoría</div>
+    	<div class="titulo_panel">Listado Super Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;">Listar Categorias</div>
-        	<div class="opcion">Registrar Nueva Categoría</div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadosupercategorias.php" style="text-decoration:none; color:#FFF;">Listar Categorias</a></div>
+        	<div class="opcion"><a href="crearsupercategorias.php">Registrar Nueva Categoría</a></div>
         </div>
-  <div class="capa_tabla">
+  		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
@@ -40,8 +40,19 @@
                 </thead>
 
                 <tbody>
-					<tr><td></td><td></td><td title="Editar" style="cursor:pointer;"><img src="../imagenes/edit.png" width="16" height="16" /></td><td title="Eliminar" style="cursor:pointer;"><img src="../imagenes/delete.png" width="16" height="16" /></td></tr>   
-                    <tr><td></td><td></td><td title="Editar" style="cursor:pointer;"><img src="../imagenes/edit.png" width="16" height="16" /></td><td title="Eliminar" style="cursor:pointer;"><img src="../imagenes/delete.png" width="16" height="16" /></td></tr>            
+                    <?php
+					    $con = conectarse();
+			 		    $sql_select="select * from supercategoria order by idsupercategoria";
+					    $result_select = pg_exec($con,$sql_select);
+					    for($i=0;$i<pg_num_rows($result_select);$i++){
+					       $supercategoria=pg_fetch_array($result_select,$i);					   
+						   ?>
+						   <tr><td><?php echo  Codigo("SUP",$supercategoria[0]); ?></td><td><?php echo $supercategoria[1]; ?></td><td title="Editar" style="cursor:pointer;"><a href="editarsupercategorias.php?id=<?php echo $supercategoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td><td title="Eliminar" style="cursor:pointer;"><a href="eliminar.php?clave=1&id=<?php echo $supercategoria[0]; ?>"><img src="../imagenes/delete.png" width="16" height="16" /></a></td></tr>					    
+						   <?php
+                        }
+					
+					?>
+					               
                 </tbody>
             </table>
         </div>

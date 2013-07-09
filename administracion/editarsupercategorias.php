@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Crear Super Categoría</title>
+<title>Editar Super Categoría</title>
 
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
@@ -41,29 +41,32 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Inserto el nuevo registro*/
+		/*Actualizo el registro*/
 		$con = conectarse();
-		$sql_insert="insert into supercategoria values(nextval('supercategoria_idsupercategoria_seq'),'".$_POST["nombre"]."',null,0);";
-		$result_insert=pg_exec($con,$sql_insert);
+		$sql_update="update supercategoria set nombre='".$_POST["nombre"]."' where idsupercategoria='".$_GET["id"]."'";
+		$result_update=pg_exec($con,$sql_update);
 		
-		/*Subo el icono de la categoria*/
-		$subir = new imgUpldr;		
-		$subir->configurar($_POST["nombre"],"../imagenes/supercategorias/",640,420);
-		$subir->init($_FILES['icono']);
-		$destino = $subir->_dest.$subir->_name;
 		
-		/*Selecciono el id que le fue asignado a la supercategoria que se acaba de registrar en la base datos*/
-		$sql_select="select last_value from supercategoria_idsupercategoria_seq;";
-		$result_select= pg_exec($con, $sql_select);
-		$arreglo=pg_fetch_array($result_select,0);
 		
-		/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
-		$sql_update="update supercategoria set icono='".$destino."' where idsupercategoria='".$arreglo[0]."'";
-		$result_update= pg_exec($con, $sql_update);			
+		if($_FILES['icono']['name']!=""){
+	
+			/*Subo el icono de la categoria*/
+			$subir = new imgUpldr;		
+			$subir->configurar($_POST["nombre"],"../imagenes/supercategorias/",640,420);
+			$subir->init($_FILES['icono']);
+			$destino = $subir->_dest.$subir->_name;
+		
+			
+			/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
+			$sql_update="update supercategoria set icono='".$destino."' where idsupercategoria='".$_GET["id"]."'";
+			$result_update= pg_exec($con, $sql_update);				
+		}
+		
+		
 		
 		?>
         	<script type="text/javascript" language="javascript">
-				alert("Supercategoria agregada satisfactoriamente.");
+				alert("Supercategoria editada satisfactoriamente.");
 				location.href="../administracion/listadosupercategorias.php";
 			</script>
         <?php	
@@ -77,10 +80,18 @@
         
     </div>
     <div class="menu">    				
-		<?php menu_administrativo();  ?>		                       
+		<?php menu_administrativo();  
+
+		/*Selecciono los datos del id que me llega por get*/
+		$con = conectarse();
+		$sql_select="select * from supercategoria where idsupercategoria='".$_GET["id"]."';";
+		$result_select= pg_exec($con, $sql_select);
+		$arreglo=pg_fetch_array($result_select,0);		
+		
+		?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Super Categoría</div>
+    	<div class="titulo_panel">Editar Super Categoría</div>
         <div class="opcion_panel">
 	        <div class="opcion"> <a href="listadosupercategorias.php">Listar Categorias</a></div>
         	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsupercategorias.php">Registrar Nueva Categoría</a></div>
@@ -91,7 +102,7 @@
             	<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre Super Categoría</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" />
+                    	<input type="text" class="campo" id="nombre" name="nombre" value="<? echo $arreglo[1]; ?>" />
                     </div>
                 </div>
             	<div class="linea_formulario">
