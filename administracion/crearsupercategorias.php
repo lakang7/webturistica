@@ -19,15 +19,6 @@
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>    
     <script type="text/javascript">  
-    	/*function validar_ingreso(formulario){
-	    
-			if(formulario.nombre.value==""){
-		   		alert("Debe indicar el nombre de la super categoria que desea registrar");
-		   	return false;	
-			}
-															
-			return true;
-		}*/	    
 	
 		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampoTexto(formulario) {
@@ -72,8 +63,8 @@
 		
 		?>
         	<script type="text/javascript" language="javascript">
-				alert("Supercategoria agregada satisfactoriamente.");
-				location.href="../administracion/listadosupercategorias.php";
+				alert("Supercategoria agregada satisfactoriamente");
+				location.href="../administracion/listadoSupercategorias.php";
 			</script>
         <?php			
 	}

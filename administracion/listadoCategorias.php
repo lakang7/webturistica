@@ -35,32 +35,42 @@
     	<div class="titulo_panel">Listado de Categorías</div>
         <div class="opcion_panel">
 	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadoCategorias.php" style="text-decoration:none; color:#FFF;">Listar Categorias</a></div>
-        	<div class="opcion"><a href="crearcategorias.php">Registrar Nueva Categoría</a></div>
+        	<div class="opcion"><a href="crearCategorias.php">Registrar Nueva Categoría</a></div>
         </div>
   		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Código</td><td>Descripción Categoría</td><td width="20"></td><td  width="20"></td>
+                    	<td>Supercategoria</td><td>Código</td><td>Descripción Categoría</td><td width="20"></td><td  width="20"></td>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
+				//Consultando las categorias
 				$con = conectarse();
 			 	$sql_select = "SELECT * FROM categoria ORDER BY idcategoria";
 				$result_select = pg_exec($con,$sql_select);
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $categoria = pg_fetch_array($result_select,$i);	
 					$idCategoria = $categoria[0];
+					
+					//Para consultar la supercategoria asociada a esta categoria
+					$sql_select_supercategoria = "SELECT nombre FROM supercategoria WHERE idsupercategoria=".$categoria[1];
+					$result_supercategoria = pg_exec($con,$sql_select_supercategoria);
+					$supercategoria = pg_fetch_array($result_supercategoria,0);
+					
 				    ?>
 					<tr>
 						<td>
-						<?php echo Codigo("SUP",$categoria[0]); ?>
+						<?php echo $categoria[1]; ?>
 						</td>
-						<td><?php echo $categoria[1]; ?>
+						<td>
+						<?php echo Codigo("CAT",$categoria[0]); ?>
 						</td>
-						<td title="Editar" style="cursor:pointer;"><a href="editarsupercategorias.php?id=<?php echo $categoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=1&id=<?php echo $idCategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td><?php echo $categoria[2]; ?>
+						</td>
+						<td title="Editar" style="cursor:pointer;"><a href="" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar" style="cursor:pointer;"><a href=""><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php

@@ -93,8 +93,8 @@
     <div class="panel">
     	<div class="titulo_panel">Editar Super Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadosupercategorias.php">Listar Categorias</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsupercategorias.php">Registrar Nueva Categoría</a></div>
+	        <div class="opcion"> <a href="listadoSupercategorias.php">Listar Categorias</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearSupercategorias.php">Registrar Nueva Categoría</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validar_ingreso(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >

@@ -39,7 +39,32 @@
 
 <?php
 	if(isset($_POST["Guardar"])){
+		/*Inserto el nuevo registro*/
+		$con = conectarse();
+		$sql_insert = "INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),2,'".$_POST["nombre"]."',null,0);";
+		$result_insert = pg_exec($con,$sql_insert);
 		
+		/*Subo el icono de la categoria*/
+		$subir = new imgUpldr;		
+		$subir->configurar($_POST["nombre"],"../imagenes/categorias/",640,420);
+		$subir->init($_FILES['icono']);
+		$destino = $subir->_dest.$subir->_name;
+		
+		/*Selecciono el id que le fue asignado a la categoria que se acaba de registrar en la base datos*/
+		$sql_select = "SELECT last_value FROM categoria_idcategoria_seq;";
+		$result_select = pg_exec($con, $sql_select);
+		$arreglo = pg_fetch_array($result_select,0);
+		
+		/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
+		$sql_update = "UPDATE categoria SET icono='".$destino."' WHERE idcategoria='".$arreglo[0]."'";
+		$result_update = pg_exec($con, $sql_update);			
+		
+		?>
+        	<script type="text/javascript" language="javascript">
+				alert("Categoria agregada satisfactoriamente");
+				location.href = "../administracion/listadoCategorias.php";
+			</script>
+        <?php	
 	}
 ?>
 
@@ -55,10 +80,11 @@
         <div class="capa_formulario">
 		
         	<form onsubmit="return validarCampoTexto(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  				<input type="hidden" name="MAX_FILE_SIZE" value="200000000" /> 
+  				<input type="hidden" name="MAX_FILE_SIZE" value="200000000" /> 				
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Super Categoría</div>
                     <div class="linea_campo">
+						<input type="hidden" name="scSeleccionada" value="0" />
                     	<?php
 						/*Se buscan todas las supercategorias*/
 						$con = conectarse();		
@@ -70,7 +96,7 @@
 							?>
 							<tr>
 								<td>
-									<select name="superCategoria" id="idSuperCategoria">
+									<select name="superCategoria" id="superCategoria">
 									<?php
 									for($i=0; $i<pg_num_rows($result_select); $i++){
 						    			$superCategoria = pg_fetch_array($result_select,$i);

@@ -34,8 +34,8 @@
     <div class="panel">
     	<div class="titulo_panel">Listado Super Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadosupercategorias.php" style="text-decoration:none; color:#FFF;">Listar Super Categorias</a></div>
-        	<div class="opcion"><a href="crearsupercategorias.php">Registrar Nueva Super Categoría</a></div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadoSupercategorias.php" style="text-decoration:none; color:#FFF;">Listar Super Categorias</a></div>
+        	<div class="opcion"><a href="crearSupercategorias.php">Registrar Nueva Super Categoría</a></div>
         </div>
   		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla">
@@ -59,7 +59,7 @@
 						</td>
 						<td><?php echo $supercategoria[1]; ?>
 						</td>
-						<td title="Editar" style="cursor:pointer;"><a href="editarsupercategorias.php?id=<?php echo $supercategoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Editar" style="cursor:pointer;"><a href="editarSupercategorias.php?id=<?php echo $supercategoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
 						<td title="Eliminar" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=1&id=<?php echo $idSuperCategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
