@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Crear Super Categoría</title>
+	<title>Crear Categoría</title>
 		
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -19,17 +19,7 @@
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>    
     <script type="text/javascript">  
-    	/*function validar_ingreso(formulario){
-	    
-			if(formulario.nombre.value==""){
-		   		alert("Debe indicar el nombre de la super categoria que desea registrar");
-		   	return false;	
-			}
-															
-			return true;
-		}*/	    
-	
-		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+    	//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampoTexto(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	miCampoTexto = formulario.nombre.value;
@@ -50,52 +40,52 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Inserto el nuevo registro*/
-		$con = conectarse();
-		$sql_insert="insert into supercategoria values(nextval('supercategoria_idsupercategoria_seq'),'".$_POST["nombre"]."',null,0);";
-		$result_insert=pg_exec($con,$sql_insert);
-		
-		/*Subo el icono de la categoria*/
-		$subir = new imgUpldr;		
-		$subir->configurar($_POST["nombre"],"../imagenes/supercategorias/",640,420);
-		$subir->init($_FILES['icono']);
-		$destino = $subir->_dest.$subir->_name;
-		
-		/*Selecciono el id que le fue asignado a la supercategoria que se acaba de registrar en la base datos*/
-		$sql_select="select last_value from supercategoria_idsupercategoria_seq;";
-		$result_select= pg_exec($con, $sql_select);
-		$arreglo=pg_fetch_array($result_select,0);
-		
-		/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
-		$sql_update="update supercategoria set icono='".$destino."' where idsupercategoria='".$arreglo[0]."'";
-		$result_update= pg_exec($con, $sql_update);			
-		
-		?>
-        	<script type="text/javascript" language="javascript">
-				alert("Supercategoria agregada satisfactoriamente.");
-				location.href="../administracion/listadosupercategorias.php";
-			</script>
-        <?php			
 	}
 ?>
 
 <body onload="cargo()">
-	<div class="banner">        
-    </div>
-    <div class="menu">    				
-		<?php menu_administrativo();  ?>		                       
-    </div>
+	<div class="banner"></div>
+    <div class="menu"><?php menu_administrativo();?></div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Super Categoría</div>
+    	<div class="titulo_panel">Crear Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadosupercategorias.php">Listar Super Categorias</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsupercategorias.php">Registrar Nueva Super Categoría</a></div>
+	        <div class="opcion"> <a href="">Listar Categorias</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearcategorias.php">Registrar Nueva Categoría</a></div>
         </div>
         <div class="capa_formulario">
+		
         	<form onsubmit="return validarCampoTexto(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
+  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" /> 
+				<div class="linea_formulario">
+                	<div class="linea_titulo">Super Categoría</div>
+                    <div class="linea_campo">
+                    	<?php
+						/*Se buscan todas las supercategorias*/
+						$con = conectarse();		
+						$sql_select="SELECT * FROM supercategoria ORDER BY idsupercategoria;";
+						$result_select= pg_exec($con, $sql_select);
+		
+						/*Si existen, se construye una lista con todas*/
+						if($fila = pg_fetch_array($result_select))
+						{
+						?>
+							<tr>
+								<td><select name="id_supercategoria" id="id_supercategoria">
+									<?php
+									do{
+										echo '<option value="'.$fila["idsupercategoria"].'">'.$fila["nombre"].'</option>';
+									}while ($fila = pg_fetch_array($resultado));
+									?>
+									</select>
+								</td>
+							</tr>
+							<?php
+						}	
+						?>
+                    </div>
+                </div>           
             	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Super Categoría</div>
+                	<div class="linea_titulo">Nombre Categoría</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" />
                     </div>

@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Documento sin título</title>
+<title>Listado Supercategorias</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -28,8 +28,8 @@
     <div class="panel">
     	<div class="titulo_panel">Listado Super Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadosupercategorias.php" style="text-decoration:none; color:#FFF;">Listar Categorias</a></div>
-        	<div class="opcion"><a href="crearsupercategorias.php">Registrar Nueva Categoría</a></div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadosupercategorias.php" style="text-decoration:none; color:#FFF;">Listar Super Categorias</a></div>
+        	<div class="opcion"><a href="crearsupercategorias.php">Registrar Nueva Super Categoría</a></div>
         </div>
   		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla">

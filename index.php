@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Documento sin título</title>
+<title>turismoenlagrita</title>
 
 <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
 
@@ -57,7 +57,7 @@
                                 <li><a href="">Personajes</a></li>
                             </ul>
                         </li>
-	                    <li><a href="">Sube tú Foto</a></li>
+	                    <li><a href="">Sube tu Foto</a></li>
 	                    <li><a href="">Nuestro Blog</a></li>
 	                    <li><a href="">Contactanos</a></li>
 	                </ul>
