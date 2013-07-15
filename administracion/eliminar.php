@@ -4,7 +4,6 @@
 	  
 	if($_GET["clave"]==1){ //Clave 1 indica que elimina supercategoria
 	
-	
 		 $con = conectarse();
 		 $sql_select="select count(*) from categoria where idsupercategoria='".$_GET["id"]."'";
 		 $result_select=pg_exec($con,$sql_select);
