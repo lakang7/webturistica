@@ -2,32 +2,48 @@
 	  require("../recursos/funciones.php");
 	  
 	  
-	if($_GET["clave"]==1){ //Clave 1 indica que elimina supercategoria
+	if($_GET["clave"]==1){ //Clave 1 indica que elimina CATEGORIA
 	
 		 $con = conectarse();
-		 $sql_select="select count(*) from categoria where idsupercategoria='".$_GET["id"]."'";
-		 $result_select=pg_exec($con,$sql_select);
-		 $cuenta = pg_fetch_array($result_select,0);	
+		 
+		 /*Se verifica que no existan SUBCATEGORIAS que dependan de la categoria que se desea eliminar*/
+		 $sql_select = "SELECT count(*) FROM subcategoria WHERE idcategoria='".$_GET["id"]."'";
+		 $result_select = pg_exec($con,$sql_select);
+		 $tieneHijos = pg_fetch_array($result_select,0);
 	
-	     if($cuenta[0]==0){
-		 $sql_delete = "delete from supercategoria where idsupercategoria='".$_GET["id"]."'";
+	     if($tieneHijos[0]==0){
+		 $sql_delete = "DELETE FROM categoria WHERE idcategoria='".$_GET["id"]."'";
 		 $result_delete = pg_exec($con,$sql_delete);
 		 
 		 ?>
         	<script type="text/javascript" language="javascript">
-				alert("Supercategoria eliminada satisfactoriamente.");
-				location.href="../administracion/listadosupercategorias.php";
+				alert("¡¡¡ Categoria eliminada satisfactoriamente !!!");
+				location.href="../administracion/listadoCategorias.php";
 			</script>
          <?php		 
 		 
 		 }else{
 		 ?>
         	<script type="text/javascript" language="javascript">
-				alert("la supercategoria no puede ser eliminada ya que existen categorias asociada a la misma.");
-				location.href="../administracion/listadosupercategorias.php";
+				alert("ERROR: La categoría no puede ser eliminada ya que existen subcategorias asociadas a la misma.\n\n(Si realmente desea eliminar esta categoria, primero elimine todas las subcategorias que dependan de ella)");
+				location.href="../administracion/listadoCategorias.php";
 			</script>
          <?php		 			 
 		 }
+	}
+	
+	if($_GET["clave"]==2){ //Clave 2 indica que elimina SUBCATEGORIA
+	
+		 $con = conectarse();
+		 $sql_delete = "DELETE FROM subcategoria WHERE idsubcategoria='".$_GET["id"]."'";
+		 $result_delete = pg_exec($con,$sql_delete);
+		 
+		 ?>
+        	<script type="text/javascript" language="javascript">
+				alert("¡¡¡ Subcategoria eliminada satisfactoriamente !!!");
+				location.href = "../administracion/listadoSubcategorias.php";
+			</script>
+         <?php			 
 	}
 
 ?>
