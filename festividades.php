@@ -2,11 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>turismoenlagrita</title>
+<title>Documento sin título</title>
 
 <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
 
 <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
@@ -57,7 +58,7 @@
                                 <li><a href="">Personajes</a></li>
                             </ul>
                         </li>
-	                    <li><a href="">Sube tu Foto</a></li>
+	                    <li><a href="">Sube tú Foto</a></li>
 	                    <li><a href="">Nuestro Blog</a></li>
 	                    <li><a href="">Contactanos</a></li>
 	                </ul>
@@ -127,140 +128,65 @@
 
 <div class="container-fluid">
 
-
-<div class="row-fluid" >
-	<div class="span1">
-      <img src="imagenes/subcategorias/parques.png" width="591" height="591" />
-      <h5>Parques</h5>
-    </div>
-    <div class="span1" >
-      <img src="imagenes/subcategorias/museos.png" width="591" height="591" />
-      <h5>Museos</h5>
-    </div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/restaurantes.png" width="591" height="591" />
-        <h5>Restaurantes</h5>
-    </div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/gasolineras.png" width="591" height="591" />
-      	<h5>Gasolineras</h5>
-    </div>
-  	<div class="span1">
-   		<img src="imagenes/subcategorias/iglesias.png" width="591" height="591" />
-        <h5>Iglesias</h5>    
-  	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/hoteles.png" width="591" height="591" />
-    	<h5>Hoteles</h5>     
-  	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/cajeros.png" width="499" height="499" />
-    	<h5>Cajeros</h5>    
-    </div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/hospitales.png" width="591" height="591" />
-    	<h5>Hospitales</h5> 
-    </div>
-    <div class="span1">
-   	 	<img src="imagenes/subcategorias/discos.png" width="499" height="499" />
-        <h5>Discos y Bares</h5>     
-  	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/posadas.png" width="590" height="590" />
-    	<h5>Posadas</h5> 
-	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/aldeas.png" width="590" height="590" />
-    	<h5>Aldeas</h5>    	
-    </div>
-  	<div class="span1">
-    	<img src="imagenes/subcategorias/panaderias.png" width="590" height="590" />
-    	<h5>Panaderias</h5>   
-  	</div>    
-</div>
-
-<div class="row-fluid">
-	  <div class="span4">
-      <img src="imagenes/index/fiestasreligiosas.png" class="imagen" />
-      <h2>Fiestas Religiosas</h2>
-      <p style="text-align:justify;font-family: 'PT Sans Narrow', sans-serif; font-size:16px;">
-		Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.      
-      </p>
-      <a class="btn" href="#" style="margin-bottom:20px;">Link Prueba »</a>
-    </div>
-    <div class="span4" >
-    <img src="imagenes/index/platostipicos.png"  class="imagen"   />
-    <h2>Platos Tipicos</h2>  
-      <p style="text-align:justify;font-family: 'PT Sans Narrow', sans-serif; font-size:16px;">
-		Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.      
-      </p> 
-      <a class="btn" href="#" style="margin-bottom:20px;">Link Prueba »</a>           
-    </div>
-  <div class="span4">
-  <img src="imagenes/index/personajestipicos.png"  class="imagen"  />
-  <h2>Personajes</h2> 
-      <p style="text-align:justify;font-family: 'PT Sans Narrow', sans-serif; font-size:16px;">
-		Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.      
-      </p>
-      <a class="btn" href="#" style="margin-bottom:20px;">Link Prueba »</a>             
-    </div>
-  </div>
-
 	<div class="row-fluid" >
-
-
-<div class="span8">
-	
-    <div class="accordion" id="accordion2">
-    	<div class="accordion-group">
-        	<div class="accordion-heading">
-				<a class="accordion-toggle" style="font-family: 'PT Sans Narrow', sans-serif; font-size:18px; font-weight:bold; color:#333; text-decoration:none;" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Ruta paso de los Andes</a>
-		    </div>
-    	<div id="collapseOne" class="accordion-body collapse in">
-			<div class="accordion-inner">
-		        <img src="imagenes/index/ruta1.jpg" width="1024" height="350" />
-	        </div>
-	    </div>
-	</div>
-  
-	<div class="accordion-group">
-		<div class="accordion-heading">
-			<a class="accordion-toggle" style="font-family: 'PT Sans Narrow', sans-serif; font-size:18px; font-weight:bold; color:#333; text-decoration:none;" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Ruta del Peregrino</a>
-		</div>
-		<div id="collapseTwo" class="accordion-body collapse">
-			<div class="accordion-inner">
-				<img src="imagenes/index/ruta2.jpg" width="1024" height="350" />
-			</div>
-		</div>
-	</div>
-  
-	<div class="accordion-group">
-		<div class="accordion-heading">
-			<a class="accordion-toggle" style="font-family: 'PT Sans Narrow', sans-serif; font-size:18px; font-weight:bold; color:#333; text-decoration:none;" data-toggle="collapse" data-parent="#accordion2" href="#collapseTree">Ruta Bellezas de mi Pueblo</a>
-		</div>
-		<div id="collapseTree" class="accordion-body collapse">
-			<div class="accordion-inner">
-				<img src="imagenes/index/ruta3.jpg" width="1024" height="350" />
-			</div>
-		</div>
-	</div>      
-</div>      
-</div>
-		
-    
-    <div class="span4">
+		<div class="span3">
+            <div class="well">
+				<ul class="nav nav-list" style="font-family: 'PT Sans Narrow', sans-serif;	" >
+				  <li class="nav-header">Nuestras Festividades</li>
+				  <li><a href="#">Religiosas</a></li>
+				  <li class="active"><a href="#">Potrioticas</a></li>	
+                  <li class="divider"></li>                                                                                 		  
+				</ul>        	
+            </div>
+        </div>
         
-	<div class="accordion-group">
-	  <div class="accordion-heading">
-		<a class="accordion-toggle" style="font-family: 'PT Sans Narrow', sans-serif; font-size:18px; font-weight:bold; color:#333; text-decoration:none;" data-toggle="collapse" data-parent="#accordion2" >Ruta de los Eco-Museos</a>
-	  </div>
-	  	<img src="imagenes/index/ruta4.jpg" width="618" height="450" />		   
-    </div>                
-      <p style="text-align:justify;font-family: 'PT Sans Narrow', sans-serif;">
-		Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.      
-      </p> 	
-    </div><!-- Fin de span4-->
+        
+        <div class="span9">
+        
+	<div class="row-fluid">
 
+	<ul class="breadcrumb" style="font-family: 'Oswald', sans-serif; font-weight:normal; border:1px solid #e3e3e3;">
+	  
+	  <img src="imagenes/subcategorias/posadas.png" width="25" height="25" /><li style="margin-left:5px;" ><a href="#">Hospedaje</a> <span class="divider">/</span></li>
+	  <li class="active" >Posadas [12]</li>
+	</ul>    
+    
+    </div>        
+    <div class="row-fluid">    
+	<ul class="thumbnails">
+	  <li class="span4">
+	    <div class="thumbnail">
+	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada1.png" width="450" height="300" />
+	      <h3><img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Posada Campo Alegre</h3>
+	      <h6><img src="imagenes/telefono.png" />0277-8813454 </h6>
+          <h6><img src="imagenes/telefono.png" />0277-8813454 </h6>          
+          <h6><img src="imagenes/correo.png" />posadaelholandes@gmail.com</h6>
+          <h6><img src="imagenes/direccion.png" />Avenida tal con calle tal</h6>
+	    </div>
+	  </li>
+	  <li class="span4">
+	    <div class="thumbnail">
+	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada2.png" width="450" height="300" />
+	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Posada Ato Viejo</h3>
+	      <h6><img src="imagenes/telefono.png" />0277-8813454 </h6>         
+          <h6><img src="imagenes/correo.png" />posadaelholandes@gmail.com</h6>
+          <h6><img src="imagenes/direccion.png" />Avenida tal con calle tal en urbanixacion tal</h6>
+	    </div>
+	  </li>
+	  <li class="span4">
+	    <div class="thumbnail">
+	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada3.png" width="450" height="300" />
+	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Thumbnail label</h3>
+	      <p>Thumbnail caption...</p>
+	    </div>
+	  </li>                
+	</ul> 
+    </div> 
+      
+           
+        
+        </div>
+	</div>
 </div>  
 
 
@@ -325,6 +251,38 @@ h5{
 	margin-top:0px;
 	font-size:100%;
 }
+
+.well {
+	padding: 5px;
+	padding-top:10px;
+	margin-bottom: 20px;
+	background-color: #f5f5f;
+}
+
+.nav-header {
+	padding: 3px 15px;
+	font-size: 11px;
+	line-height: 12px;
+	font-family: 'Oswald', sans-serif;
+	font-weight:400;
+}
+
+h3{
+	font-family: 'PT Sans Narrow', sans-serif;	
+	font-size:120%;
+	line-height:120%;
+	margin-top:2px;
+	margin-bottom:2px;		
+}
+
+h6{
+	font-size:80%;
+	line-height:11px;
+	margin-top:2px;
+	margin-bottom:2px;	
+	color:#666;	
+}
+
 
 </style>
 

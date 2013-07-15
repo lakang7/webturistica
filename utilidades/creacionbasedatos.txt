@@ -1,21 +1,19 @@
-create table supercategoria(
-   idsupercategoria SERIAL,
-   nombre VARCHAR(45) NOT NULL,
-   icono VARCHAR(200),
-   hijos INTEGER NOT NULL,
-   CONSTRAINT pk_supercategoria PRIMARY KEY (idsupercategoria)
-);
-
-
 create table categoria(
    idcategoria SERIAL,
-   idsupercategoria INTEGER NOT NULL,
    nombre VARCHAR(45) NOT NULL,
-   icono VARCHAR(200), 
    hijos INTEGER NOT NULL,  
-   CONSTRAINT pk_categoria PRIMARY KEY (idcategoria),
-   CONSTRAINT fk_categoria_idsupercategoria FOREIGN KEY (idsupercategoria) REFERENCES supercategoria (idsupercategoria)   
+   CONSTRAINT pk_categoria PRIMARY KEY (idcategoria)   
 );
+
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Hospedaje',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Gastronomia',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Recreación',4);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Religión',4);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Cultura',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Salud',3);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Dinero',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Estaciones de Servicio',1);
+
 
 create table subcategoria(
    idsubcategoria SERIAL,
@@ -25,3 +23,32 @@ create table subcategoria(
    CONSTRAINT pk_subcategoria PRIMARY KEY (idsubcategoria),
    CONSTRAINT fk_subcategoria_idcategoria FOREIGN KEY (idcategoria) REFERENCES categoria (idcategoria)   
 );
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),1,'Hoteles','imagenes/subcategorias/hoteles.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),1,'Posadas','imagenes/subcategorias/posadas.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),2,'Restaurantes','imagenes/subcategorias/restaurantes.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),2,'Cafeterias','imagenes/subcategorias/panaderias.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Aldeas','imagenes/subcategorias/aldeas.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Plazas','');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Parques','imagenes/subcategorias/parques.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Discos y Bares','imagenes/subcategorias/discos.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Iglesias','imagenes/subcategorias/iglesias.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Monasterios','imagenes/subcategorias/monasterios.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Santuarios','imagenes/subcategorias/santuarios.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Capillas','imagenes/subcategorias/capillas.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),5,'Museos','imagenes/subcategorias/museos.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),5,'Paseos Artesanales','imagenes/subcategorias/paseoartesanal.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),6,'Hospitales','imagenes/subcategorias/hospitales.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),6,'Clinicas','imagenes/subcategorias/clinicas.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),6,'Centros Asistenciales','imagenes/subcategorias/centrosasistenciales.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),7,'Bancos','imagenes/subcategorias/bancos.png');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),7,'Cajeros Automaticos','imagenes/subcategorias/cajeros.png');
+
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),8,'Gasolineras','imagenes/subcategorias/gasolineras.png');
+
