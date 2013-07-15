@@ -41,7 +41,7 @@
         	<table border="1" class="estilo_tabla">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Supercategoria</td><td>Código</td><td>Descripción Categoría</td><td width="20"></td><td  width="20"></td>
+                    	<td>Supercategoria</td><td>Código Categoría</td><td>Descripción Categoría</td><td width="20"></td><td width="20"></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,15 +62,15 @@
 				    ?>
 					<tr>
 						<td>
-						<?php echo $categoria[1]; ?>
+						<?php echo $supercategoria[0]; ?>
 						</td>
 						<td>
 						<?php echo Codigo("CAT",$categoria[0]); ?>
 						</td>
 						<td><?php echo $categoria[2]; ?>
 						</td>
-						<td title="Editar" style="cursor:pointer;"><a href="" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar" style="cursor:pointer;"><a href=""><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td title="Editar <?php echo $categoria[2]; ?>" style="cursor:pointer;"><a href="" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $categoria[2]; ?>" style="cursor:pointer;"><a href=""><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php

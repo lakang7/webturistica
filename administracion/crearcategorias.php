@@ -34,37 +34,63 @@
 			}
         	return true;
 	    }
+		
+		//Funcion para guardar en una variable oculta la SUPERCATEGORIA seleccionada, para luego poder guardar la categoria
+		function guardarSC(valor)
+		{
+			if(valor != -1){
+				document.all('HidSupercategoria').value = valor;
+			}
+			else{
+				document.all('HidSupercategoria').value = -1;
+			}
+			//alert(document.all('HidSupercategoria').value);			
+		}
 	</script>
 </head>
 
 <?php
 	if(isset($_POST["Guardar"])){
-		/*Inserto el nuevo registro*/
-		$con = conectarse();
-		$sql_insert = "INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),2,'".$_POST["nombre"]."',null,0);";
-		$result_insert = pg_exec($con,$sql_insert);
+	
+		//Si hay seleccionada alguna supercategoria
+		if($_POST["HidSupercategoria"]!=-1){
+			
+			/*Inserto el nuevo registro*/
+			$con = conectarse();
+			$sql_insert = "INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),".$_POST["HidSupercategoria"].",'".$_POST["nombre"]."',null,0);";
+			$result_insert = pg_exec($con,$sql_insert);
 		
-		/*Subo el icono de la categoria*/
-		$subir = new imgUpldr;		
-		$subir->configurar($_POST["nombre"],"../imagenes/categorias/",640,420);
-		$subir->init($_FILES['icono']);
-		$destino = $subir->_dest.$subir->_name;
+			/*Subo el icono de la categoria*/
+			$subir = new imgUpldr;		
+			$subir->configurar($_POST["nombre"],"../imagenes/categorias/",640,420);
+			$subir->init($_FILES['icono']);
+			$destino = $subir->_dest.$subir->_name;
 		
-		/*Selecciono el id que le fue asignado a la categoria que se acaba de registrar en la base datos*/
-		$sql_select = "SELECT last_value FROM categoria_idcategoria_seq;";
-		$result_select = pg_exec($con, $sql_select);
-		$arreglo = pg_fetch_array($result_select,0);
+			/*Selecciono el id que le fue asignado a la categoria que se acaba de registrar en la base datos*/
+			$sql_select = "SELECT last_value FROM categoria_idcategoria_seq;";
+			$result_select = pg_exec($con, $sql_select);
+			$arreglo = pg_fetch_array($result_select,0);
 		
-		/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
-		$sql_update = "UPDATE categoria SET icono='".$destino."' WHERE idcategoria='".$arreglo[0]."'";
-		$result_update = pg_exec($con, $sql_update);			
+			/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
+			$sql_update = "UPDATE categoria SET icono='".$destino."' WHERE idcategoria='".$arreglo[0]."'";
+			$result_update = pg_exec($con, $sql_update);			
 		
-		?>
+			?>
         	<script type="text/javascript" language="javascript">
 				alert("Categoria agregada satisfactoriamente");
 				location.href = "../administracion/listadoCategorias.php";
 			</script>
-        <?php	
+        	<?php			
+		}
+		else{
+		?>
+			<script type="text/javascript" language="javascript">
+				alert("Debe seleccionar una supercategoria");
+			</script>
+		<?php
+		}
+	
+			
 	}
 ?>
 
@@ -84,7 +110,7 @@
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Super Categoría</div>
                     <div class="linea_campo">
-						<input type="hidden" name="scSeleccionada" value="0" />
+						<input type="hidden" name="HidSupercategoria" value="-1" />
                     	<?php
 						/*Se buscan todas las supercategorias*/
 						$con = conectarse();		
@@ -96,7 +122,8 @@
 							?>
 							<tr>
 								<td>
-									<select name="superCategoria" id="superCategoria">
+									<select name="superCategoria" id="superCategoria" onChange="javascript:guardarSC(this.value)">
+									<option value="-1">Seleccione</option>
 									<?php
 									for($i=0; $i<pg_num_rows($result_select); $i++){
 						    			$superCategoria = pg_fetch_array($result_select,$i);
