@@ -49,38 +49,39 @@
     <div class="panel">
     	<div class="titulo_panel">Crear Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="">Listar Categorias</a></div>
+	        <div class="opcion"> <a href="listadoCategorias.php">Listar Categorias</a></div>
         	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearcategorias.php">Registrar Nueva Categoría</a></div>
         </div>
         <div class="capa_formulario">
 		
         	<form onsubmit="return validarCampoTexto(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" /> 
+  				<input type="hidden" name="MAX_FILE_SIZE" value="200000000" /> 
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Super Categoría</div>
                     <div class="linea_campo">
                     	<?php
 						/*Se buscan todas las supercategorias*/
 						$con = conectarse();		
-						$sql_select="SELECT * FROM supercategoria ORDER BY idsupercategoria;";
-						$result_select= pg_exec($con, $sql_select);
-		
-						/*Si existen, se construye una lista con todas*/
-						if($fila = pg_fetch_array($result_select))
-						{
-						?>
+						$sql_select = "SELECT * FROM supercategoria ORDER BY idsupercategoria;";
+						$result_select = pg_exec($con, $sql_select);
+						
+						/*Si existen, se construye una lista con todas*/						
+						if(pg_num_rows($result_select)!=0){
+							?>
 							<tr>
-								<td><select name="id_supercategoria" id="id_supercategoria">
+								<td>
+									<select name="superCategoria" id="idSuperCategoria">
 									<?php
-									do{
-										echo '<option value="'.$fila["idsupercategoria"].'">'.$fila["nombre"].'</option>';
-									}while ($fila = pg_fetch_array($resultado));
+									for($i=0; $i<pg_num_rows($result_select); $i++){
+						    			$superCategoria = pg_fetch_array($result_select,$i);
+										echo '<option value="'.$superCategoria[0].'">'.$superCategoria[1].'</option>';
+									}
 									?>
 									</select>
-								</td>
-							</tr>
-							<?php
-						}	
+									</td>
+							</tr>									    
+							<?php            		   		
+						}
 						?>
                     </div>
                 </div>           
