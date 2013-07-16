@@ -48,7 +48,7 @@
                 <?php
 				//Consultando las subcategorias
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM subcategoria ORDER BY idsubcategoria";
+			 	$sql_select = "SELECT * FROM subcategoria ORDER BY idcategoria, nombre";
 				$result_select = pg_exec($con,$sql_select);
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $subCategoria = pg_fetch_array($result_select,$i);	
