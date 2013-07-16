@@ -60,7 +60,7 @@
 			$sql_insert = "INSERT INTO subcategoria VALUES(nextval('subcategoria_idsubcategoria_seq'),".$_POST["HidCategoria"].",'".$_POST["nombre"]."',null);";
 			$result_insert = pg_exec($con,$sql_insert);
 		
-			/*Se sube el icono de la subcategoria*/
+			/*Se sube el icono de la subcategoria a la carpeta respectiva*/
 			$subir = new imgUpldr;		
 			$subir->configurar($_POST["nombre"],"../imagenes/subcategorias/",591,591);
 			$subir->init($_FILES['icono']);
@@ -71,9 +71,21 @@
 			$result_select = pg_exec($con, $sql_select);
 			$arreglo = pg_fetch_array($result_select,0);
 		
-			/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
+			/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 			$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";
-			$result_update = pg_exec($con, $sql_update);			
+			$result_update = pg_exec($con, $sql_update);		
+			
+			/*Se actualiza el Nro. de Hijos de la CATEGORIA padre*/
+
+			//Primero se consulta la cantidad de hijos del padre
+			$sql_select_hijos = "SELECT hijos FROM categoria WHERE idcategoria=".$_POST['HidCategoria'].";";
+			$result_select_hijos = pg_exec($con, $sql_select_hijos);
+			$hijos = pg_fetch_array($result_select_hijos,0);
+			
+			//Luego Se actualiza el padre agregandole un hijo más
+			$masHijos = $hijos[0] + 1;
+			$sql_update_padre = "UPDATE categoria SET hijos=".$masHijos." WHERE idcategoria=".$_POST['HidCategoria'].";";
+			$result_update = pg_exec($con, $sql_update_padre);		
 		
 			?>
         	<script type="text/javascript" language="javascript">

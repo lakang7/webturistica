@@ -31,7 +31,7 @@ INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),2,'Re
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),2,'Cafeterias','imagenes/subcategorias/panaderias.png');
 
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Aldeas','imagenes/subcategorias/aldeas.png');
-INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Plazas','');
+INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Plazas','imagenes/subcategorias/plazas.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Parques','imagenes/subcategorias/parques.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Discos y Bares','imagenes/subcategorias/discos.png');
 

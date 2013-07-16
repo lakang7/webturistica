@@ -12,15 +12,14 @@
 		 $tieneHijos = pg_fetch_array($result_select,0);
 	
 	     if($tieneHijos[0]==0){
-		 $sql_delete = "DELETE FROM categoria WHERE idcategoria='".$_GET["id"]."'";
-		 $result_delete = pg_exec($con,$sql_delete);
+		 	$sql_delete = "DELETE FROM categoria WHERE idcategoria='".$_GET["id"]."'";
+			 $result_delete = pg_exec($con,$sql_delete);
 		 
-		 ?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Categoria eliminada satisfactoriamente !!!");
-				location.href="../administracion/listadoCategorias.php";
-			</script>
-         <?php		 
+			 ?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ Categoria eliminada satisfactoriamente !!!");
+					location.href="../administracion/listadoCategorias.php";
+				</script>
+    	     <?php		 
 		 
 		 }else{
 		 ?>

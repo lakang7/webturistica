@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Crear Super Categoría</title>
+	<title>Crear Categoría</title>
 		
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -21,16 +21,16 @@
     <script type="text/javascript">  
 	
 		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
-		function validarCampoTexto(formulario) {
+		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	miCampoTexto = formulario.nombre.value;
         	//la condición
         	if (miCampoTexto.length == 0) {
-				alert("Debe indicar el nombre de la super categoria que desea registrar");
+				alert("Debe indicar el nombre de la categoría que desea registrar");
             	return false;
         	}
 			else if(/^\s+$/.test(miCampoTexto)){
-				alert("El nombre de la super categoria no puede quedar en blanco, ingrese un nombre válido");
+				alert("El nombre de la categoría no puede quedar en blanco, ingrese un nombre válido");
             	return false;
 			}
         	return true;
@@ -41,30 +41,15 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Inserto el nuevo registro*/
+		/*Se inserta el nuevo registro*/
 		$con = conectarse();
-		$sql_insert="insert into supercategoria values(nextval('supercategoria_idsupercategoria_seq'),'".$_POST["nombre"]."',null,0);";
+		$sql_insert="INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),'".$_POST["nombre"]."',0);";
 		$result_insert=pg_exec($con,$sql_insert);
-		
-		/*Subo el icono de la categoria*/
-		$subir = new imgUpldr;		
-		$subir->configurar($_POST["nombre"],"../imagenes/supercategorias/",640,420);
-		$subir->init($_FILES['icono']);
-		$destino = $subir->_dest.$subir->_name;
-		
-		/*Selecciono el id que le fue asignado a la supercategoria que se acaba de registrar en la base datos*/
-		$sql_select="select last_value from supercategoria_idsupercategoria_seq;";
-		$result_select= pg_exec($con, $sql_select);
-		$arreglo=pg_fetch_array($result_select,0);
-		
-		/*Actualizo el registro para incluir la ruta del icono que se acaba de subir*/
-		$sql_update="update supercategoria set icono='".$destino."' where idsupercategoria='".$arreglo[0]."'";
-		$result_update= pg_exec($con, $sql_update);			
 		
 		?>
         	<script type="text/javascript" language="javascript">
-				alert("Supercategoria agregada satisfactoriamente");
-				location.href="../administracion/listadoSupercategorias.php";
+				alert("¡¡¡ Categoria agregada satisfactoriamente !!!");
+				location.href="../administracion/listadoCategorias.php";
 			</script>
         <?php			
 	}
@@ -77,27 +62,25 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Super Categoría</div>
+    	<div class="titulo_panel">Crear Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadosupercategorias.php">Listar Super Categorias</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsupercategorias.php">Registrar Nueva Super Categoría</a></div>
+	        <div class="opcion"> 
+				<a href="listadoCategorias.php">Listar Categorías</a>
+			</div>
+        	<div class="opcion" style="background:#F00; color:#FFF;">
+				<a href="crearsupercategorias.php">Registrar Nueva Categoría</a>
+			</div>
         </div>
         <div class="capa_formulario">
-        	<form onsubmit="return validarCampoTexto(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
+        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
             	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Super Categoría</div>
+                	<div class="linea_titulo">Nombre Categoría</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" />
                     </div>
                 </div>
             	<div class="linea_formulario">
-                	<div class="linea_titulo">Icono Identificador</div>
-                    <div class="linea_campo">
-                    	<input name="icono" type="file" id="icono" />
-                    </div>
-                </div>
-                <div class="linea_formulario">
 	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />
                 </div>
             </form>
@@ -106,6 +89,7 @@
     </div>
     <div class="pie"></div>
 </body>
+
 <script>  			
 	$(function() {
 		$( '#dl-menu' ).dlmenu({
