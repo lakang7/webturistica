@@ -1,0 +1,99 @@
+/* CSS Document */
+
+
+.navbar-static-top {
+	font-family: 'PT Sans Narrow', sans-serif; 
+	font-size:16px;	
+}
+
+.carousel-caption{
+    background:inherit;	
+    position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0px;
+	padding: 15px;   
+}
+
+.btn{
+	font-family: 'PT Sans Narrow', sans-serif; 
+}
+
+.btn-large{
+	margin-top:5px;
+	padding: 5px 19px;
+	font-size: 14.5px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;	
+}
+
+h1{
+	margin-bottom:0px;	
+	font-size:24px;
+	line-height:24px;
+}
+
+h2{
+	margin-bottom:0px;	
+	margin-top:2px;
+	font-size:24px;
+	line-height:24px;
+	font-family: 'PT Sans Narrow', sans-serif;		
+}
+
+.imagen{
+	-webkit-border-radius: 5px;  /* Safari  */
+	-moz-border-radius: 5px;     /* Firefox */	
+}
+
+.accordion-inner {
+	padding: 0px;
+	border-top: 1px solid #e5e5e5;
+}
+
+h5{
+	text-align:center;	
+	font-family: 'PT Sans Narrow', sans-serif;	
+	margin-bottom:20px;
+	margin-top:0px;
+	font-size:100%;
+}
+
+.well {
+	padding: 5px;
+	padding-top:10px;
+	margin-bottom: 20px;
+	background-color: #f5f5f;
+}
+
+.nav-header {
+	padding: 3px 15px;
+	font-size: 11px;
+	line-height: 12px;
+	font-family: 'Oswald', sans-serif;
+	font-weight:400;
+}
+
+h3{
+	font-family: 'PT Sans Narrow', sans-serif;	
+	font-size:120%;
+	line-height:120%;
+	margin-top:2px;
+	margin-bottom:2px;		
+}
+
+h6{
+	font-size:80%;
+	line-height:11px;
+	margin-top:2px;
+	margin-bottom:2px;	
+	color:#666;	
+}
+
+.nav-list>li>a {
+	padding: 3px 15px;
+	font-family: 'PT Sans Narrow', sans-serif;	
+	line-height:14px;	
+}
+
