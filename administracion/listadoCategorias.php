@@ -17,7 +17,7 @@
 	<script type="text/javascript" language="javascript">
 		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
 		function confirmar(url){ 
-			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para borrar o CANCELAR para volver al listado")) { 
+			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
 		    } 
 			else { 
@@ -34,7 +34,7 @@
     <div class="panel">
     	<div class="titulo_panel">Listado Categorías</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadoCategorias.php" style="text-decoration:none; color:#FFF;">Listar Super Categorias</a></div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadoCategorias.php" style="text-decoration:none; color:#FFF;">Listar Categorías</a></div>
         	<div class="opcion"><a href="crearCategorias.php">Registrar Nueva Categoría</a></div>
         </div>
   		<div class="capa_tabla">

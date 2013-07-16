@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Listado Categorias</title>
+<title>Listado Subcategorías</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -17,7 +17,7 @@
 	<script type="text/javascript" language="javascript">
 		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
 		function confirmar(url){ 
-			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para borrar o CANCELAR para volver al listado")) { 
+			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
 		    } 
 			else { 
@@ -55,14 +55,14 @@
 					$idSubcategoria = $subCategoria[0];
 					
 					//Para consultar la categoria asociada a esta subcategoria
-					$sql_select_categoria = "SELECT nombre FROM categoria WHERE idcategoria=".$subCategoria[1];
+					$sql_select_categoria = "SELECT * FROM categoria WHERE idcategoria=".$subCategoria[1];
 					$result_categoria = pg_exec($con,$sql_select_categoria);
 					$categoria = pg_fetch_array($result_categoria,0);
 					
 				    ?>
 					<tr>
 						<td>
-							<?php echo $categoria[0]; ?>
+							<?php echo $categoria[1]; ?>
 						</td>
 						<td>
 							<?php echo Codigo("SUB",$subCategoria[0]); ?>
@@ -73,7 +73,7 @@
 						<td title="Editar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;">
 							<a href="editarSubcategorias.php?id=<?php echo $subCategoria[0];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
 						</td>
-						<td title="Eliminar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&id=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td title="Eliminar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&idSub=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php

@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Crear Subcategoria</title>
+	<title>Crear Subcategoría</title>
 		
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -112,8 +112,8 @@
     <div class="panel">
     	<div class="titulo_panel">Crear SubCategoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadoSubcategorias.php">Listar Subcategorias</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearSubcategorias.php">Registrar Nueva Subcategoria</a></div>
+	        <div class="opcion"> <a href="listadoSubcategorias.php">Listar SubCategorías</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearSubcategorias.php">Registrar Nueva SubCategoría</a></div>
         </div>
         <div class="capa_formulario">
 		

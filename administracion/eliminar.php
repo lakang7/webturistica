@@ -33,23 +33,22 @@
 	
 	if($_GET["clave"]==2){ //Clave 2 indica que elimina SUBCATEGORIA
 	
-		 /*Primero se elimina la subcategoria*/
 		 $con = conectarse();
-		 $sql_delete = "DELETE FROM subcategoria WHERE idsubcategoria='".$_GET["id"]."'";
-		 $result_delete = pg_exec($con,$sql_delete);
-		 
-		 /*Se actualiza el Nro. de Hijos de la CATEGORIA padre*/
+		 $idSub = $_GET["idSub"];
 		 
 		 //Primero se consulta la cantidad de hijos del padre
- 		 $sql_select_hijos = "SELECT hijos FROM categoria WHERE idcategoria=".$_GET["id"].";";
- 		 $result_select_hijos = pg_exec($con, $sql_select_hijos);
-		 $hijos = pg_fetch_array($result_select_hijos,0);
+ 		 $sql = "SELECT c.idcategoria, c.hijos FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria='".$idSub."'";
+		 $result_select_hijos = pg_exec($con, $sql);
+		 $categoria = pg_fetch_array($result_select_hijos);
 			
-		 //Luego Se actualiza el padre restandole un hijo
-		 $menosHijos = $hijos[0] - 1;
-		 $sql_update_padre = "UPDATE categoria SET hijos=".$menosHijos." WHERE idcategoria=".$_GET["id"].";";
-		 $result_update = pg_exec($con, $sql_update_padre);		 
-		 
+		 //Luego se actualiza la categoria padre restandole un hijo
+		 $menosHijos = $categoria[1]-1;
+ 	 	 $sql_update_padre = "UPDATE categoria SET hijos=".$menosHijos." WHERE idcategoria=".$categoria[0].";";
+		 $result_update = pg_exec($con, $sql_update_padre);
+		 		 
+		 /*Finalmente, se elimina la subcategoria*/
+		 $sql_delete = "DELETE FROM subcategoria WHERE idsubcategoria='".$idSub."'";
+		 $result_delete = pg_exec($con,$sql_delete);
 		 ?>
         	<script type="text/javascript" language="javascript">
 				alert("¡¡¡ Subcategoria eliminada satisfactoriamente !!!");

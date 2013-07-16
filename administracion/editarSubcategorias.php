@@ -99,7 +99,7 @@
 				<a href="listadoSubcategorias.php">Listar Sub Categorías</a>
 			</div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearSubcategorias.php">Registrar Nueva Sub Categoría</a></div>
+				<a href="crearSubcategorias.php">Registrar Nueva SubCategoría</a></div>
 	        </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >

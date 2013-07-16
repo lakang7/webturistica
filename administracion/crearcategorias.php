@@ -68,7 +68,7 @@
 				<a href="listadoCategorias.php">Listar Categorías</a>
 			</div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearsupercategorias.php">Registrar Nueva Categoría</a>
+				<a href="crearCategorias.php">Registrar Nueva Categoría</a>
 			</div>
         </div>
         <div class="capa_formulario">
