@@ -52,7 +52,6 @@
 									echo "<li>";
 										echo "<a href='#'>Clasificación</a>";
 										echo "<ul class='dl-submenu'>";
-											echo "<li><a href='#'>Super Categoría</a></li>";
 											echo "<li><a href='#'>Categoría</a></li>";
 											echo "<li><a href='#'>Sub Categoría</a></li>";
 										echo "</ul>";
