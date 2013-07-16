@@ -162,7 +162,7 @@
     	<h5>Hospitales</h5> 
     </div>
     <div class="span1">
-   	 	<img src="imagenes/subcategorias/discos.png" width="499" height="499" />
+   	 	<img src="imagenes/subcategorias/discos.png" width="591" height="591" />
         <h5>Discos y Bares</h5>     
   	</div>
     <div class="span1">

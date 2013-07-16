@@ -132,9 +132,10 @@
 		<div class="span3">
             <div class="well">
 				<ul class="nav nav-list" style="font-family: 'PT Sans Narrow', sans-serif;	" >
-				  <li class="nav-header">Nuestras Festividades</li>
-				  <li><a href="#">Religiosas</a></li>
-				  <li class="active"><a href="#">Patrioticas</a></li>	
+				  <li class="nav-header">Nuestros Personajes</li>
+				  <li><a href="#">Historicos</a></li>
+				  <li class="active"><a href="#">Pintores</a></li>
+                  <li><a href="#">Escultores</a></li>	
                   <li class="divider"></li>                                                                                 		  
 				</ul>        	
             </div>
@@ -147,8 +148,8 @@
 
 	<ul class="breadcrumb" style="font-family: 'Oswald', sans-serif; font-weight:normal; border:1px solid #e3e3e3;">
 	  
-	  <img src="imagenes/fiestasreligiosas.png" width="25" height="25" /><li style="margin-left:5px;" ><a href="#">Festividades</a> <span class="divider">/</span></li>
-	  <li class="active" >Religiosas [02]</li>
+	  <img src="imagenes/pintores.png" width="25" height="25" /><li style="margin-left:5px;" ><a href="#">Nuestros Personajes</a> <span class="divider">/</span></li>
+	  <li class="active" >Pintores [02]</li>
 	</ul>    
     
     </div>        
@@ -156,20 +157,12 @@
 	<ul class="thumbnails">
 	  <li class="span4">
 	    <div class="thumbnail">
-	      <img src="imagenes/festividades/religiosas/santocristodelagrita.png" width="450" height="300" />
-	      <h3><img src="imagenes/fiestasreligiosas.png" width="20" height="20" /> Día del Santo Cristo</h3>
-		  <h6><img src="imagenes/calendario.png" width="25" height="17" />Celebrado los 06 de agosto de cada año.</h6>
-          <h6><img src="imagenes/posiciongeografica.png" width="25" height="17" />Se lleva a cabo por las calles principales de la ciudad.</h6>
+	      <img src="imagenes/personajes/pintores/gerardoduque.png" width="400" height="700" />
+	      <h3><img src="imagenes/pintores.png" width="20" height="20" /> Gerardo Duque</h3>
+		  <h6>Destacado pintor de trayectoria en la ciudad y de reconocida fama en el estado.</h6>
 	    </div>
 	  </li>
-	  <li class="span4">
-	    <div class="thumbnail">
-	      <img src="imagenes/festividades/religiosas/virgendelosangeles.png" width="450" height="300" />
-	      <h3><img src="imagenes/fiestasreligiosas.png" width="20" height="20" /> Día de la Virgen de los Angeles</h3>
-		  <h6><img src="imagenes/calendario.png" width="25" height="17" />Celebrado los 02 de agosto de cada año.</h6>
-          <h6><img src="imagenes/posiciongeografica.png" width="25" height="17" />Se lleva a cabo por las calles principales de la ciudad.</h6>          
-	    </div>
-	  </li>
+
                 
 	</ul> 
     </div> 
