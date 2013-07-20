@@ -9,7 +9,8 @@
 	    return $conexion;		
 	}
 			
-	
+		
+			
 	function menu_principal(){
 		
     	echo "<div class='navbar navbar-static-top'>";
@@ -17,9 +18,8 @@
         echo "<div class='container'>";
       	echo "<a class='btn btn-navbar' data-toggle='collapse' data-target='.nav-collapse'>";
 	    echo "<span class='icon-bar'></span><span class='icon-bar'></span><span class='icon-bar'></span>";
-	    echo "</a>";
-            
-        echo "<a class='brand' href='#'  >www.turismoenlagrita.com</a>";
+	    echo "</a>";   
+        echo "<a class='brand' href='index.php'  >www.turismoenlagrita.com</a>";
 	    echo "<div class='nav-collapse collapse'>";
 	    echo "<ul class='nav'>";
                     
@@ -32,7 +32,7 @@
 	   $result_sel_cat=pg_exec($con,$sql_select_cat);	
 	   for($i=0;$i<pg_num_rows($result_sel_cat);$i++){
 		   $categoria=pg_fetch_array($result_sel_cat);
-		   echo "<li><a href=''>".$categoria[1]."</a></li>";
+		   echo "<li><a href='sitiosinteres.php'>".$categoria[1]."</a></li>";
 	   }
 		        
         echo "</ul>";
@@ -49,13 +49,13 @@
 	    echo "<li class='dropdown'>";
         echo "<a class='dropdown-toggle' data-toggle='dropdown' href=''>Nosotros<b class='caret'></b></a>";
         echo "<ul class='dropdown-menu'>";
-        echo "<li><a href=''>Festividades</a></li>";
-        echo "<li><a href=''>Platos Tipicos</a></li>";
-        echo "<li><a href=''>Personajes</a></li>";
+        echo "<li><a href='festividades.php'>Festividades</a></li>";
+        echo "<li><a href='platostipicos.php'>Platos Tipicos</a></li>";
+        echo "<li><a href='personajes.php'>Personajes</a></li>";
         echo "</ul>";
         echo "</li>";
 	    echo "<li><a href=''>Sube tu Foto</a></li>";
-	    echo "<li><a href=''>Nuestro Blog</a></li>";
+	    echo "<li><a href='blog.php'>Nuestro Blog</a></li>";
 	    echo "<li><a href=''>Contactanos</a></li>";
 	    echo "</ul>";
                     

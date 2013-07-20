@@ -18,7 +18,7 @@
 
 </head>
 
-<body style="background:#F9F9F9;">
+<body style="background:#F9F9F9;" >
       	   
 
 	<?php menu_principal(); ?>
@@ -31,7 +31,7 @@
 	    <li data-target="#myCarousel" data-slide-to="2"></li>
 	  </ol>
 
-	  <div class="carousel-inner">
+	  <div class="carousel-inner" >
 	    <div class="active item"><img src="imagenes/index/banner1.jpg" width="1500" height="350" />      	            	
 	        <div class="carousel-caption">
         	  <div class="span7">   
@@ -77,55 +77,21 @@
 
 
 <div class="row-fluid" >
-	<div class="span1">
-      <img src="imagenes/subcategorias/parques.png" width="591" height="591" />
-      <h5>Parques</h5>
-    </div>
-    <div class="span1" >
-      <img src="imagenes/subcategorias/museos.png" width="591" height="591" />
-      <h5>Museos</h5>
-    </div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/restaurantes.png" width="591" height="591" />
-        <h5>Restaurantes</h5>
-    </div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/gasolineras.png" width="591" height="591" />
-      	<h5>Gasolineras</h5>
-    </div>
-  	<div class="span1">
-   		<img src="imagenes/subcategorias/iglesias.png" width="591" height="591" />
-        <h5>Iglesias</h5>    
-  	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/hoteles.png" width="591" height="591" />
-    	<h5>Hoteles</h5>     
-  	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/cajeros.png" width="499" height="499" />
-    	<h5>Cajeros</h5>    
-    </div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/hospitales.png" width="591" height="591" />
-    	<h5>Hospitales</h5> 
-    </div>
-    <div class="span1">
-   	 	<img src="imagenes/subcategorias/discos.png" width="591" height="591" />
-        <h5>Discos y Bares</h5>     
-  	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/posadas.png" width="590" height="590" />
-    	<h5>Posadas</h5> 
-	</div>
-    <div class="span1">
-    	<img src="imagenes/subcategorias/aldeas.png" width="590" height="590" />
-    	<h5>Aldeas</h5>    	
-    </div>
-  	<div class="span1">
-    	<img src="imagenes/subcategorias/panaderias.png" width="590" height="590" />
-    	<h5>Panaderias</h5>   
-  	</div>    
+	<?php
+		$con=conectarse();
+		$sql_select_subcate="select * from subcategoria";
+		$resul_select_subcate=pg_exec($con,$sql_select_subcate);
+		for($i=0;$i<12;$i++){
+			$subcategoria=pg_fetch_array($resul_select_subcate,$i);
+			echo "<div class='span1'>";
+      		echo "<img style='cursor:pointer' src='".$subcategoria[3]."' width='591' height='591' />";
+      		echo "<h5>".$subcategoria[2]."</h5>";
+    		echo "</div>";
+		}
+
+	?>  
 </div>
+
 
 <div class="row-fluid">
 	  <div class="span4">

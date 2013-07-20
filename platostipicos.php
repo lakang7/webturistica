@@ -15,49 +15,14 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBViGAK8QcqvLcl0Pgilw-ENvMhmL88E6A&sensor=true"></script>
-    <script type="text/javascript">
-      function initialize() {
-		  var myLatlng = new google.maps.LatLng(8.132308,-71.9797);
-        var mapOptions = {
-          center: new google.maps.LatLng(8.132308,-71.9797),
-          zoom: 15,
-          mapTypeId: google.maps.MapTypeId.HYBRID
-        };
-        var map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
-		
-
-var contentString = '<div id="content">'+'<h2 style="font-size:16px"; id="firstHeading" class="firstHeading">Posada Campo Alegre</h2>'+
-    '<img src="imagenes/sitiosinteres/hospedaje/posadas/posada2.png" width="200" height="135" />'+
-    '</div>';
-
-var infowindow = new google.maps.InfoWindow({
-    content: contentString
-});
-
-var marker = new google.maps.Marker({
-    position: myLatlng,
-    map: map,
-    title:"Posada Campo Alegre"
-});
-
-google.maps.event.addListener(marker, 'click', function() {
-  infowindow.open(map,marker);
-});
-
-	
-      }
-    </script>
 
 
 </head>
 
-<body style="background:#F9F9F9;" onload="initialize()">
-  
-  
+<body style="background:#F9F9F9;">
 
-  <?php menu_principal(); ?> 	   
-	
+<?php menu_principal(); ?>
+
 	<div id="myCarousel" class="carousel slide">
 	  <ol class="carousel-indicators">
 	    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -111,89 +76,48 @@ google.maps.event.addListener(marker, 'click', function() {
 
 	<div class="row-fluid" >
 		<div class="span3">
-	    <?php menu_sitiosinteres(); ?>
+            <div class="well">
+				<ul class="nav nav-list" style="font-family: 'PT Sans Narrow', sans-serif;	" >
+				  <li class="nav-header">Nuestros Platos Tipicos</li>
+				  <li><a href="#">Dulces</a></li>
+				  <li class="active"><a href="#">De Panaderia</a></li>	
+                  <li class="divider"></li>                                                                                 		  
+				</ul>        	
+            </div>
         </div>
         
         
         <div class="span9">
         
-
-        
 	<div class="row-fluid">
 
 	<ul class="breadcrumb" style="font-family: 'Oswald', sans-serif; font-weight:normal; border:1px solid #e3e3e3;">
 	  
-	  <img src="imagenes/subcategorias/posadas.png" width="25" height="25" /><li style="margin-left:5px;" ><a href="#">Hospedaje</a> <span class="divider">/</span></li>
-	  <li class="active" >Posadas [12]</li>
+	  <img src="imagenes/platostipicos.png" width="25" height="25" /><li style="margin-left:5px;" ><a href="#">Nuestros Platos Tipicos</a> <span class="divider">/</span></li>
+	  <li class="active" >De Panaderia [02]</li>
 	</ul>    
     
-    </div>  
-    
-        <div class="row-fluid" style="margin-bottom:15px;">
-        	<div class="span12">
-		
-       		  <div id="map_canvas" style="width:100%; height:400px;"></div>
-				
-          </div>
-        </div>    
-          
+    </div>        
     <div class="row-fluid">    
 	<ul class="thumbnails">
 	  <li class="span4">
 	    <div class="thumbnail">
-	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada1.png" width="450" height="300" />
-	      <h3><img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Posada Campo Alegre</h3>
-	      <h6><img src="imagenes/telefono.png" />0277-8813454 </h6>
-          <h6><img src="imagenes/telefono.png" />0277-8813454 </h6>          
-          <h6><img src="imagenes/correo.png" />posadaelholandes@gmail.com</h6>
-          <h6><img src="imagenes/direccion.png" />Avenida tal con calle tal</h6>
+	      <img src="imagenes/platostipicos/dulces/dulcedelechoza.png" width="450" height="300" />
+	      <h3><img src="imagenes/platostipicos.png" width="20" height="20" /> Dulce de lechoza</h3>
+          <h6>Se lleva a cabo por las calles principales de la ciudad.</h6>
 	    </div>
 	  </li>
 	  <li class="span4">
 	    <div class="thumbnail">
-	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada2.png" width="450" height="300" />
-	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Posada Ato Viejo</h3>
-	      <h6><img src="imagenes/telefono.png" />0277-8813454 </h6>         
-          <h6><img src="imagenes/correo.png" />posadaelholandes@gmail.com</h6>
-          <h6><img src="imagenes/direccion.png" />Avenida tal con calle tal en urbanixacion tal</h6>
+	      <img src="imagenes/platostipicos/dulces/almojabanas.png" width="450" height="300" />
+	      <h3><img src="imagenes/platostipicos.png" width="20" height="20" /> Almojabanas</h3>
+          <h6>Se lleva a cabo por las calles principales de la ciudad.</h6>          
 	    </div>
 	  </li>
-	  <li class="span4">
-	    <div class="thumbnail">
-	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada3.png" width="450" height="300" />
-	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Thumbnail label</h3>
-	      <p>Thumbnail caption...</p>
-	    </div>
-	  </li>                
+                
 	</ul> 
     </div> 
-    
-    <div class="row-fluid">    
-	<ul class="thumbnails">
-	  <li class="span4">
-	    <div class="thumbnail">
-	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada5.png" width="450" height="300" />
-	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Thumbnail label</h3>
-	      <p>Thumbnail caption...</p>
-	    </div>
-	  </li>
-	  <li class="span4">
-	    <div class="thumbnail">
-	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada6.png" width="450" height="300" />
-	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Thumbnail label</h3>
-	      <p>Thumbnail caption...</p>
-	    </div>
-	  </li>
-	  <li class="span4">
-	    <div class="thumbnail">
-	      <img src="imagenes/sitiosinteres/hospedaje/posadas/posada7.png" width="450" height="300" />
-	      <h3> <img src="imagenes/subcategorias/posadas.png" width="20" height="20" /> Thumbnail label</h3>
-	      <p>Thumbnail caption...</p>
-	    </div>
-	  </li> 
-              
-	</ul> 
-    </div>    
+      
            
         
         </div>
@@ -201,6 +125,7 @@ google.maps.event.addListener(marker, 'click', function() {
 </div>  
     
 </body>
+
 
 	<script>
 
