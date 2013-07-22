@@ -114,5 +114,38 @@
          <?php		 			 
 		 }
 	}
+	
+	if($_GET["clave"]==5){ //Clave 5 indica que elimina RUTA
+	
+		 $con = conectarse();
+		 
+		 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
+		 $sql_select_sitio = "SELECT count(*) FROM sitio WHERE idruta='".$_GET["id"]."'";
+		 $result_select_sitio = pg_exec($con,$sql_select_sitio);
+		 $tieneHijos = pg_fetch_array($result_select_sitio,0);
+		 
+		 $sql_select_punto = "SELECT count(*) FROM punto_ruta WHERE idruta='".$_GET["id"]."'";
+		 $result_select_punto = pg_exec($con,$sql_select_punto);
+		 $tieneHijos2 = pg_fetch_array($result_select_punto,0);
+	
+	     if($tieneHijos[0]==0 && $tieneHijos2[0]==0){
+		 	 $sql_delete = "DELETE FROM ruta WHERE idruta='".$_GET["id"]."'";
+			 $result_delete = pg_exec($con,$sql_delete);
+			 
+			 ?><script type="text/javascript" language="javascript">
+			 		alert("¡¡¡ Ruta eliminada satisfactoriamente !!! ");
+					location.href="../administracion/listadorutas.php";
+				</script>
+    	     <?php		 
+		 
+		 }else{
+		 ?>
+        	<script type="text/javascript" language="javascript">
+				alert("ERROR: La ruta NO PUEDE SER ELIMINADA ya que existen registros en otras tablas que están asociados a la misma.\n\n(Si realmente desea eliminar esta comodidad, primero elimine todas los registros que dependan de ella)");
+				location.href="../administracion/listadorutas.php";
+			</script>
+         <?php		 			 
+		 }
+	}
 
 ?>

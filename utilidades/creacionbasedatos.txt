@@ -99,6 +99,15 @@ create table gastronomia_especialidad(
    CONSTRAINT fk_gastronomia_especialidad_idespecialidad FOREIGN KEY (idespecialidad) REFERENCES especialidad (idespecialidad)
 );
 
+create table punto_ruta(
+   idpunto_ruta SERIAL,
+   idruta INTEGER NOT NULL,
+   latitud VARCHAR(200),
+   longitud VARCHAR(200),
+   CONSTRAINT pk_punto_ruta PRIMARY KEY (idpunto_ruta),
+   CONSTRAINT fk_punto_ruta_idruta FOREIGN KEY (idruta) REFERENCES ruta (idruta)
+);
+
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Hospedaje',2);
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Gastronomia',2);
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Recreación',4);
