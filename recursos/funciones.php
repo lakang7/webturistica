@@ -1,7 +1,7 @@
 <?php
 
 	function conectarse(){
-	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=jcglobal")))
+	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=123456")))
 	   {
 	       echo "No pudo conectarse al servidor";
 	       exit();
@@ -52,7 +52,7 @@
 									echo "<li>";
 										echo "<a href='#'>Clasificación</a>";
 										echo "<ul class='dl-submenu'>";
-											echo "<li><a href='#'>Categoría</a></li>";
+											echo "<li><a href='crearcategorias.php'>Categoría</a></li>";
 											echo "<li><a href='#'>Sub Categoría</a></li>";
 										echo "</ul>";
 									echo "</li>";

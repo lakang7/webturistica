@@ -73,7 +73,7 @@
 						?>
 			        	<script type="text/javascript" language="javascript">
 							alert("ERROR: Esa subcategoría ya existe. \n\nPor favor ingrese otro nombre.");
-							location.href = "../administracion/listadoSubcategorias.php";
+							location.href = "../administracion/listadosubcategorias.php";
 						</script>
         				<?php
 					}
@@ -116,7 +116,7 @@
 						?>
 		        		<script type="text/javascript" language="javascript">
 							alert("¡¡¡ Subcategoria agregada satisfactoriamente !!!");
-							location.href = "../administracion/listadoSubcategorias.php";
+							location.href = "../administracion/listadosubcategorias.php";
 						</script>
 		    	    	<?php
 				}				
@@ -138,8 +138,8 @@
     <div class="panel">
     	<div class="titulo_panel">Crear SubCategoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadoSubcategorias.php">Listar SubCategorías</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearSubcategorias.php">Registrar Nueva SubCategoría</a></div>
+	        <div class="opcion"> <a href="listadosubcategorias.php">Listar SubCategorías</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsubcategorias.php">Registrar Nueva SubCategoría</a></div>
         </div>
         <div class="capa_formulario">
 		

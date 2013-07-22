@@ -73,7 +73,7 @@
 		?>
         	<script type="text/javascript" language="javascript">
 				alert("¡¡¡ Subcategoria editada satisfactoriamente !!!");
-				location.href="../administracion/listadoSubcategorias.php";
+				location.href="../administracion/listadosubcategorias.php";
 			</script>
         <?php	
 		
@@ -96,10 +96,10 @@
     	<div class="titulo_panel">Editar Sub Categoría</div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
-				<a href="listadoSubcategorias.php">Listar Sub Categorías</a>
+				<a href="listadosubcategorias.php">Listar Sub Categorías</a>
 			</div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearSubcategorias.php">Registrar Nueva SubCategoría</a></div>
+				<a href="crearsubcategorias.php">Registrar Nueva SubCategoría</a></div>
 	        </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >

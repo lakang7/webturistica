@@ -34,8 +34,8 @@
     <div class="panel">
     	<div class="titulo_panel">Listado de SubCategorías</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadoSubcategorias.php" style="text-decoration:none; color:#FFF;">Listar SubCategorías</a></div>
-        	<div class="opcion"><a href="crearSubcategorias.php">Registrar Nueva SubCategoría</a></div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadosubcategorias.php" style="text-decoration:none; color:#FFF;">Listar SubCategorías</a></div>
+        	<div class="opcion"><a href="crearsubcategorias.php">Registrar Nueva SubCategoría</a></div>
         </div>
   		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla">
@@ -71,7 +71,7 @@
 							<?php echo $subCategoria[2]; ?>
 						</td>
 						<td title="Editar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;">
-							<a href="editarSubcategorias.php?id=<?php echo $subCategoria[0];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
+							<a href="editarsubcategorias.php?id=<?php echo $subCategoria[0];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
 						</td>
 						<td title="Eliminar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&idSub=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>

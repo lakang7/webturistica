@@ -5,16 +5,6 @@ create table categoria(
    CONSTRAINT pk_categoria PRIMARY KEY (idcategoria)   
 );
 
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Hospedaje',2);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Gastronomia',2);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Recreación',4);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Religión',4);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Cultura',2);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Salud',3);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Dinero',2);
-INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Estaciones de Servicio',1);
-
-
 create table subcategoria(
    idsubcategoria SERIAL,
    idcategoria INTEGER NOT NULL,
@@ -23,6 +13,100 @@ create table subcategoria(
    CONSTRAINT pk_subcategoria PRIMARY KEY (idsubcategoria),
    CONSTRAINT fk_subcategoria_idcategoria FOREIGN KEY (idcategoria) REFERENCES categoria (idcategoria)   
 );
+
+create table comodidad(
+   idcomodidad SERIAL,
+   nombre VARCHAR(45) NOT NULL,
+   posX INTEGER NOT NULL,  
+   posY INTEGER NOT NULL,  
+   CONSTRAINT pk_comodidad PRIMARY KEY (idcomodidad)   
+);
+
+create table ruta(
+   idruta SERIAL,
+   nombre VARCHAR(100) NOT NULL,
+   resena VARCHAR(1200) NOT NULL,
+   CONSTRAINT pk_ruta PRIMARY KEY (idruta)   
+);
+
+create table sitio(
+   idsitio SERIAL,
+   idsubcategoria INTEGER NOT NULL,
+   idruta INTEGER NOT NULL,
+   nombre VARCHAR(100) NOT NULL,
+   direccion VARCHAR(400) NOT NULL,
+   telefono1 VARCHAR(12),
+   telefono2 VARCHAR(12),
+   correo VARCHAR(60),
+   resena VARCHAR(2000),
+   pagfacebook VARCHAR(200),
+   pagtwitter VARCHAR(200),
+   logonegocio VARCHAR(200),
+   latitud VARCHAR(200),
+   longitud VARCHAR(200),
+   CONSTRAINT pk_sitio PRIMARY KEY (idsitio),
+   CONSTRAINT fk_sitio_idsubcategoria FOREIGN KEY (idsubcategoria) REFERENCES subcategoria (idsubcategoria),     
+   CONSTRAINT fk_sitio_idruta FOREIGN KEY (idruta) REFERENCES ruta (idruta)
+);
+
+create table hospedaje(
+   idhospedaje SERIAL,
+   idsitio INTEGER NOT NULL,
+   promedio_servicio NUMERIC NOT NULL,
+   promedio_ubicacion NUMERIC NOT NULL,
+   promedio_limpieza NUMERIC NOT NULL,
+   promedio_personal NUMERIC NOT NULL,
+   promedio NUMERIC NOT NULL,
+   CONSTRAINT pk_hospedaje PRIMARY KEY (idhospedaje),
+   CONSTRAINT fk_hospedaje_idsitio FOREIGN KEY (idsitio) REFERENCES sitio (idsitio)
+);
+
+create table hospedaje_comodidad(
+   idhospedaje_comodidad SERIAL,
+   idhospedaje INTEGER NOT NULL,
+   idcomodidad INTEGER NOT NULL,   
+   CONSTRAINT pk_hospedaje_comodidad PRIMARY KEY (idhospedaje_comodidad),
+   CONSTRAINT fk_hospedaje_comodidad_idhospedaje FOREIGN KEY (idhospedaje) REFERENCES hospedaje (idhospedaje),
+   CONSTRAINT fk_hospedaje_comodidad_idcomodidad FOREIGN KEY (idcomodidad) REFERENCES comodidad (idcomodidad)
+);
+
+create table gastronomia(
+   idgastronomia SERIAL,
+   idsitio INTEGER NOT NULL,
+   promedio_comida NUMERIC NOT NULL,
+   promedio_servicio NUMERIC NOT NULL,
+   promedio_ambiente NUMERIC NOT NULL,
+   promedio_higiene NUMERIC NOT NULL,
+   promedio_precio NUMERIC NOT NULL,
+   promedio NUMERIC NOT NULL,
+   CONSTRAINT pk_gastronomia PRIMARY KEY (idgastronomia),
+   CONSTRAINT fk_gastronomia_idsitio FOREIGN KEY (idsitio) REFERENCES sitio (idsitio)
+);
+
+create table especialidad(
+   idespecialidad SERIAL,
+   nombre VARCHAR(45),
+   descripcion VARCHAR(600),
+   CONSTRAINT pk_especialidad PRIMARY KEY (idespecialidad)   
+);
+
+create table gastronomia_especialidad(
+   idgastronomia_especialidad SERIAL,
+   idgastronomia INTEGER NOT NULL,
+   idespecialidad INTEGER NOT NULL,   
+   CONSTRAINT pk_gastronomia_especialidad PRIMARY KEY (idgastronomia_especialidad),
+   CONSTRAINT fk_gastronomia_especialidad_idgastronomia FOREIGN KEY (idgastronomia) REFERENCES gastronomia (idgastronomia),
+   CONSTRAINT fk_gastronomia_especialidad_idespecialidad FOREIGN KEY (idespecialidad) REFERENCES especialidad (idespecialidad)
+);
+
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Hospedaje',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Gastronomia',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Recreación',4);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Religión',4);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Cultura',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Salud',3);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Dinero',2);
+INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Estaciones de Servicio',1);
 
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),1,'Hoteles','imagenes/subcategorias/hoteles.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),1,'Posadas','imagenes/subcategorias/posadas.png');

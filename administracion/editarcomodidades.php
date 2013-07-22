@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Editar Categoría</title>
+	<title>Editar Comodidades</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -23,15 +23,19 @@
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	miCampoTexto = formulario.nombre.value;
+			campoPosX = formulario.posX.value;
+			campoPosY = formulario.posY.value;
+			
         	//la condición
-        	if (miCampoTexto.length == 0) {
-				alert("Debe indicar el nombre de la subcategoria que desea registrar");
+        	if (miCampoTexto.length == 0 || campoPosX.length == 0 || campoPosY.length == 0) {
+				alert("Es necesario completar todos los campos");
             	return false;
         	}
-			else if(/^\s+$/.test(miCampoTexto)){
-				alert("El nombre de la subcategoria no puede quedar en blanco, ingrese un nombre válido");
+			else if(/^\s+$/.test(miCampoTexto) || /^\s+$/.test(campoPosX) || /^\s+$/.test(campoPosY)){
+				alert("Ningún campo puede quedar en blanco, ingrese valores válidos");
             	return false;
-			}
+			}			
+			
         	return true;
 	    }    
 	</script>
@@ -43,13 +47,13 @@
 		
 		/*Se actualiza el registro*/
 		$con = conectarse();
-		$sql_update = "UPDATE categoria SET nombre = '".$_POST["nombre"]."' WHERE idcategoria='".$_GET["id"]."'";
+		$sql_update = "UPDATE comodidad SET nombre='".$_POST["nombre"]."', posx=".$_POST["posX"].", posy=".$_POST["posY"]." WHERE idcomodidad='".$_GET["id"]."'";
 		$result_update = pg_exec($con,$sql_update);
 				
 		?>
         	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Categoria modificada satisfactoriamente !!!");
-				location.href="../administracion/listadocategorias.php";
+				alert("¡¡¡ Comodidad modificada satisfactoriamente !!!");
+				location.href="../administracion/listadocomodidades.php";
 			</script>
         <?php	
 	}
@@ -62,24 +66,36 @@
 		
 		/*Se consultan los datos del id que llega por GET*/
 		$con = conectarse();
-		$sql_select = "SELECT * FROM categoria WHERE idcategoria='".$_GET["id"]."';";
+		$sql_select = "SELECT * FROM comodidad WHERE idcomodidad='".$_GET["id"]."';";
 		$result_select = pg_exec($con, $sql_select);
 		$arreglo = pg_fetch_array($result_select,0);	
 		?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Editar Categoría</div>
+    	<div class="titulo_panel">Editar Comodidad</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadocategorias.php">Listar Categorías</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearCategorias.php">Registrar Nueva Categoría</a></div>
+	        <div class="opcion"> <a href="listadocategorias.php">Listar Comodidades</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearCategorias.php">Registrar Nueva Comodidad</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
             	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Categoría</div>
+                	<div class="linea_titulo">Nombre Comodidad</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" value="<? echo $arreglo[1]; ?>" />
+                    </div>
+                </div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo">Posición X imagen (*)</div>
+                    <div class="linea_campo">
+                    	<input type="text" class="campo" id="posX" name="posX" value="<? echo $arreglo[2]; ?>" />
+                    </div>
+                </div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo">Posición Y imagen (*)</div>
+                    <div class="linea_campo">
+                    	<input type="text" class="campo" id="posY" name="posY" value="<? echo $arreglo[3]; ?>" />
                     </div>
                 </div>
             	<div class="linea_formulario">

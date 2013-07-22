@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Listado Categorias</title>
+	<title>Listado Comodidades</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -32,39 +32,45 @@
 	<div class="banner"></div>
     <div class="menu"><?php menu_administrativo();?></div>
     <div class="panel">
-    	<div class="titulo_panel">Listado Categorías</div>
+    	<div class="titulo_panel">Listado Comodidades</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadocategorias.php" style="text-decoration:none; color:#FFF;">Listar Categorías</a></div>
-        	<div class="opcion"><a href="crearcategorias.php">Registrar Nueva Categoría</a></div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadocomodidades.php" style="text-decoration:none; color:#FFF;">Listar Comodidades</a></div>
+        	<div class="opcion"><a href="crearcomodidades.php">Registrar Nueva Comodidad</a></div>
         </div>
   		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Código</td><td>Descripción Categoría</td><td width="20"></td><td  width="20"></td>
+                    	<td>Código</td><td>Descripción Comodidad</td><td>Pos X</td><td>Pos Y</td><td width="20"></td><td width="20"></td>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM categoria ORDER BY idcategoria";
+			 	$sql_select = "SELECT * FROM comodidad ORDER BY idcomodidad";
 				$result_select = pg_exec($con,$sql_select);
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
-				    $categoria = pg_fetch_array($result_select,$i);	
-					$idCategoria = $categoria[0];
+				    $comodidad = pg_fetch_array($result_select,$i);	
+					$idcomodidad = $comodidad[0];
 				    ?>
 					<tr>
 						<td>
-							<?php echo Codigo("CAT",$categoria[0]); ?>
+							<?php echo Codigo("COM",$comodidad[0]); ?>
 						</td>
 						<td>
-							<?php echo $categoria[1]; ?>
+							<?php echo $comodidad[1]; ?>
 						</td>
-						<td title="Editar <?php echo $categoria[1]; ?>" style="cursor:pointer;">
-							<a href="editarcategorias.php?id=<?php echo $categoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $categoria[1]; ?>" style="cursor:pointer;">
-							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=1&id=<?php echo $idCategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td>
+							<?php echo $comodidad[2]; ?>
+						</td>
+						<td>
+							<?php echo $comodidad[3]; ?>
+						</td>
+						<td title="Editar <?php echo $comodidad[1]; ?>" style="cursor:pointer;">
+							<a href="editarcomodidades.php?id=<?php echo $comodidad[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $comodidad[1]; ?>" style="cursor:pointer;">
+							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=3&id=<?php echo $idcomodidad;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php
