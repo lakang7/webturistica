@@ -61,7 +61,7 @@
 	
 		 $con = conectarse();
 		 
-		 /*Se verifica que no existan SUBCATEGORIAS que dependan de la categoria que se desea eliminar*/
+		 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
 		 $sql_select = "SELECT count(*) FROM hospedaje_comodidad WHERE idcomodidad='".$_GET["id"]."'";
 		 $result_select = pg_exec($con,$sql_select);
 		 $tieneHijos = pg_fetch_array($result_select,0);
@@ -81,6 +81,35 @@
         	<script type="text/javascript" language="javascript">
 				alert("ERROR: La comodidad NO PUEDE SER ELIMINADA ya que existen registros en la tabla hospedaje_comodidad asociados a la misma.\n\n(Si realmente desea eliminar esta comodidad, primero elimine todas los registros en la tabla hospedaje_comodidad que dependan de ella)");
 				location.href="../administracion/listadocomodidades.php";
+			</script>
+         <?php		 			 
+		 }
+	}
+	
+	if($_GET["clave"]==4){ //Clave 4 indica que elimina ESPECIALIDAD
+	
+		 $con = conectarse();
+		 
+		 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
+		 $sql_select = "SELECT count(*) FROM gastronomia_especialidad WHERE idespecialidad='".$_GET["id"]."'";
+		 $result_select = pg_exec($con,$sql_select);
+		 $tieneHijos = pg_fetch_array($result_select,0);
+	
+	     if($tieneHijos[0]==0){
+		 	 $sql_delete = "DELETE FROM especialidad WHERE idespecialidad='".$_GET["id"]."'";
+			 $result_delete = pg_exec($con,$sql_delete);
+		 
+			 ?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ Especialidad gastronómica eliminada satisfactoriamente !!!");
+					location.href="../administracion/listadoespecialidades.php";
+				</script>
+    	     <?php		 
+		 
+		 }else{
+		 ?>
+        	<script type="text/javascript" language="javascript">
+				alert("ERROR: La especialidad gastronómica NO PUEDE SER ELIMINADA ya que existen registros en la tabla gastronomia_especialidad asociados a la misma.\n\n(Si realmente desea eliminar esta comodidad, primero elimine todas los registros en la tabla gastronomia_especialidad que dependan de ella)");
+				location.href="../administracion/listadoespecialidades.php";
 			</script>
          <?php		 			 
 		 }

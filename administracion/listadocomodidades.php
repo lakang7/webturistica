@@ -50,6 +50,14 @@
 			 	$sql_select = "SELECT * FROM comodidad ORDER BY idcomodidad";
 				$result_select = pg_exec($con,$sql_select);
 				
+				if(pg_num_rows($result_select)==0){
+				?>
+					<tr>
+                    	<td colspan=6 align="center">No existen comodidades hasta el momento</td>
+                    </tr>
+				<?php
+				}
+				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $comodidad = pg_fetch_array($result_select,$i);	
 					$idcomodidad = $comodidad[0];

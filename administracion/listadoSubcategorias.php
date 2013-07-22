@@ -50,6 +50,15 @@
 				$con = conectarse();
 			 	$sql_select = "SELECT * FROM subcategoria ORDER BY idcategoria, nombre";
 				$result_select = pg_exec($con,$sql_select);
+				
+				if(pg_num_rows($result_select)==0){
+				?>
+					<tr>
+                    	<td colspan=6 align="center">No existen subcategorías hasta el momento</td>
+                    </tr>
+				<?php
+				}
+				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $subCategoria = pg_fetch_array($result_select,$i);	
 					$idSubcategoria = $subCategoria[0];
