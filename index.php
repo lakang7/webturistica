@@ -84,7 +84,7 @@
 		for($i=0;$i<12;$i++){
 			$subcategoria=pg_fetch_array($resul_select_subcate,$i);
 			echo "<div class='span1'>";
-      		echo "<img style='cursor:pointer' src='".$subcategoria[3]."' width='591' height='591' />";
+      		echo "<img style='cursor:pointer' src='".$subcategoria[3]."' width='100' height='100' />";
       		echo "<h5>".$subcategoria[2]."</h5>";
     		echo "</div>";
 		}

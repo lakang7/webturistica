@@ -1,6 +1,6 @@
 <?php
 	function conectarse(){
-	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=123456")))
+	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=jcglobal")))
 	   {
 	       echo "No pudo conectarse al servidor";
 	       exit();
@@ -39,6 +39,7 @@
 						        echo "</ul>";
 				    	    echo "</li>";
                                                 
+
 						    echo "<li class='dropdown'>";
 						        echo "<a class='dropdown-toggle' data-toggle='dropdown' href=''>Nosotros<b class='caret'></b></a>";
 						        echo "<ul class='dropdown-menu'>";
@@ -57,6 +58,11 @@
 				echo "</div>";
         	echo "</div>";
         echo "</div>";		
+
+
+			
+		
+
 	}			
 	
 	function menu_sitiosinteres(){

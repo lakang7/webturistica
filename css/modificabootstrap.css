@@ -103,6 +103,23 @@ h6{
 	color:#666;	
 }
 
+h7{
+	margin-bottom:0px;	
+	margin-top:2px;
+	font-size:160%;
+	line-height:30px;
+	font-family: 'PT Sans Narrow', sans-serif;		
+}
+
+h8{
+	margin-bottom:0px;	
+	font-size:14px;
+	line-height:30px;
+	color:#FFF;
+	font-family: 'PT Sans Narrow', sans-serif;
+}
+
+
 .nav-list>li>a {
 	padding: 3px 15px;
 	font-family: 'PT Sans Narrow', sans-serif;	
