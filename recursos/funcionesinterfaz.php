@@ -1,6 +1,6 @@
 <?php
 	function conectarse(){
-	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=jcglobal")))
+	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=123456")))
 	   {
 	       echo "No pudo conectarse al servidor";
 	       exit();

@@ -121,6 +121,15 @@ body{
 	margin-bottom:0px;	
 }
 
+.linea_formulario_compartido{
+	float:left;
+	width:266px;
+	height:auto;
+	/*border:1px solid #CCC;*/
+	margin:10px;
+	margin-bottom:0px;	
+}
+
 .linea_titulo{
 	float:left;
 	width:860px;
@@ -131,9 +140,37 @@ body{
 	color:#333;	
 }
 
+.linea_titulo_compartido{
+	float:left;
+	width:266px;
+	height:15px;
+	/*border-bottom:1px solid #CCC;*/
+	font-size:12px;
+	line-height:15px;
+	color:#333;	
+}
+
+.linea_titulo_2{
+	float:left;
+	width:860px;
+	height:25px;
+	text-align:right;
+	/*border-bottom:1px solid #CCC;*/
+	font-size:20px;
+	line-height:25px;
+	color:#F00;	
+	background:#DBDBDB;
+}
+
 .linea_campo{
 	float:left;
 	width:860px;
+	height:25px;		
+}
+
+.linea_campo_compartido{
+	float:left;
+	width:266px;
 	height:25px;		
 }
 
@@ -141,6 +178,13 @@ body{
 	float:left;
 	margin:0px;
 	width:858px;
+	height:25px;	
+}
+
+.campo_compartido{
+	float:left;
+	margin:0px;
+	width:266px;
 	height:25px;	
 }
 

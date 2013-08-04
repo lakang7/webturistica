@@ -14,14 +14,11 @@
     <link href='http://fonts.googleapis.com/css?family=Oswald:400,700' rel='stylesheet' type='text/css' />       
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 	
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
-
-
-<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBViGAK8QcqvLcl0Pgilw-ENvMhmL88E6A&sensor=true"></script>
 	
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -32,7 +29,11 @@
 	<script src="../js/administracion/funcionesJS.js"></script>   
 	
     <script type="text/javascript">  	
-		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		/*********************************************************************************************
+		*
+			Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		*
+		**********************************************************************************************/
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	campoDir = formulario.direccion.value;
@@ -52,9 +53,12 @@
 			}		
 			//Para validar el correo	
         	return true;
-	    }
-		
-		//Funcion para guardar en una variable oculta la CATEGORIA a la cual pertenecerá esta subcategoria
+	    }		
+		/*********************************************************************************************
+		*
+			Funcion para guardar los valores seleccionados en los combos
+		*
+		**********************************************************************************************/
 		function guardarValorCombo(valor,bandera)
 		{
 			//Bandera 1 es para guardar el valor de la subcategoria
@@ -76,30 +80,41 @@
 				document.all('HidRuta').value = -1;
 			}
 			//alert(document.all('HidCategoria').value);			
-		}	
-		
-		//Funcion para validar solo nros o solo letras en un campo de texto
+		}			
+		/*********************************************************************************************
+		*
+			Funcion para validar SOLO NUMEROS o SOLO LETRAS en un campo determinado
+		*
+		**********************************************************************************************/
 		$(function(){
     		//Para escribir solo letras
     		//$('#miCampo1').validCampoFranz(' abcdefghijklmnñopqrstuvwxyzáéiou');
 
     		//Para escribir solo numeros	
-    		$('#tel1').funcionesJS('0123456789');
-			$('#tel2').funcionesJS('0123456789');
-    	});
-	</script>
-	
-	<script type="text/javascript">
+    		$('#tel1').funcionesJS('0123456789-');
+			$('#tel2').funcionesJS('0123456789-');
+			$('#latitud').funcionesJS('0123456789-.');
+			$('#longitud').funcionesJS('0123456789-.');
+    	});	
+		/*********************************************************************************************
+		*
+			FUNCION PARA INICIALIZAR EL MAPA, se debe llamar en el onload() de la página
+		*
+		**********************************************************************************************/
       	function initialize() {
-		  	var myLatlng = new google.maps.LatLng(8.132308,-71.9797);
-          	var mapOptions = {
+		  	//var myLatlng = new google.maps.LatLng(8.132308,-71.9797);
+          	
+			//Se configuran las características del mapa a crear
+			var mapOptions = {
           		center: new google.maps.LatLng(8.132308,-71.9797),
           		zoom: 15,
           		mapTypeId: google.maps.MapTypeId.HYBRID
         	};
+			
+			//Se crea el mapa
         	var map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
 		
-			var contentString = '<div id="content">'+'<h2 style="font-size:16px"; id="firstHeading" class="firstHeading">Posada Campo Alegre</h2>'+
+			/*var contentString = '<div id="content">'+'<h2 style="font-size:16px"; id="firstHeading" class="firstHeading">Posada Campo Alegre</h2>'+
     		'<img src="imagenes/sitiosinteres/hospedaje/posadas/posada2.png" width="200" height="135" />'+
 		    '</div>';
 
@@ -115,8 +130,27 @@
 
 			google.maps.event.addListener(marker, 'click', function(){
 			  infowindow.open(map,marker);
-			});	
-      }
+			});	*/
+			
+			//Evento asociado a "map_canvas" cuando se hace "click" sobre él
+		    google.maps.event.addListener(map_canvas, "click", function(evento) {
+     		
+				//Se obtienen las coordenadas
+    	 		var latitud = evento.latLng.lat();
+     			var longitud = evento.latLng.lng();
+
+	     		//Se pueden unir en una sola variable
+    	 		var coordenadas = evento.latLng.lat() + ", " + evento.latLng.lng();
+
+    			//Se muestran en una ventana
+     			alert(coordenadas);
+
+	     		/*Se crea un marcador usando las coordenadas obtenidas y almacenadas por separado en "latitud" y "longitud"
+				/* (para ello se debe crear un punto geografico utilizando google.maps.LatLng) */
+     			/*var coordenadas = new google.maps.LatLng(latitud, longitud); 
+     			var marcador = new google.maps.Marker({position: coordenadas,map: map_canvas, animation: google.maps.Animation.DROP, title:"Un marcador cualquiera"});*/
+	   		}); //Fin del evento click
+      }//end funcion initialize()
     </script>
 </head>
 
@@ -229,7 +263,7 @@
 	}
 ?>
 
-<body onload="cargo()">
+<body onload="cargo(),initialize()">
 	<div class="banner">        
     </div>
     <div class="menu">    				
@@ -247,10 +281,12 @@
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
-            	<div class="linea_formulario">
-                	<div class="linea_titulo">Tipo de Sitio (*)</div>
-                    <div class="linea_campo">
+  			   	<div class="linea_formulario">
+                	<div class="linea_titulo_2">- Datos Básicos del Sitio -</div>                    
+                </div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Tipo de Sitio (*)</div>
+                    <div class="linea_campo_compartido">
 						<input type="hidden" name="HidSubCategoria" value="-1" />                    	
 						<?php 
 						/*Se buscan todas las subcategorias de la categoria seleccionada*/
@@ -279,9 +315,10 @@
 						?>	
                 	</div>
                 </div>  
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Ruta a la que pertenece el sitio (*)</div>
-                    <div class="linea_campo">
+				
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Ruta a la que pertenece el sitio (*)</div>
+                    <div class="linea_campo_compartido">
 						<input type="hidden" name="HidRuta" value="-1" />
                     	<?php
 						/*Se buscan todas las rutas*/
@@ -311,7 +348,7 @@
                     </div>
                 </div>
 				<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre del Sitio (*)</div>
+                	<div class="linea_titulo">Nombre (*)</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" />
                     </div>
@@ -322,22 +359,22 @@
                     	<input type="text" class="campo" id="direccion" name="direccion" />
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Teléfono 1 (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="tel1" name="tel1" />
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Teléfono 1 (*)    -   Ejemplo: 0277-3575555</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="tel1" name="tel1"/>
+                    </div>					
+                </div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Teléfono 2    -   Ejemplo: 0277-3575555</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="tel2" name="tel2" />
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Teléfono 2</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="tel2" name="tel2" />
-                    </div>
-                </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Correo</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="correo" name="correo" />
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Correo electrónico</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="correo" name="correo" />
                     </div>
                 </div>
 				<div class="linea_formulario">
@@ -346,17 +383,21 @@
                     	<input type="text" class="campo" id="resena" name="resena"/>
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Página de Facebook</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="facebook" name="facebook"/>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Página de Facebook</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="facebook" name="facebook"/>
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Página de Twitter</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="twitter" name="twitter"/>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Página de Twitter</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="twitter" name="twitter"/>
                     </div>
+                </div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido"></div>
+                    <div class="linea_campo_compartido"></div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Logotipo del sitio</div>
@@ -370,25 +411,34 @@
                     	<input name="perfil" type="file" id="perfil" />
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Latitud (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="latitud" name="latitud" />
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Latitud (*)</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" />
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Longitud (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="longitud" name="longitud" />
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Longitud (*)</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" />
                     </div>
                 </div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Busque el sitio en el mapa y haga clic</div>
+                    <div class="linea_titulo_compartido">para seleccionar las coordenadas del mismo</div>
+                </div>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
+				<div id="map_canvas" style="width:70%; height:300px; margin-left:auto; margin-right:auto" align="center"></div>
+				
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
             	<div class="linea_formulario">
-	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+	              <input type="submit" value="Guardar sitio" name="Guardar" style="font-size:12px;" align="left"/>(*) Campos obligatorios
                 </div>
             </form>
         </div>    
-    </div>
-	
+    </div>	
     <div class="pie"></div>
 </body>
 

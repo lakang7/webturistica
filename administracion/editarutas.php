@@ -47,13 +47,23 @@
 		$con = conectarse();
 		$sql_update = "UPDATE ruta SET nombre='".$_POST["nombre"]."', resena='".$_POST["resena"]."' WHERE idruta='".$_GET["id"]."'";
 		$result_update = pg_exec($con,$sql_update);
-				
-		?>
+			
+		if(!$result_update){
+			?>
+        	<script type="text/javascript" language="javascript">
+				alert("¡¡¡ ERROR !!! \n     No se pudo modificar la ruta");
+				location.href="../administracion/listadorutas.php";
+			</script>
+	        <?php	
+		}
+		else{
+			?>
         	<script type="text/javascript" language="javascript">
 				alert("¡¡¡ Ruta modificada satisfactoriamente !!!");
 				location.href="../administracion/listadorutas.php";
 			</script>
-        <?php	
+        	<?php
+		}			
 	}
 ?>
 
