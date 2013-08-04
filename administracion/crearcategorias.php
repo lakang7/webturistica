@@ -41,17 +41,52 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Se inserta el nuevo registro*/
 		$con = conectarse();
-		$sql_insert="INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),'".$_POST["nombre"]."',0);";
-		$result_insert=pg_exec($con,$sql_insert);
 		
-		?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Categoria agregada satisfactoriamente !!!");
-				location.href="../administracion/listadocategorias.php";
-			</script>
-        <?php			
+		/*Se consulta la existencia de otra CATEGORIA con el mismo nombre*/
+		$sql = "SELECT * FROM categoria ORDER BY idcategoria";
+		$res = pg_exec($con, $sql);	
+		$yaExiste = 0;
+					
+		if(pg_num_rows($res)>0){
+			for($i=0; $i<pg_num_rows($res); $i++){				
+				$categoria = pg_fetch_array($res,$i);	
+				$nombreCategoria = $categoria[1];
+				
+				/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
+				if($nombreCategoria==$_POST["nombre"]){
+					$yaExiste = 1;
+					?>
+		        	<script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! \n\n     Esa categoría ya existe, por favor ingrese otro nombre");
+						location.href = "../administracion/crearcategorias.php";
+					</script>
+       				<?php
+				}
+			}
+		}
+		
+		/*Si la categoria NO existe, se crea*/
+		if($yaExiste==0){
+			$sql_insert="INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),'".$_POST["nombre"]."',0);";
+			$result_insert=pg_exec($con,$sql_insert);
+		
+			if(!$result_insert){
+				?>
+        		<script type="text/javascript" language="javascript">
+					alert("ERROR: No se pudo crear la categoría");
+					location.href="../administracion/listadocategorias.php";
+				</script>
+        		<?php	
+			}else{
+				?>
+        		<script type="text/javascript" language="javascript">
+					alert("¡¡¡ Categoria agregada satisfactoriamente !!!");
+					location.href="../administracion/listadocategorias.php";
+				</script>
+		        <?php	
+			}
+		}					
 	}
 ?>
 

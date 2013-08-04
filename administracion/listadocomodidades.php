@@ -14,6 +14,11 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>	
+	
+	<script src="../js/mootools.1.2.3.js"></script>
+	<script src="../js/administracion/sombrear_fila_tabla.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
+	
 	<script type="text/javascript" language="javascript">
 		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
 		function confirmar(url){ 
@@ -38,10 +43,10 @@
         	<div class="opcion"><a href="crearcomodidades.php">Registrar Nueva Comodidad</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla">
+        	<table border="1" class="estilo_tabla" id="highlight-table">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Código</td><td>Descripción Comodidad</td><td>Pos X</td><td>Pos Y</td><td width="20"></td><td width="20"></td>
+                    	<td>Código</td><td>Descripción Comodidad</td><td>Posición X imagen</td><td>Posición Y imagen</td><td width="20"></td><td width="20"></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,7 +67,7 @@
 				    $comodidad = pg_fetch_array($result_select,$i);	
 					$idcomodidad = $comodidad[0];
 				    ?>
-					<tr>
+					<tr class="row-<?php echo $i+1; ?>">
 						<td>
 							<?php echo Codigo("COM",$comodidad[0]); ?>
 						</td>

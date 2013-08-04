@@ -14,6 +14,11 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>	
+	
+	<script src="../js/mootools.1.2.3.js"></script>
+	<script src="../js/administracion/sombrear_fila_tabla.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
+	
 	<script type="text/javascript" language="javascript">
 		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
 		function confirmar(url){ 
@@ -38,7 +43,7 @@
         	<div class="opcion"><a href="crearespecialidades.php">Registrar Nueva Especialidad</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla">
+        	<table border="1" class="estilo_tabla" id="highlight-table">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
                     	<td>Código</td><td>Nombre</td><td>Descripción</td><td width="20"></td><td width="20"></td>
@@ -62,7 +67,7 @@
 				    $especialidad = pg_fetch_array($result_select,$i);	
 					$idespecialidad = $especialidad[0];
 				    ?>
-					<tr>
+					<tr class="row-<?php echo $i+1; ?>">
 						<td>
 							<?php echo Codigo("ESP",$especialidad[0]); ?>
 						</td>

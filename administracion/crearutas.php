@@ -44,17 +44,52 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Se inserta el nuevo registro*/
 		$con = conectarse();
-		$sql_insert = "INSERT INTO ruta VALUES(nextval('ruta_idruta_seq'),'".$_POST['nombre']."','".$_POST['resena']."');";
-		$result_insert = pg_exec($con,$sql_insert);
 		
-		?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Ruta agregada satisfactoriamente !!!");
-				location.href="../administracion/listadorutas.php";
-			</script>
-        <?php			
+		/*Se consulta la existencia de otra RUTA con el mismo nombre*/
+		$sql = "SELECT * FROM ruta ORDER BY idruta";
+		$res = pg_exec($con, $sql);	
+		$yaExiste = 0;
+					
+		if(pg_num_rows($res)>0){
+			for($i=0; $i<pg_num_rows($res); $i++){				
+				$ruta = pg_fetch_array($res,$i);	
+				$nombreRuta = $ruta[1];
+				
+				/*Si efectivamente ya existe esa especialidad, no se le permite crearla*/
+				if($nombreRuta==$_POST["nombre"]){
+					$yaExiste = 1;
+					?>
+		        	<script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! \n\n     Esa ruta ya existe, por favor ingrese otro nombre");
+						location.href = "../administracion/crearutas.php";
+					</script>
+       				<?php
+				}
+			}
+		}
+				
+		/*Si NO existe, se crea*/
+		if($yaExiste==0){
+			$sql_insert = "INSERT INTO ruta VALUES(nextval('ruta_idruta_seq'),'".$_POST['nombre']."','".$_POST['resena']."');";
+			$result_insert = pg_exec($con,$sql_insert);
+			
+			if(!$result_insert){
+				?>
+        		<script type="text/javascript" language="javascript">
+					alert("ERROR: No se pudo crear la ruta");
+					location.href="../administracion/listadorutas.php";
+				</script>
+    	    	<?php	
+			}else{	
+				?>
+	        	<script type="text/javascript" language="javascript">
+					alert("¡¡¡ Ruta agregada satisfactoriamente !!!");
+					location.href="../administracion/listadorutas.php";
+				</script>
+	        	<?php	
+			}		
+		}				
 	}
 ?>
 

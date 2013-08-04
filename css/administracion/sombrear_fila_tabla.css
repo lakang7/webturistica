@@ -1,0 +1,9 @@
+/* CSS Document */
+
+table               { border-collapse: collapse; width: 100%; margin-top:5px; }
+/* td                  { border: 1px solid #ccc; padding: 5px; } */
+/* thead               { width: 100%; height: 109px; background: url(../header.png) no-repeat; }*/
+.slim               { width: 88px; }
+/* .column-hover           { background:#eee; } */
+.row-hover                      { background:#FFDDDD; }
+.cell-hover                     { background:#FFA6A6; }

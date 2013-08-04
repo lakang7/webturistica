@@ -44,17 +44,52 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Se inserta el nuevo registro*/
 		$con = conectarse();
-		$sql_insert = "INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'".$_POST['nombre']."','".$_POST['descripcion']."');";
-		$result_insert = pg_exec($con,$sql_insert);
 		
-		?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Especialidad Gastronómica agregada satisfactoriamente !!!");
-				location.href="../administracion/listadocomodidades.php";
-			</script>
-        <?php			
+		/*Se consulta la existencia de otra ESPECIALIDAD con el mismo nombre*/
+		$sql = "SELECT * FROM especialidad ORDER BY idespecialidad";
+		$res = pg_exec($con, $sql);	
+		$yaExiste = 0;
+					
+		if(pg_num_rows($res)>0){
+			for($i=0; $i<pg_num_rows($res); $i++){				
+				$especialidad = pg_fetch_array($res,$i);	
+				$nombreEspecialidad = $especialidad[1];
+				
+				/*Si efectivamente ya existe esa especialidad, no se le permite crearla*/
+				if($nombreEspecialidad==$_POST["nombre"]){
+					$yaExiste = 1;
+					?>
+		        	<script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! \n\n     Esa especialidad ya existe, por favor ingrese otro nombre");
+						location.href = "../administracion/crearespecialidades.php";
+					</script>
+       				<?php
+				}
+			}
+		}
+		
+		/*Si NO existe, se crea*/
+		if($yaExiste==0){
+			$sql_insert = "INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'".$_POST['nombre']."','".$_POST['descripcion']."');";
+			$result_insert = pg_exec($con,$sql_insert);
+		
+			if(!$result_insert){
+				?>
+        		<script type="text/javascript" language="javascript">
+					alert("ERROR: No se pudo crear la especialidad");
+					location.href="../administracion/listadoespecialidades.php";
+				</script>
+    	    	<?php	
+			}else{		
+				?>
+	        	<script type="text/javascript" language="javascript">
+					alert("¡¡¡ Especialidad Gastronómica agregada satisfactoriamente !!!");
+					location.href="../administracion/listadoespecialidades.php";
+				</script>
+	    	    <?php			
+			}
+		}		
 	}
 ?>
 

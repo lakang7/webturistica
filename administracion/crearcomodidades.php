@@ -57,17 +57,52 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Se inserta el nuevo registro*/
 		$con = conectarse();
-		$sql_insert = "INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'".$_POST["nombre"]."',".$_POST["posX"].",".$_POST["posY"].");";
-		$result_insert = pg_exec($con,$sql_insert);
 		
-		?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Comodidad agregada satisfactoriamente !!!");
-				location.href="../administracion/listadocomodidades.php";
-			</script>
-        <?php			
+		/*Se consulta la existencia de otra COMODIDAD con el mismo nombre*/
+		$sql = "SELECT * FROM comodidad ORDER BY idcomodidad";
+		$res = pg_exec($con, $sql);	
+		$yaExiste = 0;
+					
+		if(pg_num_rows($res)>0){
+			for($i=0; $i<pg_num_rows($res); $i++){				
+				$comodidad = pg_fetch_array($res,$i);	
+				$nombreComodidad = $comodidad[1];
+				
+				/*Si efectivamente ya existe esa comodidad, no se le permite crearla*/
+				if($nombreComodidad==$_POST["nombre"]){
+					$yaExiste = 1;
+					?>
+		        	<script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! \n\n     Esa comodidad ya existe, por favor ingrese otro nombre");
+						location.href = "../administracion/crearcomodidades.php";
+					</script>
+       				<?php
+				}
+			}
+		}
+		
+		/*Si la comodidad NO existe, se crea*/
+		if($yaExiste==0){
+			$sql_insert = "INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'".$_POST["nombre"]."',".$_POST["posX"].",".$_POST["posY"].");";
+			$result_insert = pg_exec($con,$sql_insert);
+		
+			if(!$result_insert){
+				?>
+        		<script type="text/javascript" language="javascript">
+					alert("ERROR: No se pudo crear la comodidad");
+					location.href="../administracion/listadocomodidades.php";
+				</script>
+    	    	<?php	
+			}else{		
+				?>
+	        	<script type="text/javascript" language="javascript">
+					alert("¡¡¡ Comodidad agregada satisfactoriamente !!!");
+					location.href="../administracion/listadocomodidades.php";
+				</script>
+	    	    <?php		
+			}
+		}		
 	}
 ?>
 

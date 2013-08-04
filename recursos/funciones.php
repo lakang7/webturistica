@@ -52,14 +52,14 @@
 									echo "<li>";
 										echo "<a href='#'>Clasificación</a>";
 										echo "<ul class='dl-submenu'>";
-											echo "<li><a href='crearcategorias.php'>Categoría</a></li>";
-											echo "<li><a href='#'>Sub Categoría</a></li>";
+											echo "<li><a href='listadocategorias.php'>Categoría</a></li>";
+											echo "<li><a href='listadosubcategorias.php'>Sub Categoría</a></li>";
 										echo "</ul>";
 									echo "</li>";
 									echo "<li>";
 										echo "<a href='#'>Hospedaje</a>";
 										echo "<ul class='dl-submenu'>";
-											echo "<li><a href='#'>Comodidades</a></li>";
+											echo "<li><a href='listadocomodidades.php'>Comodidades</a></li>";
 											echo "<li><a href='#'>Hoteles</a></li>";
 											echo "<li><a href='#'>Posadas</a></li>";
 										echo "</ul>";
@@ -67,7 +67,7 @@
 									echo "<li>";
 										echo "<a href='#'>Gastronomia</a>";
 										echo "<ul class='dl-submenu'>";
-											echo "<li><a href='#'>Especialidades</a></li>";
+											echo "<li><a href='listadoespecialidades.php'>Especialidades</a></li>";
 											echo "<li><a href='#'>Servicios</a></li>";
                                             echo "<li><a href='#'>Recomendado</a></li>";
 											echo "<li><a href='#'>Restaurantes</a></li>";
@@ -77,7 +77,7 @@
 								echo "</ul>";
 							echo "</li>";
 							echo "<li>";
-								echo "<a href='#'>Electronics</a>";
+								echo "<a href='#'>Museos</a>";
 								echo "<ul class='dl-submenu'>";
 									echo "<li><a href='#'>Camera &amp; Photo</a></li>";
 									echo "<li><a href='#'>TV &amp; Home Cinema</a></li>";
