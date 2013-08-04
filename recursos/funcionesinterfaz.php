@@ -51,9 +51,7 @@
 						    echo "<li><a href=''>Sube tu Foto</a></li>";
 						    echo "<li><a href='blog.php'>Nuestro Blog</a></li>";
 						    echo "<li><a href=''>Cont&aacutectanos</a></li>";
-		    			echo "</ul>";
-                    
-				        echo "<button class='btn' style='float:rigth'>Reg&iacutestrate</button>";
+		    			echo "</ul>";                    
 				    echo "</div>";
 				echo "</div>";
         	echo "</div>";
