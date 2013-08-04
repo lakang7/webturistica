@@ -101,56 +101,31 @@
 			FUNCION PARA INICIALIZAR EL MAPA, se debe llamar en el onload() de la página
 		*
 		**********************************************************************************************/
-      	function initialize() {
-		  	//var myLatlng = new google.maps.LatLng(8.132308,-71.9797);
-          	
-			//Se configuran las características del mapa a crear
-			var mapOptions = {
-          		center: new google.maps.LatLng(8.132308,-71.9797),
-          		zoom: 15,
-          		mapTypeId: google.maps.MapTypeId.HYBRID
-        	};
-			
-			//Se crea el mapa
-        	var map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
+      	function inicializacion() {
+     	     //Se crea un nuevo mapa situado en La Grita
+	         var mapa = new google.maps.Map(document.getElementById("map_canvas"),{center: new google.maps.LatLng(8.132308,-71.9797),zoom: 15,mapTypeId: google.maps.MapTypeId.HYBRID});
+
+     	 	//Se crea un evento asociado a "mapa" cuando se hace "click" sobre el
+		    google.maps.event.addListener(mapa, "click", function(evento) {
+    	 	 
+			 	//Se obtienen las coordenadas por separado
+			     var latitud = evento.latLng.lat();
+    			 var longitud = evento.latLng.lng();
 		
-			/*var contentString = '<div id="content">'+'<h2 style="font-size:16px"; id="firstHeading" class="firstHeading">Posada Campo Alegre</h2>'+
-    		'<img src="imagenes/sitiosinteres/hospedaje/posadas/posada2.png" width="200" height="135" />'+
-		    '</div>';
+			     //Se pueden unir en una unica variable
+    			 var coordenadas = evento.latLng.lat() + ", " + evento.latLng.lng();
 
-			var infowindow = new google.maps.InfoWindow({
-			    content: contentString
-			});
+			     //Se cargan las coordenadas en los campos de texto
+				 document.getElementById("latitud").value = latitud;
+				 document.getElementById("longitud").value = longitud;
+    			 //alert(coordenadas);
 
-			var marker = new google.maps.Marker({
-			    position: myLatlng,
-			    map: map,
-			    title:"Posada Campo Alegre"
-			});
-
-			google.maps.event.addListener(marker, 'click', function(){
-			  infowindow.open(map,marker);
-			});	*/
-			
-			//Evento asociado a "map_canvas" cuando se hace "click" sobre él
-		    google.maps.event.addListener(map_canvas, "click", function(evento) {
-     		
-				//Se obtienen las coordenadas
-    	 		var latitud = evento.latLng.lat();
-     			var longitud = evento.latLng.lng();
-
-	     		//Se pueden unir en una sola variable
-    	 		var coordenadas = evento.latLng.lat() + ", " + evento.latLng.lng();
-
-    			//Se muestran en una ventana
-     			alert(coordenadas);
-
-	     		/*Se crea un marcador usando las coordenadas obtenidas y almacenadas por separado en "latitud" y "longitud"
-				/* (para ello se debe crear un punto geografico utilizando google.maps.LatLng) */
-     			/*var coordenadas = new google.maps.LatLng(latitud, longitud); 
-     			var marcador = new google.maps.Marker({position: coordenadas,map: map_canvas, animation: google.maps.Animation.DROP, title:"Un marcador cualquiera"});*/
-	   		}); //Fin del evento click
-      }//end funcion initialize()
+	    		 /*Se crea un marcador usando las coordenadas obtenidas y almacenadas por separado en "latitud" y "longitud"
+					/* (para ello se debe crear un punto geografico utilizando google.maps.LatLng) */
+		    	 //var coordenadas = new google.maps.LatLng(latitud, longitud); 
+			     //var marcador = new google.maps.Marker({position: coordenadas,map: mapa, animation: google.maps.Animation.DROP, title:"Un marcador cualquiera"});
+     		}); //Fin del evento click
+		} // Fin inicializacion()
     </script>
 </head>
 
@@ -263,7 +238,7 @@
 	}
 ?>
 
-<body onload="cargo(),initialize()">
+<body onload="cargo(),inicializacion()">
 	<div class="banner">        
     </div>
     <div class="menu">    				
