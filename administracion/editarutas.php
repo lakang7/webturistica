@@ -22,15 +22,14 @@
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	campoNombre = formulario.nombre.value;
-			campoResena = formulario.resena.value;
 			
         	//la condición
-        	if (campoNombre.length == 0 || campoResena.length == 0) {
-				alert("Es necesario completar todos los campos");
+        	if (campoNombre.length == 0) {
+				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
         	}
-			else if(/^\s+$/.test(campoNombre) || /^\s+$/.test(campoResena)){
-				alert("Ningún campo puede quedar en blanco, ingrese valores válidos");
+			else if(/^\s+$/.test(campoNombre)){
+				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
 			}			
 			
@@ -101,8 +100,10 @@
                     </div>
                 </div>
             	<div class="linea_formulario">
-	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />
-                </div>
+					<div class="linea_titulo_rojo">
+						<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+					</div>					
+				</div>
             </form>
         </div>        
     </div>

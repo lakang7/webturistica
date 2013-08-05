@@ -25,20 +25,19 @@
 		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
-        	miCampoTexto = formulario.nombre.value;
+        	campoNombre = formulario.nombre.value;
 			campoPosX = formulario.posX.value;
 			campoPosY = formulario.posY.value;
 			
         	//la condición
-        	if (miCampoTexto.length == 0 || campoPosX.length == 0 || campoPosY.length == 0) {
-				alert("Es necesario completar todos los campos");
+        	if (campoNombre.length == 0 || campoPosX.length == 0 || campoPosY.length == 0) {
+				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
         	}
-			else if(/^\s+$/.test(miCampoTexto) || /^\s+$/.test(campoPosX) || /^\s+$/.test(campoPosY)){
-				alert("Ningún campo puede quedar en blanco, ingrese valores válidos");
+			else if(/^\s+$/.test(campoNombre) || /^\s+$/.test(campoPosX) || /^\s+$/.test(campoPosY)){
+				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
 			}			
-			
         	return true;
 	    }
 		
@@ -143,9 +142,11 @@
                     	<input type="text" class="campo" id="posY" name="posY" />
                     </div>
                 </div>
-            	<div class="linea_formulario">
-	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
-                </div>
+				<div class="linea_formulario">
+					<div class="linea_titulo_rojo">
+						<input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+					</div>					
+				</div>
             </form>
         </div>
         

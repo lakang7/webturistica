@@ -47,7 +47,7 @@
 				return false;
         	}
 			else if(/^\s+$/.test(campoNombre) || (/^\s+$/.test(campoDir)) || (/^\s+$/.test(campoTel1)) || (/^\s+$/.test(campoLat)) || (/^\s+$/.test(campoLong))){
-				alert("Ningún campo obligatorio puede quedar en blanco, ingrese valores válidos");
+				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
 			}		
         	return true;
@@ -392,8 +392,8 @@
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido" style="text-align:center">Busque el sitio en el mapa y haga clic</div>
-                    <div class="linea_titulo_compartido" style="text-align:center">para seleccionar las coordenadas del mismo</div>
+                	<div class="linea_titulo_compartido_rojo" style="text-align:center">Busque el sitio en el mapa y haga clic</div>
+                    <div class="linea_titulo_compartido_rojo" style="text-align:center">para seleccionar las coordenadas del mismo</div>
                 </div>
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
@@ -402,7 +402,9 @@
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
             	<div class="linea_formulario">
-					<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+					<div class="linea_titulo_rojo">
+						<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+					</div>					
 				</div>
             </form>
         </div>   

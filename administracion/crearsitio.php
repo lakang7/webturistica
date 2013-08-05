@@ -175,24 +175,26 @@
 					</script>
 			       	<?php	
 				}else{	
-					/*Si SI se pudo, se sube el logo de la empresa a la carpeta respectiva*/
-					$subirLogo = new imgUpldr;		
-					$subirLogo->configurar($_POST["nombre"],"../imagenes/sitios/logotipos/",591,591);
-					$subirLogo->init($_FILES['logo']);
-					$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
-						
 					/*Se selecciona el ultimo id asignado a sitio*/
 					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
 					$result_select = pg_exec($con, $sql_select);
 					$arreglo = pg_fetch_array($result_select,0);
+					
+					/*Si SI se pudo, se sube el logo de la empresa a la carpeta respectiva*/
+					$subirLogo = new imgUpldr;		
+					$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
+					$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
+					$subirLogo->init($_FILES['logo']);
+					$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
 						
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
 					$result_update_logo = pg_exec($con, $sql_update);
 						
 					/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
-					$subirPerfil = new imgUpldr;		
-					$subirPerfil->configurar($_POST["nombre"],"../imagenes/sitios/perfil/",1500,400);
+					$subirPerfil = new imgUpldr;
+					$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
+					$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",1500,400);
 					$subirPerfil->init($_FILES['perfil']);
 					$destinoPerfil = $subirPerfil->_dest.$subirPerfil->_name;
 		
@@ -218,10 +220,58 @@
 				    }						
 					?>
 		       		<script type="text/javascript" language="javascript">
-						alert("¡¡¡ Sitio agregado satisfactoriamente !!!");
-						location.href = "listadositios.php";
+						//alert("¡¡¡ Sitio agregado satisfactoriamente !!!");
+						
+						/*
+						OOOJOOOOOOOOOOOOOOO
+						Aqui se tiene que verificar si es HOSPEDAJE o GASTRONOMIA para redireccionar a cada pagina, mandandole el ID
+						del sitio por get: $_GET["id"], algo como listadositios.php?id=valor_del_id
+						Y si no es ninguna de esas 2 simplemente redirecciona a "listadositios.php"
+						*/
 					</script>
-	    	   		<?php
+					<?php	
+				    /*Se consulta el ID de la categoria HOSPEDAJE*/
+					$con = conectarse();
+					
+					/*Se selecciona el ultimo id asignado a sitio*/
+					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
+					$result_select = pg_exec($con, $sql_select);
+					$arreglo = pg_fetch_array($result_select,0);
+					
+					$sql_hospedaje = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND c.nombre='Hospedaje'";					
+					$res_sql_hospedaje = pg_exec($con, $sql_hospedaje);
+					
+					//Si la consulta trae filas
+					if(pg_num_rows($res_sql_hospedaje)>0){
+						
+						/*Se recorren las subcategorias de HOSPEDAJE a ver si la que está seleccionada en el combo es una de ellas*/
+						for($i=0; $i<pg_num_rows($res_sql_hospedaje); $i++){
+							$subcategoriaDeHospedaje = pg_fetch_array($res_sql_hospedaje,$i);
+							$id = $subcategoriaDeHospedaje[3];
+							
+							//Si efectivamente está seleccionada una SUBCATEGORIA de HOSPEDAJE, se redirecciona
+							if($subcategoriaDeHospedaje[3] == $_POST["HidSubCategoria"]){
+								?>
+		        				<script type="text/javascript" language="javascript">
+									alert("¡¡¡ Sitio agregado satisfactoriamente !!!");
+									location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $arreglo[0];?>;
+								</script>
+					       		<?php	
+							}
+						}
+					}
+							
+					/*Se consulta el ID de la categoria GASTRONOMIA
+					$sql_gastronomia = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND c.nombre='Gastronomía'";
+					$res_sql_gastronomia = pg_exec($con, $sql_gastronomia);	
+					
+
+					$idSubcategoriaDeGastronomia = $res_sql_gastronomia[3];
+					
+					if($_POST["HidSubCategoria"]==$idHospedaje){
+					
+					}*/					
+					
 				}//end else						
 			}//end if($yaExiste==0)
 		}//end if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1)
@@ -233,8 +283,7 @@
 				alert("ALERTA: Debe seleccionar el tipo de sitio a agregar y la ruta a la cual pertenece el mismo");
 			</script>
 		<?php
-		}
-		
+		}		
 	}
 ?>
 
@@ -325,49 +374,49 @@
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" />
+                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="100"/>
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Dirección (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="direccion" name="direccion" />
+                    	<input type="text" class="campo" id="direccion" name="direccion" maxlength="400"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Teléfono 1 (*)    -   Ejemplo: 0277-3575555</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="tel1" name="tel1"/>
+                    	<input type="text" class="campo_compartido" id="tel1" name="tel1" maxlength="12"/>
                     </div>					
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Teléfono 2    -   Ejemplo: 0277-3575555</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="tel2" name="tel2" />
+                    	<input type="text" class="campo_compartido" id="tel2" name="tel2" maxlength="12"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Correo electrónico</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="correo" name="correo" />
+                    	<input type="text" class="campo_compartido" id="correo" name="correo" maxlength="60"/>
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Reseña histórica</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="resena" name="resena"/>
+                    	<input type="text" class="campo" id="resena" name="resena" maxlength="2000"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Página de Facebook</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="facebook" name="facebook"/>
+                    	<input type="text" class="campo_compartido" id="facebook" name="facebook" maxlength="200"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Página de Twitter</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="twitter" name="twitter"/>
+                    	<input type="text" class="campo_compartido" id="twitter" name="twitter" maxlength="200"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
@@ -389,18 +438,18 @@
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Latitud (*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" />
+                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" maxlength="200"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Longitud (*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" />
+                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" maxlength="200"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Busque el sitio en el mapa y haga clic</div>
-                    <div class="linea_titulo_compartido">para seleccionar las coordenadas del mismo</div>
+                	<div class="linea_titulo_compartido_rojo">Busque el sitio en el mapa y haga clic</div>
+                    <div class="linea_titulo_compartido_rojo">para seleccionar las coordenadas del mismo</div>
                 </div>
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
@@ -409,8 +458,10 @@
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
             	<div class="linea_formulario">
-	              <input type="submit" value="Guardar sitio" name="Guardar" style="font-size:12px;" align="left"/>(*) Campos obligatorios
-                </div>
+					<div class="linea_titulo_rojo">
+						<input type="submit" value="Guardar sitio" name="Guardar" style="font-size:12px;" align="left"/>(*) Campos obligatorios
+					</div>					
+				</div>
             </form>
         </div>    
     </div>	

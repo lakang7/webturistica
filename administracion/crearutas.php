@@ -28,11 +28,11 @@
 			
         	//la condición
         	if (campoNombre.length == 0 || campoResena.length == 0) {
-				alert("Es necesario completar todos los campos");
+				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
         	}
 			else if(/^\s+$/.test(campoNombre) || /^\s+$/.test(campoResena)){
-				alert("Ningún campo puede quedar en blanco, ingrese valores válidos");
+				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
 			}			
 			
@@ -125,8 +125,10 @@
                     </div>
                 </div>
             	<div class="linea_formulario">
-	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
-                </div>
+					<div class="linea_titulo_rojo">
+						<input type="submit" value="Guardar ruta" name="Guardar" style="font-size:12px;" align="left"/>(*) Campos obligatorios
+					</div>					
+				</div>
             </form>
         </div>
         

@@ -25,7 +25,7 @@ create table comodidad(
 create table ruta(
    idruta SERIAL,
    nombre VARCHAR(100) NOT NULL,
-   resena VARCHAR(1200) NOT NULL,
+   resena VARCHAR(1200),
    CONSTRAINT pk_ruta PRIMARY KEY (idruta)   
 );
 
@@ -57,6 +57,7 @@ create table hospedaje(
    promedio_ubicacion NUMERIC NOT NULL,
    promedio_limpieza NUMERIC NOT NULL,
    promedio_personal NUMERIC NOT NULL,
+   promedio_precio NUMERIC NOT NULL,
    promedio NUMERIC NOT NULL,
    CONSTRAINT pk_hospedaje PRIMARY KEY (idhospedaje),
    CONSTRAINT fk_hospedaje_idsitio FOREIGN KEY (idsitio) REFERENCES sitio (idsitio)
@@ -86,7 +87,7 @@ create table gastronomia(
 
 create table especialidad(
    idespecialidad SERIAL,
-   nombre VARCHAR(45),
+   nombre VARCHAR(45) NOT NULL,
    descripcion VARCHAR(600),
    CONSTRAINT pk_especialidad PRIMARY KEY (idespecialidad)   
 );
@@ -109,7 +110,6 @@ create table punto_ruta(
    CONSTRAINT fk_punto_ruta_idruta FOREIGN KEY (idruta) REFERENCES ruta (idruta)
 );
 
---------------------------------------------------------------FALTA CREAR ESTAS
 create table foto_ruta(
    idfoto_ruta SERIAL,
    idpunto_ruta INTEGER NOT NULL,
@@ -129,8 +129,8 @@ create table foto_sitio(
 
 create table tipo_habitacion(
    idtipo_habitacion SERIAL,
-   nombre VARCHAR(45),
-   capacidad INTEGER,
+   nombre VARCHAR(45) NOT NULL,
+   capacidad INTEGER NOT NULL,
    CONSTRAINT pk_tipo_habitacion PRIMARY KEY (idtipo_habitacion)   
 );
 
@@ -223,3 +223,40 @@ INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),7,'Ca
 
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),8,'Gasolineras','imagenes/subcategorias/gasolineras.png');
 
+create table comodidad(
+   idcomodidad SERIAL,
+   nombre VARCHAR(45) NOT NULL,
+   posX INTEGER NOT NULL,  
+   posY INTEGER NOT NULL,  
+   CONSTRAINT pk_comodidad PRIMARY KEY (idcomodidad)   
+);
+
+--Insertando ESPECIALIDADES
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Acceso Minusválidos',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Sala de Reuniones',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Desayuno',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Salón de TV',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Restaurante',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Ascensor',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Internet',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Seguridad 24hs',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Bar',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Business Center',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Aire Acondicionado',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'WI-FI',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Recreación y esparcimiento',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Gimnasio',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Adicionales',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Renta de Carros',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Tiendas',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Sauna',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Servicio de despertador',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Estacionamiento',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Servicio de Lavandería',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Calefacción',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Piscina Descubierta',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Piscina Cubierta',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Guardería',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'SPA',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Servicio Maletero',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Estacionamiento de Autobús',1,1);

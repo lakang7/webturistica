@@ -22,14 +22,14 @@
     	//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
-        	miCampoTexto = formulario.nombre.value;
+        	campoNombre = formulario.nombre.value;
         	//la condición
-        	if (miCampoTexto.length == 0) {
-				alert("Debe indicar el nombre de la subcategoria que desea registrar");
+        	if (campoNombre.length == 0) {
+				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
         	}
-			else if(/^\s+$/.test(miCampoTexto)){
-				alert("El nombre de la subcategoria no puede quedar en blanco, ingrese un nombre válido");
+			else if(/^\s+$/.test(campoNombre)){
+				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
 			}
         	return true;
@@ -105,7 +105,7 @@
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
             	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Sub Categoría</div>
+                	<div class="linea_titulo">Nombre Sub Categoría (*)</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" value="<? echo $arreglo[2]; ?>" />
                     </div>
@@ -117,8 +117,10 @@
                     </div>
                 </div>
                 <div class="linea_formulario">
-	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />
-                </div>
+					<div class="linea_titulo_rojo">
+						<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+					</div>					
+				</div>
             </form>
         </div>        
     </div>
