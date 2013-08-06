@@ -85,7 +85,7 @@
 							<?php echo $subCategoria[2]; ?>
 						</td>
 						<td title="Editar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;">
-							<a href="editarsubcategorias.php?id=<?php echo $subCategoria[0];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
+							<a href="editarsubcategorias.php?id=<?php echo $subCategoria[0];?>&cat=<?php echo $subCategoria[1];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
 						</td>
 						<td title="Eliminar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&idSub=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>

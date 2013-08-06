@@ -90,13 +90,13 @@
             	<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" value="<? echo $arreglo[1]; ?>" />
+                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45" value="<? echo $arreglo[1]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Reseña Histórica</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="resena" name="resena" value="<? echo $arreglo[2]; ?>"/>
+                    	<input type="text" class="campo" id="resena" name="resena" maxlength="1200" value="<? echo $arreglo[2]; ?>"/>
                     </div>
                 </div>
             	<div class="linea_formulario">

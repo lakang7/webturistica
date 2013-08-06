@@ -112,7 +112,7 @@
             	<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre Categoría (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" />
+                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45"/>
                     </div>
                 </div>
             	<div class="linea_formulario">

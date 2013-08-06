@@ -231,7 +231,7 @@ create table comodidad(
    CONSTRAINT pk_comodidad PRIMARY KEY (idcomodidad)   
 );
 
---Insertando ESPECIALIDADES
+--Insertando COMODIDADES
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Acceso Minusválidos',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Sala de Reuniones',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Desayuno',1,1);
@@ -260,3 +260,50 @@ INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Guardería',1,
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'SPA',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Servicio Maletero',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Estacionamiento de Autobús',1,1);
+
+--Insertando ESPECIALIDADES
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Americana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Árabe','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Asiática','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Bebidas y Cócteles','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Café','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Catalana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Casera','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Carnes','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'China','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Crepes','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Criolla','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Ecléctica','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Ensaladas','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Española','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Francesa','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Fusión','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Inglesa','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Internacional','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Japonesa','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Mantuana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Mariscos','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Marroquí','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Mediterránea','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Mexicana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Norteamericana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Tex-Mex','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Turca','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Paellas','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Pastas','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Peruana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Pescados','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Pizzas','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Pizza a la leña','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Pollera','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Portuguesa','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Repostería','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Sandwiches','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Self-service','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Shawarma','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Suiza','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Sushi','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Sopas','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Thai','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Venezolana','');
+INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Vinos y Tapas','');

@@ -96,16 +96,20 @@
 							</script>
 				       	<?php	
 					}else{	
-						/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
-						$subir = new imgUpldr;		
-						$subir->configurar($_POST["nombre"],"../imagenes/subcategorias/",591,591);
-						$subir->init($_FILES['icono']);
-						$destino = $subir->_dest.$subir->_name;
-		
-						/*Se selecciona el id que le fue asignado a la subcategoria que se acaba de registrar en la base datos*/
+						$con = conectarse();
+						
+						/*Se consulta el id de la ultima subcategoria recien creada*/
 						$sql_select = "SELECT last_value FROM subcategoria_idsubcategoria_seq;";
 						$result_select = pg_exec($con, $sql_select);
 						$arreglo = pg_fetch_array($result_select,0);
+						$idSubcategoria = $arreglo[0];
+					
+						/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
+						$subir = new imgUpldr;	
+						$nombreImagen = $idSubcategoria."-".$_POST["nombre"];	
+						$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
+						$subir->init($_FILES['icono']);
+						$destino = $subir->_dest.$subir->_name;
 		
 						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 						$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";

@@ -42,7 +42,7 @@
 			campoLat = formulario.latitud.value;
 			campoLong = formulario.longitud.value;
 			
-        	if (campoNombre.length == 0 || campoDir.length == 0 || campoTel1.length == 0 || campoLat.length == 0 || campoLong.length == 0) {
+        	if (campoNombre.length == 0 || campoDir.length == 0 || campoTel1.length == 0 || latitud.length == 0 || longitud.length == 0) {
 				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
 				return false;
         	}
@@ -73,8 +73,6 @@
 			else if(bandera==2 && valor == -1){
 				document.all('HidRuta').value = -1;
 			}
-			var txt = "HidSubcategoria="+document.all('HidSubCategoria').value+" yyyyy HidRuta="+document.all('HidRuta').value;
-			//alert(txt);
 		}
 		/*********************************************************************************************
 		*
@@ -131,7 +129,7 @@
 		$con = conectarse();
 		
 		//Se prepara el query de update
-		$sql_update = "UPDATE sitio SET idsubcategoria='".$_POST["HidSubCategoria"]."', idruta='".$_POST["HidRuta"]."', nombre='".$_POST["nombre"]."', direccion='".$_POST["direccion"]."', telefono1='".$_POST["tel1"]."', telefono2='".$_POST["tel2"]."', correo='".$_POST["correo"]."', resena='".$_POST["resena"]."', pagfacebook='".$_POST["facebook"]."', pagtwitter='".$_POST["twitter"]."', latitud='".$_POST["latitud"]."', longitud='".$_POST["longitud"]."' WHERE idsitio='".$_GET["id"]."'";
+		$sql_update = "UPDATE sitio SET nombre='".$_POST["nombre"]."', direccion='".$_POST["direccion"]."', telefono1='".$_POST["tel1"]."', telefono2='".$_POST["tel2"]."', correo='".$_POST["correo"]."', resena='".$_POST["resena"]."', pagfacebook='".$_POST["facebook"]."', pagtwitter='".$_POST["twitter"]."', latitud='".$_POST["latitud"]."', longitud='".$_POST["longitud"]."' WHERE idsitio='".$_GET["id"]."'";
 		
 		//Se ejecuta el update
 		$result_update = pg_exec($con,$sql_update);
@@ -145,14 +143,13 @@
 			</script>
     	    <?php
 		}
-		
 		//Si devuelve TRUE, se pudo ejecutar el update
 		else{
 			/*Si se modificó el logotipo de la empresa*/
 			if($_FILES['logo']['name']!=""){
 				
-				/*Se sube la imagen a la ruta predefinida*/
-				$subir_logo = new imgUpldr;					
+				/*Se sube el logo*/
+				$subir_logo = new imgUpldr;	
 				//Se prepara el nombre con que se guardará la imagen
 				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
 				$subir_logo->configurar($nombreImagen,"../imagenes/sitiosinteres/logotipos/",200,150);
@@ -167,7 +164,7 @@
 				if(!$result_update){
 					?>
 		        	<script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono");
+						alert("ERROR: No se pudo guardar el logotipo del sitio");
 						//location.href="../administracion/listadositios.php";
 					</script>
 		    	    <?php
@@ -193,7 +190,7 @@
 				if(!$result_update){
 					?>
 		        	<script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
+						alert("ERROR: No se pudo guardar la imagen de perfil del sitio");
 						//location.href="../administracion/listadositios.php";
 					</script>
 		    	    <?php
@@ -325,49 +322,49 @@
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="100" value="<? echo $arreglo[3]; ?>"/>
+                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45" value="<? echo $arreglo[3]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Dirección (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="direccion" name="direccion" maxlength="400" value="<? echo $arreglo[4]; ?>"/>
+                    	<input type="text" class="campo" id="direccion" name="direccion" value="<? echo $arreglo[4]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Teléfono 1 (*)    -   Ejemplo: 0277-3575555</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="tel1" name="tel1" maxlength="12" value="<? echo $arreglo[5]; ?>"/>
+                    	<input type="text" class="campo_compartido" id="tel1" name="tel1" value="<? echo $arreglo[5]; ?>"/>
                     </div>					
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Teléfono 2    -   Ejemplo: 0277-3575555</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="tel2" name="tel2" maxlength="12" value="<? echo $arreglo[6]; ?>"/>
+                    	<input type="text" class="campo_compartido" id="tel2" name="tel2" value="<? echo $arreglo[6]; ?>"/>
                     </div>
                 </div>				
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Correo electrónico</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="correo" name="correo" maxlength="60" value="<? echo $arreglo[7]; ?>" />
+                    	<input type="text" class="campo_compartido" id="correo" name="correo" value="<? echo $arreglo[7]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Reseña histórica</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="resena" name="resena" maxlength="2000" value="<? echo $arreglo[8]; ?>" />
+                    	<input type="text" class="campo" id="resena" name="resena" value="<? echo $arreglo[8]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Página de Facebook</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="facebook" name="facebook" maxlength="200" value="<? echo $arreglo[9]; ?>" />
+                    	<input type="text" class="campo_compartido" id="facebook" name="facebook" value="<? echo $arreglo[9]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Página de Twitter</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="twitter" name="twitter" maxlength="200" value="<? echo $arreglo[10]; ?>" />
+                    	<input type="text" class="campo_compartido" id="twitter" name="twitter" value="<? echo $arreglo[10]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario">
@@ -385,13 +382,13 @@
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Latitud (*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" maxlength="200" value="<? echo $arreglo[12]; ?>" />
+                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" value="<? echo $arreglo[12]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Longitud (*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" maxlength="200" value="<? echo $arreglo[13]; ?>" />
+                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" value="<? echo $arreglo[13]; ?>" />
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">

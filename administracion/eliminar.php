@@ -281,7 +281,7 @@
 		 ?>
         	<script type="text/javascript" language="javascript">
 				alert("ERROR: El sitio NO PUEDE SER ELIMINADO ya que existen registros en otras tablas que dependen de él.\n\n(Si realmente desea eliminar este sitio, primero elimine todos los registros asociados a él)");
-				location.href="../administracion/listadorutas.php";
+				location.href="../administracion/listadositios.php";
 			</script>
          <?php		 			 
 		 }

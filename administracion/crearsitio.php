@@ -43,7 +43,7 @@
 			campoLong = formulario.longitud.value;
 			
         	//la condición
-        	if (campoNombre.length == 0 || campoDir.length == 0 || campoTel1.length == 0 || latitud.length == 0 || longitud.length == 0) {
+        	if (campoNombre.length == 0 || campoDir.length == 0 || campoTel1.length == 0 || campoLat.length == 0 || campoLong.length == 0) {
 				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
 				return false;
         	}
@@ -132,8 +132,8 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Se verifica que haya seleccionado una subcategoria y una ruta*/
-		if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1){
+		/*Se verifica que haya seleccionado una subcategoria y una ruta, y que haya seleccionado logotipo e imagen de perfil*/
+		if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1 && $_FILES['perfil']['name']!="" && $_FILES['logo']['name']!=""){
 			
 			$con = conectarse();
 			
@@ -174,19 +174,22 @@
 						location.href="listadositios.php";
 					</script>
 			       	<?php	
-				}else{	
+				}
+				//Si se insertó el nuevo sitio satisfactoriamente
+				else{	
+				
 					/*Se selecciona el ultimo id asignado a sitio*/
 					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
 					$result_select = pg_exec($con, $sql_select);
 					$arreglo = pg_fetch_array($result_select,0);
-					
+				
 					/*Si SI se pudo, se sube el logo de la empresa a la carpeta respectiva*/
-					$subirLogo = new imgUpldr;		
+					$subirLogo = new imgUpldr;
 					$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
 					$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
 					$subirLogo->init($_FILES['logo']);
 					$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
-						
+					
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
 					$result_update_logo = pg_exec($con, $sql_update);
@@ -201,78 +204,75 @@
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE sitio SET imagen_perfil='".$destinoPerfil."' WHERE idsitio='".$arreglo[0]."'";
 					$result_update_perfil = pg_exec($con, $sql_update);	
-					
+						
 					if(!$result_update_logo){
-					?>
-        				<script type="text/javascript" language="javascript">
-							alert("ERROR: No se pudo guardar la imagen del logotipo del sitio");
+						?>
+   	    				<script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono");
 							location.href="listadositios.php";
 						</script>
-			       	<?php	
+		       			<?php	
 				    }	
 					if(!$result_update_perfil){
-					?>
-        				<script type="text/javascript" language="javascript">
-							alert("ERROR: No se pudo guardar la imagen de perfil del sitio");
+						?>
+       					<script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
 							location.href="listadositios.php";
 						</script>
-			       	<?php	
-				    }						
-					?>
-		       		<script type="text/javascript" language="javascript">
-						//alert("¡¡¡ Sitio agregado satisfactoriamente !!!");
+			       		<?php	
+				    }
 						
-						/*
-						OOOJOOOOOOOOOOOOOOO
-						Aqui se tiene que verificar si es HOSPEDAJE o GASTRONOMIA para redireccionar a cada pagina, mandandole el ID
-						del sitio por get: $_GET["id"], algo como listadositios.php?id=valor_del_id
-						Y si no es ninguna de esas 2 simplemente redirecciona a "listadositios.php"
-						*/
-					</script>
-					<?php	
-				    /*Se consulta el ID de la categoria HOSPEDAJE*/
+					/*--------------------------------------------------------------------------------------------------------------
+					*
+						Para saber si el sitio creado es de la categoría padre HOSPEDAJE, GASTRONOMÍA o ninguna de ellas
+						para redireccionar a diversas páginas según sea el caso
+					*
+					--------------------------------------------------------------------------------------------------------------*/
 					$con = conectarse();
-					
-					/*Se selecciona el ultimo id asignado a sitio*/
+				
+					/*Se selecciona el ultimo id asignado al sitio recien creado*/
 					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
 					$result_select = pg_exec($con, $sql_select);
-					$arreglo = pg_fetch_array($result_select,0);
-					
-					$sql_hospedaje = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND c.nombre='Hospedaje'";					
-					$res_sql_hospedaje = pg_exec($con, $sql_hospedaje);
-					
-					//Si la consulta trae filas
-					if(pg_num_rows($res_sql_hospedaje)>0){
+					$sitio = pg_fetch_array($result_select,0);
 						
-						/*Se recorren las subcategorias de HOSPEDAJE a ver si la que está seleccionada en el combo es una de ellas*/
-						for($i=0; $i<pg_num_rows($res_sql_hospedaje); $i++){
-							$subcategoriaDeHospedaje = pg_fetch_array($res_sql_hospedaje,$i);
-							$id = $subcategoriaDeHospedaje[3];
-							
-							//Si efectivamente está seleccionada una SUBCATEGORIA de HOSPEDAJE, se redirecciona
-							if($subcategoriaDeHospedaje[3] == $_POST["HidSubCategoria"]){
-								?>
-		        				<script type="text/javascript" language="javascript">
-									alert("¡¡¡ Sitio agregado satisfactoriamente !!!");
-									location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $arreglo[0];?>;
-								</script>
-					       		<?php	
-							}
+					/*Se busca la categoria padre*/
+					$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"] .";";					
+					$res_sql_categoria = pg_exec($con, $sql_categoria);
+					
+					if(pg_num_rows($res_sql_categoria)!=0){
+					
+						$categoria = pg_fetch_array($res_sql_categoria,0);
+						$nombreCategoria = $categoria[1];
+						
+						?>
+		        		<script type="text/javascript" language="javascript">
+							alert("¡¡¡ Sitio agregado satisfactoriamente !!!\n\n    A continuación complete más información relacionada con el sitio que acaba de crear");
+						</script>
+					    <?php
+						
+						if($nombreCategoria=='Hospedaje'){
+							?>
+		        			<script type="text/javascript" language="javascript">
+								location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $sitio[0];?>;
+							</script>
+					       	<?php
 						}
-					}
-							
-					/*Se consulta el ID de la categoria GASTRONOMIA
-					$sql_gastronomia = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND c.nombre='Gastronomía'";
-					$res_sql_gastronomia = pg_exec($con, $sql_gastronomia);	
-					
-
-					$idSubcategoriaDeGastronomia = $res_sql_gastronomia[3];
-					
-					if($_POST["HidSubCategoria"]==$idHospedaje){
-					
-					}*/					
-					
-				}//end else						
+						else if($nombreCategoria=='Gastronomía'){
+							?>
+		        			<script type="text/javascript" language="javascript">
+								location.href = "../administracion/creargastronomia.php?idSitio="+<?php echo $sitio[0];?>;
+							</script>
+					       	<?php
+						}
+						else{
+							?>
+		        			<script type="text/javascript" language="javascript">
+								location.href = "../administracion/listadositios.php";
+							</script>
+					       	<?php
+						}
+					}//end if																
+				}//end else	del if(!$result_insert)				
 			}//end if($yaExiste==0)
 		}//end if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1)
 		
@@ -280,7 +280,7 @@
 		else{
 		?>
 			<script type="text/javascript" language="javascript">
-				alert("ALERTA: Debe seleccionar el tipo de sitio a agregar y la ruta a la cual pertenece el mismo");
+				alert("¡¡¡ ALERTA !!! Los siguientes campos son obligatorios: \n\n- Tipo de sitio\n- Ruta a la que pertenece el sitio\n- Logotipo del sitio\n- Imagen de perfil del sitio\n\nPor favor verifique que suministró toda esa información y vuelva a intentarlo");
 			</script>
 		<?php
 		}		
@@ -432,7 +432,7 @@
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Imagen de Perfil</div>
                     <div class="linea_campo">
-                    	<input name="perfil" type="file" id="perfil" />
+                    	<input name="perfil" type="file" id="perfil"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">

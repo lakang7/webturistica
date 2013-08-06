@@ -114,13 +114,13 @@
             	<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" />
+                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45"/>
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Descripción</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="descripcion" name="descripcion" />
+                    	<input type="text" class="campo" id="descripcion" name="descripcion" maxlength="600"/>
                     </div>
                 </div>
             	<div class="linea_formulario">
@@ -129,8 +129,7 @@
 					</div>					
 				</div>
             </form>
-        </div>
-        
+        </div>        
     </div>
     <div class="pie"></div>
 </body>
