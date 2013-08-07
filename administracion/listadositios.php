@@ -53,7 +53,7 @@
                 <?php
 				//Consultando los sitios
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM sitio ORDER BY idsubcategoria;";
+			 	$sql_select = "SELECT * FROM sitio ORDER BY idsubcategoria, nombre;";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){

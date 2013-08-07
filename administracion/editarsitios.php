@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>EditarSitios</title>
+	<title>Editar Sitios</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -148,7 +148,7 @@
 		
 		//Si devuelve TRUE, se pudo ejecutar el update
 		else{
-			/*Si se modificó el logotipo de la empresa*/
+			/*Si cargó una nueva imagen*/
 			if($_FILES['logo']['name']!=""){
 				
 				/*Se sube la imagen a la ruta predefinida*/
@@ -157,7 +157,8 @@
 				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
 				$subir_logo->configurar($nombreImagen,"../imagenes/sitiosinteres/logotipos/",200,150);
 				$subir_logo->init($_FILES['logo']);
-				$destino_logo = $subir_logo->_dest.$subir_logo->_name;
+				//$destino_logo = $subir_logo->_dest.$subir_logo->_name;
+				$destino_logo = "imagenes/sitiosinteres/logotipos/".$subir_logo->_name;
 		
 				/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
 				$sql_update = "UPDATE sitio SET logo='".$destino_logo."' WHERE idsitio='".$_GET["id"]."'";
@@ -184,6 +185,7 @@
 				$subir_perfil->configurar($nombreImagen,"../imagenes/sitiosinteres/perfil/",200,150);
 				$subir_perfil->init($_FILES['perfil']);
 				$destino_perfil = $subir_perfil->_dest.$subir_perfil->_name;
+				$destino_perfil = "imagenes/sitiosinteres/perfil/".$subir_perfil->_name;
 		
 				/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
 				$sql_update = "UPDATE sitio SET imagen_perfil='".$destino_perfil."' WHERE idsitio='".$_GET["id"]."'";
@@ -199,13 +201,65 @@
 		    	    <?php
 				}
 			}//end files perfil name != ""
-			?>
-		    <script type="text/javascript" language="javascript">
-				alert("¡¡¡ Sitio editado satisfactoriamente !!!");
-				location.href="../administracion/listadositios.php";
-			</script>
-	    	<?php
+			
+			/*--------------------------------------------------------------------------------------------------------------
+			*
+				Para saber si el sitio creado es de la categoría padre HOSPEDAJE, GASTRONOMÍA o ninguna de ellas
+				para redireccionar a diversas páginas según sea el caso    $_GET["id"]
+			*
+			--------------------------------------------------------------------------------------------------------------*/
+			$con = conectarse();				
+			$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"].";";					
+			$res_sql_categoria = pg_exec($con, $sql_categoria);
 					
+			if(pg_num_rows($res_sql_categoria)!=0){
+				
+				$categoria = pg_fetch_array($res_sql_categoria,0);
+				$nombreCategoria = $categoria[1];				
+				?>
+        		<script type="text/javascript" language="javascript">
+					alert("¡¡¡ Sitio editado satisfactoriamente !!!\n\n    A continuación complete la información del mismo");
+				</script>
+			    <?php
+					
+				if($nombreCategoria=='Hospedaje'){
+					
+					/*Se selecciona el id del hospedaje asociado a este sitio*/
+					$sql_select = "SELECT * FROM hospedaje WHERE idsitio='".$_GET["id"]."';";
+					$result_select = pg_exec($con, $sql_select);
+					
+					$idHospedaje = -1;
+					if(pg_num_rows($result_select)>0){
+						$hospedaje = pg_fetch_array($result_select,0);
+						$idHospedaje = $hospedaje[0];
+					}
+					
+					$idSitio = $_GET["id"];
+					?>
+        			<script type="text/javascript" language="javascript">
+						location.href = "../administracion/editarhospedaje.php?idSitio="+<?php echo $idSitio;?>+"&idHospe="+<?php echo $idHospedaje;?>;	
+					</script>
+			       	<?php
+				}
+				else if($nombreCategoria=='Gastronomía'){
+					?>
+        			<script type="text/javascript" language="javascript">
+						// AQUI REDIRECCIONAR A EDITAR GASTRONOMIA
+						//location.href = "../administracion/editargastronomia.php?idSitio=";
+					</script>
+			       	<?php
+				}
+				else{
+					?>
+        			<script type="text/javascript" language="javascript">
+						//
+						//  OOOOJJJJOOOO AQUI REDIRECCIONAR A LA PAGINA DONDE SE EDITAN LAS FOTOS DEL SITIO
+						//
+						location.href = "../administracion/listadositios.php";
+					</script>
+			       	<?php
+				}
+			}//end if					
 		}//end else result update - end de consulta exitosa
 	}
 ?>
@@ -223,7 +277,7 @@
 		?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Editar Sitio de Interés</div>
+    	<div class="titulo_panel">Editar Sitio de Interés </div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadositios.php">Listar Sitios</a></div>
         	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsitio.php">Registrar Nuevo Sitio</a></div>
@@ -231,7 +285,7 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
 	  			<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Datos Básicos del Sitio -</div>                    
+                	<div class="linea_titulo_2">- Datos Básicos de <?php echo $arreglo[3]; ?> -</div>                    
                 </div>
 				<div class="linea_formulario_compartido">
         	       	<div class="linea_titulo_compartido">Tipo de Sitio (*)</div>

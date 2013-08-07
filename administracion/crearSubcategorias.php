@@ -109,7 +109,8 @@
 						$nombreImagen = $idSubcategoria."-".$_POST["nombre"];	
 						$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
 						$subir->init($_FILES['icono']);
-						$destino = $subir->_dest.$subir->_name;
+						//$destino = $subir->_dest.$subir->_name;
+						$destino = "imagenes/subcategorias/".$subir->_name;
 		
 						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 						$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";
@@ -214,7 +215,7 @@
             	<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre Subcategoría (*)</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" />
+                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45"/>
                     </div>
                 </div>
             	<div class="linea_formulario">

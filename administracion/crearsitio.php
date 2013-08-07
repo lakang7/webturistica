@@ -133,7 +133,7 @@
 	if(isset($_POST["Guardar"])){
 		
 		/*Se verifica que haya seleccionado una subcategoria y una ruta, y que haya seleccionado logotipo e imagen de perfil*/
-		if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1 && $_FILES['perfil']['name']!="" && $_FILES['logo']['name']!=""){
+		if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1 && $_FILES['perfil']['name']!=""/* && $_FILES['logo']['name']!=""*/){
 			
 			$con = conectarse();
 			
@@ -184,15 +184,18 @@
 					$arreglo = pg_fetch_array($result_select,0);
 				
 					/*Si SI se pudo, se sube el logo de la empresa a la carpeta respectiva*/
-					$subirLogo = new imgUpldr;
-					$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
-					$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
-					$subirLogo->init($_FILES['logo']);
-					$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
-					
-					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-					$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
-					$result_update_logo = pg_exec($con, $sql_update);
+					if($_FILES['logo']['name']!=""){
+						$subirLogo = new imgUpldr;
+						$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
+						$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
+						$subirLogo->init($_FILES['logo']);
+						//$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
+						$destinoLogo = "imagenes/sitios/logotipos/".$subir->_name;
+						
+						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+						$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
+						$result_update_logo = pg_exec($con, $sql_update);
+					}
 						
 					/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
 					$subirPerfil = new imgUpldr;
@@ -200,6 +203,7 @@
 					$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",1500,400);
 					$subirPerfil->init($_FILES['perfil']);
 					$destinoPerfil = $subirPerfil->_dest.$subirPerfil->_name;
+					$destinoPerfil = "imagenes/sitios/perfil/".$subir->_name;
 		
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE sitio SET imagen_perfil='".$destinoPerfil."' WHERE idsitio='".$arreglo[0]."'";
@@ -236,7 +240,7 @@
 					$sitio = pg_fetch_array($result_select,0);
 						
 					/*Se busca la categoria padre*/
-					$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"] .";";					
+					$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"].";";					
 					$res_sql_categoria = pg_exec($con, $sql_categoria);
 					
 					if(pg_num_rows($res_sql_categoria)!=0){

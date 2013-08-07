@@ -163,7 +163,7 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Sitios de Interés >> Crear Hospedaje</div>
+    	<div class="titulo_panel">Crear Sitios de Interés >> Hospedaje</div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
 				<a href="listadositios.php">Listar Sitios</a>

@@ -80,7 +80,8 @@
 				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
 				$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
 				$subir->init($_FILES['icono']);
-				$destino = $subir->_dest.$subir->_name;
+				//$destino = $subir->_dest.$subir->_name;
+				$destino = "imagenes/subcategorias/".$subir->_name;
 				
 				/*Se actualiza el registro para incluir la nueva ruta*/
 				$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$_GET["id"]."'";

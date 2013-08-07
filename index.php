@@ -79,7 +79,7 @@
 <div class="row-fluid" >
 	<?php
 		$con=conectarse();
-		$sql_select_subcate="select * from subcategoria";
+		$sql_select_subcate="select * from subcategoria order by nombre";
 		$resul_select_subcate=pg_exec($con,$sql_select_subcate);
 		for($i=0;$i<12;$i++){
 			$subcategoria=pg_fetch_array($resul_select_subcate,$i);
