@@ -95,6 +95,17 @@ body{
 	overflow-y:scroll;
 }
 
+.capa_tabla_fotos{
+	float:left;
+	width:860px;
+	/*height:400px;	*/
+	/*border-bottom:1px solid #CCC;*/
+	margin-left:10px;	
+	margin-top:10px;
+	font-family: 'Oswald', sans-serif;
+	/*overflow-y:scroll;*/
+}
+
 .estilo_tabla{
 	font-size:12px;	
 	width:100%;

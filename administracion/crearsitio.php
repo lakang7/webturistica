@@ -162,8 +162,9 @@
 						
 			/*Si por el contrario, no existe, se crea*/
 			if($yaExiste==0){
+				
 				/*Se inserta el nuevo registro*/			
-				$sql_insert = "INSERT INTO sitio VALUES(nextval('sitio_idsitio_seq'),".$_POST["HidSubCategoria"].",".$_POST["HidRuta"].",'".$_POST["nombre"]."','".$_POST["direccion"]."','".$_POST["tel1"]."','".$_POST["tel2"]."','".$_POST["correo"]."','".$_POST["resena"]."','".$_POST["facebook"]."','".$_POST["twitter"]."',null,'".$_POST["latitud"]."','".$_POST["longitud"]."',null);";
+				$sql_insert = "INSERT INTO sitio VALUES(nextval('sitio_idsitio_seq'),".$_POST["HidSubCategoria"].",".$_POST["HidRuta"].",'".$_POST["nombre"]."','".$_POST["direccion"]."','".$_POST["tel1"]."','".$_POST["tel2"]."','".$_POST["correo"]."','".$_POST["resena"]."','".$_POST["facebook"]."','".$_POST["twitter"]."',null,'".$_POST["latitud"]."','".$_POST["longitud"]."','');";
 				$result_insert = pg_exec($con,$sql_insert);
 				
 				//Si NO se pudo insertar en la tabla el nuevo registro
@@ -176,55 +177,69 @@
 			       	<?php	
 				}
 				//Si se insertó el nuevo sitio satisfactoriamente
-				else{	
-				
-					/*Se selecciona el ultimo id asignado a sitio*/
-					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
-					$result_select = pg_exec($con, $sql_select);
-					$arreglo = pg_fetch_array($result_select,0);
-				
-					/*Si SI se pudo, se sube el logo de la empresa a la carpeta respectiva*/
-					if($_FILES['logo']['name']!=""){
-						$subirLogo = new imgUpldr;
+				else{						
+					//Si seleccionó imagen de perfil
+					if($_FILES['perfil']['name']!=""){
+											
+						/*Se selecciona el ultimo id asignado a sitio*/
+						$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
+						$result_select = pg_exec($con, $sql_select);
+						$arreglo = pg_fetch_array($result_select,0);
+						
+						/*Si SI se pudo y hay logotipo, se sube el logo de la empresa a la carpeta respectiva*/
+						if($_FILES['logo']['name']!=""){
+							$subirLogo = new imgUpldr;
+							$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
+							$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
+							$subirLogo->init($_FILES['logo']);
+							//$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
+							$destinoLogo = "imagenes/sitios/logotipos/".$subirLogo->_name;
+							
+							/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+							$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
+							$result_update_logo = pg_exec($con, $sql_update);
+							
+							if(!$result_update_logo){
+							?>
+   			    				<script type="text/javascript" language="javascript">
+									alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono");
+									location.href="../administracion/listadositios.php";
+								</script>
+			       			<?php	
+						    }	
+						}//end if($_FILES['logo']['name']!="")
+						
+						/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
+						$subirPerfil = new imgUpldr;
 						$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
-						$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
-						$subirLogo->init($_FILES['logo']);
-						//$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
-						$destinoLogo = "imagenes/sitios/logotipos/".$subir->_name;
+						$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",1500,400);
+						$subirPerfil->init($_FILES['perfil']);
+						//$destinoPerfil = $subirPerfil->_dest.$subirPerfil->_name;
+						$destinoPerfil = "imagenes/sitios/perfil/".$subirPerfil->_name;
+			
+						/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
+						$sql_update = "UPDATE sitio SET imagen_perfil='".$destinoPerfil."' WHERE idsitio='".$arreglo[0]."'";
+						$result_update_perfil = pg_exec($con, $sql_update);	
 						
-						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-						$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
-						$result_update_logo = pg_exec($con, $sql_update);
-					}
-						
-					/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
-					$subirPerfil = new imgUpldr;
-					$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
-					$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",1500,400);
-					$subirPerfil->init($_FILES['perfil']);
-					$destinoPerfil = $subirPerfil->_dest.$subirPerfil->_name;
-					$destinoPerfil = "imagenes/sitios/perfil/".$subir->_name;
-		
-					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-					$sql_update = "UPDATE sitio SET imagen_perfil='".$destinoPerfil."' WHERE idsitio='".$arreglo[0]."'";
-					$result_update_perfil = pg_exec($con, $sql_update);	
-						
-					if(!$result_update_logo){
+						if(!$result_update_perfil){
+							?>
+       						<script type="text/javascript" language="javascript">
+								alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
+								location.href="../administracion/listadositios.php";
+							</script>
+			       			<?php	
+					    }
+					}//end if($_FILES['perfil']['name']!="")
+					
+					/*Si no seleccionó imagen de perfil*/
+					else{
 						?>
-   	    				<script type="text/javascript" language="javascript">
-							alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono");
-							location.href="listadositios.php";
+	        			<script type="text/javascript" language="javascript">
+							alert("¡¡¡ ALERTA !!!\n\nDebe seleccionar una imagen de perfil");
+							location.href="crearsitio.php";
 						</script>
-		       			<?php	
-				    }	
-					if(!$result_update_perfil){
-						?>
-       					<script type="text/javascript" language="javascript">
-							alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
-							location.href="listadositios.php";
-						</script>
-			       		<?php	
-				    }
+			    	   	<?php
+					}							
 						
 					/*--------------------------------------------------------------------------------------------------------------
 					*
@@ -271,7 +286,7 @@
 						else{
 							?>
 		        			<script type="text/javascript" language="javascript">
-								location.href = "../administracion/listadositios.php";
+								location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $sitio[0];?>;
 							</script>
 					       	<?php
 						}
@@ -282,11 +297,45 @@
 		
 		//Si las variables de SUBCATEGORIA y RUTA están en -1 es porque NO se ha seleccionado el combo
 		else{
-		?>
-			<script type="text/javascript" language="javascript">
-				alert("¡¡¡ ALERTA !!! Los siguientes campos son obligatorios: \n\n- Tipo de sitio\n- Ruta a la que pertenece el sitio\n- Logotipo del sitio\n- Imagen de perfil del sitio\n\nPor favor verifique que suministró toda esa información y vuelva a intentarlo");
+			?>
+			<script language="JavaScript" type="text/javascript">
+				var cont=1;
+				var txt = "¡¡¡ ALERTA !!!! Debe seleccionar...\n";
 			</script>
-		<?php
+			<?php
+			if($_POST["HidSubCategoria"]==-1){
+				?>
+				<script type="text/javascript" language="javascript">
+					txt += "\n"+cont+") Tipo de Sitio";
+					cont++;
+				</script>
+				<?php
+			}
+			
+			if($_POST["HidRuta"]==-1){
+				//$mensaje += " ruta";
+				?>
+				<script type="text/javascript" language="javascript">
+					txt += "\n"+cont+") Ruta a la que pertenece el sitio";
+					cont++;
+				</script>
+				<?php
+			}
+			
+			if($_FILES['perfil']['name']==""){
+				//$mensaje += " imagen de perfil";
+				?>
+				<script type="text/javascript" language="javascript">
+					txt += "\n"+cont+") Imagen de perfil";
+					cont++;
+				</script>
+				<?php
+			}
+			?>
+				<script type="text/javascript" language="javascript">
+					alert(txt);
+				</script>
+				<?php
 		}		
 	}
 ?>

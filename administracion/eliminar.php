@@ -1,12 +1,16 @@
 <?php session_start();
 	require("../recursos/funciones.php");
 	  
-	//------------------------------------------------------------------------------------------------------------------------------  
-	if($_GET["clave"]==1){ //Clave 1 indica que elimina CATEGORIA
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 1	-> ELIMINAR CATEGORIA
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
+	if($_GET["clave"]==1){ 
 	
 		 $con = conectarse();
 		 
-		 /*Se verifica que no existan SUBCATEGORIAS que dependan de la categoria que se desea eliminar*/
+		 /*PRIMERO Se verifica que no existan SUBCATEGORIAS que dependan de la categoria que se desea eliminar*/
 		 $sql_select = "SELECT count(*) FROM subcategoria WHERE idcategoria='".$_GET["id"]."'";
 		 $result_select = pg_exec($con,$sql_select);
 		 $tieneHijos = pg_fetch_array($result_select,0);
@@ -39,9 +43,12 @@
          <?php		 			 
 		 }
 	}
-	
-	//------------------------------------------------------------------------------------------------------------------------------
-	if($_GET["clave"]==2){ //Clave 2 indica que elimina SUBCATEGORIA
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 2	-> ELIMINAR SUBCATEGORIA
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
+	if($_GET["clave"]==2){
 	
 		 $con = conectarse();
 		 $idSub = $_GET["idSub"];
@@ -109,13 +116,16 @@
          	<?php
 		 }	 		 			 
 	}
-	
-	//------------------------------------------------------------------------------------------------------------------------------
-	if($_GET["clave"]==3){ //Clave 3 indica que elimina COMODIDAD
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 3	-> ELIMINAR COMODIDAD
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
+	if($_GET["clave"]==3){
 	
 		 $con = conectarse();
 		 
-		 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
+		 /*PRIMERO Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
 		 $sql_select = "SELECT count(*) FROM hospedaje_comodidad WHERE idcomodidad='".$_GET["id"]."'";
 		 $result_select = pg_exec($con,$sql_select);
 		 $tieneHijos = pg_fetch_array($result_select,0);
@@ -147,14 +157,17 @@
 			</script>
          <?php		 			 
 		 }
-	}
-	
-	//-----------------------------------------------------------------------------------------------------------------------------
-	if($_GET["clave"]==4){ //Clave 4 indica que elimina ESPECIALIDAD
+	}	
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 4	-> ELIMINAR ESPECIALIDAD
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
+	if($_GET["clave"]==4){ 
 	
 		 $con = conectarse();
 		 
-		 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
+		 /*PRIMERO Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
 		 $sql_select = "SELECT count(*) FROM gastronomia_especialidad WHERE idespecialidad='".$_GET["id"]."'";
 		 $result_select = pg_exec($con,$sql_select);
 		 $tieneHijos = pg_fetch_array($result_select,0);
@@ -188,9 +201,12 @@
          <?php		 			 
 		 }
 	}
-	
-	//------------------------------------------------------------------------------------------------------------------------------
-	if($_GET["clave"]==5){ //Clave 5 indica que elimina RUTA
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 5	-> ELIMINAR RUTA
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
+	if($_GET["clave"]==5){ 
 	
 		 $con = conectarse();
 		 
@@ -231,9 +247,12 @@
          <?php		 			 
 		 }
 	}
-
-	//------------------------------------------------------------------------------------------------------------------------------
-	if($_GET["clave"]==6){ //Clave 6 indica que elimina SITIO
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 6	-> ELIMINAR SITIO
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
+	if($_GET["clave"]==6){
 	
 		 $con = conectarse();
 		 
@@ -285,5 +304,10 @@
 			</script>
          <?php		 			 
 		 }
-	}
+	}//end CLAVE=6 ELIMINAR SITIO
+	/*------------------------------------------------------------------------------------------------------------------------------
+	*
+	*											Clave = 7	-> ELIMINAR FOTO DE GALERIA
+	*
+	------------------------------------------------------------------------------------------------------------------------------*/
 ?>

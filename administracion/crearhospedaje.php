@@ -150,7 +150,7 @@
 			?>
 			<script type="text/javascript" language="javascript">
 				alert("¡¡¡ Hospedaje agregado satisfactoriamente !!!");
-				location.href = "listadositios.php";
+				location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 			</script>
 			<?php
 		}//end else		
