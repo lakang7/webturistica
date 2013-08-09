@@ -218,11 +218,11 @@ body{
 	float:left;
 	width:860px;
 	height:25px;
-	text-align:right;
+	text-align:left;
 	/*border-bottom:1px solid #CCC;*/
 	font-size:16px;
 	line-height:25px;
-	color:#F00;	
+	color:#FF0000;
 	background:#DBDBDB;
 }
 

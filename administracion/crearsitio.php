@@ -164,7 +164,7 @@
 			if($yaExiste==0){
 				
 				/*Se inserta el nuevo registro*/			
-				$sql_insert = "INSERT INTO sitio VALUES(nextval('sitio_idsitio_seq'),".$_POST["HidSubCategoria"].",".$_POST["HidRuta"].",'".$_POST["nombre"]."','".$_POST["direccion"]."','".$_POST["tel1"]."','".$_POST["tel2"]."','".$_POST["correo"]."','".$_POST["resena"]."','".$_POST["facebook"]."','".$_POST["twitter"]."',null,'".$_POST["latitud"]."','".$_POST["longitud"]."','');";
+				$sql_insert = "INSERT INTO sitio VALUES(nextval('sitio_idsitio_seq'),".$_POST["HidSubCategoria"].",".$_POST["HidRuta"].",'".$_POST["nombre"]."','".$_POST["direccion"]."','".$_POST["tel1"]."','".$_POST["tel2"]."','".$_POST["correo"]."','".$_POST["resena"]."','".$_POST["facebook"]."','".$_POST["twitter"]."','".$_POST["latitud"]."','".$_POST["longitud"]."','');";
 				$result_insert = pg_exec($con,$sql_insert);
 				
 				//Si NO se pudo insertar en la tabla el nuevo registro
@@ -186,35 +186,11 @@
 						$result_select = pg_exec($con, $sql_select);
 						$arreglo = pg_fetch_array($result_select,0);
 						
-						/*Si SI se pudo y hay logotipo, se sube el logo de la empresa a la carpeta respectiva*/
-						if($_FILES['logo']['name']!=""){
-							$subirLogo = new imgUpldr;
-							$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
-							$subirLogo->configurar($nombreImagen, "../imagenes/sitios/logotipos/",591,591);
-							$subirLogo->init($_FILES['logo']);
-							//$destinoLogo = $subirLogo->_dest.$subirLogo->_name;
-							$destinoLogo = "imagenes/sitios/logotipos/".$subirLogo->_name;
-							
-							/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-							$sql_update = "UPDATE sitio SET logo='".$destinoLogo."' WHERE idsitio='".$arreglo[0]."'";
-							$result_update_logo = pg_exec($con, $sql_update);
-							
-							if(!$result_update_logo){
-							?>
-   			    				<script type="text/javascript" language="javascript">
-									alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono");
-									location.href="../administracion/listadositios.php";
-								</script>
-			       			<?php	
-						    }	
-						}//end if($_FILES['logo']['name']!="")
-						
 						/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
 						$subirPerfil = new imgUpldr;
 						$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
-						$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",1500,400);
+						$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",450,300);
 						$subirPerfil->init($_FILES['perfil']);
-						//$destinoPerfil = $subirPerfil->_dest.$subirPerfil->_name;
 						$destinoPerfil = "imagenes/sitios/perfil/".$subirPerfil->_name;
 			
 						/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
@@ -359,7 +335,7 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			   	<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Datos Básicos del Sitio -</div>                    
+                	<div class="linea_titulo_2">Datos Básicos del Sitio</div>                    
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Tipo de Sitio (*)</div>
@@ -477,17 +453,15 @@
                     <div class="linea_campo_compartido"></div>
                 </div>
 				<div class="linea_formulario">
-                	<div class="linea_titulo">Logotipo del sitio</div>
-                    <div class="linea_campo">
-                    	<input name="logo" type="file" id="logo" />
-                    </div>
+                	<div class="linea_titulo">Imagen de Perfil (*): <input name="perfil" type="file" id="perfil"/></div>
                 </div>
+				<div class="linea_formulario"></div>
 				<div class="linea_formulario">
-                	<div class="linea_titulo">Imagen de Perfil</div>
-                    <div class="linea_campo">
-                    	<input name="perfil" type="file" id="perfil"/>
-                    </div>
+                	<div class="linea_titulo_2">Datos de Ubicación del Sitio</div>                    
                 </div>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
+				<div id="map_canvas" style="width:70%; height:300px; margin-left:auto; margin-right:auto" align="center"></div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Latitud (*)</div>
                     <div class="linea_campo_compartido">
@@ -501,13 +475,9 @@
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido_rojo">Busque el sitio en el mapa y haga clic</div>
-                    <div class="linea_titulo_compartido_rojo">para seleccionar las coordenadas del mismo</div>
+                	<div class="linea_titulo_compartido_rojo">Busque el sitio en el mapa y haga clic en él</div>
+                    <div class="linea_titulo_compartido_rojo">para seleccionar las coordenadas del sitio</div>
                 </div>
-				<div class="linea_formulario"></div>
-				<div class="linea_formulario"></div>
-				<div id="map_canvas" style="width:70%; height:300px; margin-left:auto; margin-right:auto" align="center"></div>
-				
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
             	<div class="linea_formulario">

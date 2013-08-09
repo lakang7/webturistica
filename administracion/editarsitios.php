@@ -73,7 +73,7 @@
 			else if(bandera==2 && valor == -1){
 				document.all('HidRuta').value = -1;
 			}
-			var txt = "HidSubcategoria="+document.all('HidSubCategoria').value+" yyyyy HidRuta="+document.all('HidRuta').value;
+			//var txt = "HidSubcategoria="+document.all('HidSubCategoria').value+" yyyyy HidRuta="+document.all('HidRuta').value;
 			//alert(txt);
 		}
 		/*********************************************************************************************
@@ -148,33 +148,6 @@
 		
 		//Si devuelve TRUE, se pudo ejecutar el update
 		else{
-			/*Si cargó una nueva imagen*/
-			if($_FILES['logo']['name']!=""){
-				
-				/*Se sube la imagen a la ruta predefinida*/
-				$subir_logo = new imgUpldr;					
-				//Se prepara el nombre con que se guardará la imagen
-				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
-				$subir_logo->configurar($nombreImagen,"../imagenes/sitiosinteres/logotipos/",200,150);
-				$subir_logo->init($_FILES['logo']);
-				//$destino_logo = $subir_logo->_dest.$subir_logo->_name;
-				$destino_logo = "imagenes/sitiosinteres/logotipos/".$subir_logo->_name;
-		
-				/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
-				$sql_update = "UPDATE sitio SET logo='".$destino_logo."' WHERE idsitio='".$_GET["id"]."'";
-				$result_update = pg_exec($con, $sql_update);	
-				
-				//Si el query devuelve FALSE, ocurrió un error
-				if(!$result_update){
-					?>
-		        	<script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono");
-						//location.href="../administracion/listadositios.php";
-					</script>
-		    	    <?php
-				}						
-			}//end files logo name != ""
-			
 			/*Si se modificó la imagen de perfil*/
 			if($_FILES['perfil']['name']!=""){
 				
@@ -182,10 +155,10 @@
 				$subir_perfil = new imgUpldr;	
 				//Se prepara el nombre con que se guardará la imagen
 				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
-				$subir_perfil->configurar($nombreImagen,"../imagenes/sitiosinteres/perfil/",200,150);
+				$subir_perfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",450,300);
 				$subir_perfil->init($_FILES['perfil']);
 				$destino_perfil = $subir_perfil->_dest.$subir_perfil->_name;
-				$destino_perfil = "imagenes/sitiosinteres/perfil/".$subir_perfil->_name;
+				$destino_perfil = "imagenes/sitios/perfil/".$subir_perfil->_name;
 		
 				/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
 				$sql_update = "UPDATE sitio SET imagen_perfil='".$destino_perfil."' WHERE idsitio='".$_GET["id"]."'";
@@ -196,7 +169,6 @@
 					?>
 		        	<script type="text/javascript" language="javascript">
 						alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
-						//location.href="../administracion/listadositios.php";
 					</script>
 		    	    <?php
 				}
@@ -224,7 +196,10 @@
 					
 				if($nombreCategoria=='Hospedaje'){
 					
-					/*Se selecciona el id del hospedaje asociado a este sitio*/
+					/*---------------------------------------------------------------------------------------------------------
+								Se prepara la variable idHospe a enviar, para que envíe -1 en caso de que no haya
+					  			en HOSPEDAJE registros asociados a este sitio
+					 ---------------------------------------------------------------------------------------------------------*/
 					$sql_select = "SELECT * FROM hospedaje WHERE idsitio='".$_GET["id"]."';";
 					$result_select = pg_exec($con, $sql_select);
 					
@@ -242,20 +217,27 @@
 			       	<?php
 				}
 				else if($nombreCategoria=='Gastronomía'){
+					/*Se selecciona el id del hospedaje asociado a este sitio*/
+					$sql_select = "SELECT * FROM gastronomia WHERE idsitio='".$_GET["id"]."';";
+					$result_select = pg_exec($con, $sql_select);
+					
+					$idGastronomia = -1;
+					if(pg_num_rows($result_select)>0){
+						$gastronomia = pg_fetch_array($result_select,0);
+						$idGastronomia = $gastronomia[0];
+					}
+					
+					$idSitio = $_GET["id"];
 					?>
         			<script type="text/javascript" language="javascript">
-						// AQUI REDIRECCIONAR A EDITAR GASTRONOMIA
-						//location.href = "../administracion/editargastronomia.php?idSitio=";
+						location.href = "../administracion/editargastronomia.php?idSitio="+<?php echo $idSitio;?>+"&idGastro="+<?php echo $idGastronomia;?>;
 					</script>
 			       	<?php
 				}
 				else{
 					?>
         			<script type="text/javascript" language="javascript">
-						//
-						//  OOOOJJJJOOOO AQUI REDIRECCIONAR A LA PAGINA DONDE SE EDITAN LAS FOTOS DEL SITIO
-						//
-						location.href = "../administracion/listadositios.php";
+						location.href = "../administracion/creargaleria.php?idSitio="+<?php echo $idSitio;?>;
 					</script>
 			       	<?php
 				}
@@ -285,7 +267,7 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
 	  			<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Datos Básicos de <?php echo $arreglo[3]; ?> -</div>                    
+                	<div class="linea_titulo_2">- Datos Básicos del Sitio -</div>                    
                 </div>
 				<div class="linea_formulario_compartido">
         	       	<div class="linea_titulo_compartido">Tipo de Sitio (*)</div>
@@ -425,36 +407,31 @@
                     </div>
                 </div>
 				<div class="linea_formulario">
-                	<div class="linea_titulo">Logotipo del sitio</div>
-                    <div class="linea_campo">
-                    	<input type="file" name="logo" id="logo" value="<? echo $arreglo[11]; ?>"/>
-                    </div>
+                	<div class="linea_titulo">Imagen de Perfil (*): <input name="perfil" type="file" id="perfil"/></div>
                 </div>
+				<div class="linea_formulario"></div>
 				<div class="linea_formulario">
-                	<div class="linea_titulo">Imagen de Perfil</div>
-                    <div class="linea_campo">
-                    	<input type="file" name="perfil" id="perfil" value="<? echo $arreglo[14]; ?>" title="<? echo $arreglo[11]; ?>"/>
-                    </div>
+                	<div class="linea_titulo_2">- Datos de Ubicación del Sitio -</div>                    
                 </div>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
+				<div id="map_canvas" style="width:70%; height:300px; margin-left:auto; margin-right:auto" align="center"></div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Latitud (*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" maxlength="200" value="<? echo $arreglo[12]; ?>" />
+                    	<input type="text" class="campo_compartido" id="latitud" name="latitud" maxlength="200" value="<? echo $arreglo[11]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Longitud (*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" maxlength="200" value="<? echo $arreglo[13]; ?>" />
+                    	<input type="text" class="campo_compartido" id="longitud" name="longitud" maxlength="200" value="<? echo $arreglo[12]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido_rojo" style="text-align:center">Busque el sitio en el mapa y haga clic</div>
-                    <div class="linea_titulo_compartido_rojo" style="text-align:center">para seleccionar las coordenadas del mismo</div>
+                	<div class="linea_titulo_compartido_rojo">Busque el sitio en el mapa y haga clic en él</div>
+                    <div class="linea_titulo_compartido_rojo">para seleccionar las coordenadas del sitio</div>
                 </div>
-				<div class="linea_formulario"></div>
-				<div class="linea_formulario"></div>
-				<div id="map_canvas" style="width:70%; height:300px; margin-left:auto; margin-right:auto" align="center"></div>
 				
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>

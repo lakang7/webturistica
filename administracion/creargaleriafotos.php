@@ -39,7 +39,7 @@
 				return false; 
 		    } 
 			else { 
-				document.location=url; 
+				document.location = url; 
 				return true; 
 			} 
 		} 
@@ -64,6 +64,10 @@
 			
 			if(pg_num_rows($result_select)<15){
 				$hoy = date("Y-m-d");
+				
+				/*-------------------------------------------------------------------------------------------------------------------
+				*										PARA INSERTAR LA FOTO EN TAMAÑO GRANDE
+				-------------------------------------------------------------------------------------------------------------------*/
 				$sql_insert = "INSERT INTO foto_sitio VALUES(nextval('foto_sitio_idfoto_sitio_seq'),'".$_GET["idSitio"]."','".$hoy."','');";
 				$result_insert = pg_exec($con,$sql_insert);	
 				
@@ -87,17 +91,17 @@
 					$result_select = pg_exec($con, $sql_select);
 					$arreglo = pg_fetch_array($result_select,0);
 					
-					/*Se prepara la fotografía*/
+					/*Se prepara la fotografía en tamaño GRANDE*/
 					$subir = new imgUpldr;
-					$nombreImagen = $_GET["idSitio"]."-".$arreglo[0]."-".$nombreSitio;
-					$subir->configurar($nombreImagen, "../imagenes/sitios/galeria/",591,591);
+					$nombreImagenGrande = $nombreSitio."_".$arreglo[0]."_Grande";
+					$subir->configurar($nombreImagenGrande, "../imagenes/sitios/galeria/",1024,768);
 					$subir->init($_FILES['foto']);			
 					$destino = "imagenes/sitios/galeria/".$subir->_name;
 				
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE foto_sitio SET foto='".$destino."' WHERE idfoto_sitio='".$arreglo[0]."'";
 					$result_update = pg_exec($con, $sql_update);
-						
+					
 					if(!$result_update){
 						?>
    					    <script type="text/javascript" language="javascript">
@@ -106,22 +110,75 @@
 						</script>
 				       	<?php	
 					}	
+					
 					?><script type="text/javascript" language="javascript">
 						alert("Fotografía almacenada exitosamente");
 						location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 					</script><?php
+				}				
+				/*-------------------------------------------------------------------------------------------------------------------
+				*										PARA INSERTAR LA FOTO EN TAMAÑO PEQUEÑO
+				-------------------------------------------------------------------------------------------------------------------*/
+				$sql_insert = "INSERT INTO foto_sitio VALUES(nextval('foto_sitio_idfoto_sitio_seq'),'".$_GET["idSitio"]."','".$hoy."','');";
+				$result_insert = pg_exec($con,$sql_insert);	
+				
+				//Si NO se pudo insertar en la tabla el nuevo registro
+				if(!$result_insert){
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! No se pudo guardar la foto en la galería");
+						location.href="../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
+					</script><?php	
 				}
+				//Si se insertó el nuevo sitio satisfactoriamente
+				else{				
+					/*Se consulta el NOMBRE del sitio*/
+					$sql_select_sitio = "SELECT * FROM sitio WHERE idsitio=".$_GET["idSitio"].";";
+					$result_select_sitio = pg_exec($con, $sql_select_sitio);
+					$sitio = pg_fetch_array($result_select_sitio,0);
+					$nombreSitio = $sitio[3];		
+			
+					/*Se selecciona el ultimo id asignado a foto_sitio*/
+					$sql_select = "SELECT last_value FROM foto_sitio_idfoto_sitio_seq";
+					$result_select = pg_exec($con, $sql_select);
+					$arreglo = pg_fetch_array($result_select,0);
+					$id_foto_sitio = $arreglo[0];
+					
+					/*Se prepara la fotografía en tamaño PEQUEÑO*/
+					$subir = new imgUpldr;
+					$nombreImagenPeque = $nombreSitio."_".$id_foto_sitio."_Peque";
+					$subir->configurar($nombreImagenPeque, "../imagenes/sitios/galeria/",200,150);
+					$subir->init($_FILES['foto']);			
+					$destino = "imagenes/sitios/galeria/".$subir->_name;
+				
+					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+					$sql_update = "UPDATE foto_sitio SET foto='".$destino."' WHERE idfoto_sitio='".$id_foto_sitio."'";
+					$result_update = pg_exec($con, $sql_update);
+					
+					if(!$result_update){
+						?>
+   					    <script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo insertar la imagen");
+							location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
+						</script>
+				       	<?php	
+					}	
+					
+					?><script type="text/javascript" language="javascript">
+						alert("Fotografía almacenada exitosamente");
+						location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
+					</script><?php
+				}				
 			}//end pg_num_rows($result_select)<15
 			else{
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ ALERTA !!!\n\nEstimado usuario, solo puede guardar quince (15) fotografías en la galería de cada sitio. Le invitamos a eliminar fotografías para liberar el espacio de la galería de este sitio.");
+					alert("¡¡¡ ALERTA !!!\n\nEstimado usuario, solo puede guardar quince (15) fotografías en la galería de cada sitio. Le invitamos a eliminar fotografías para liberar el espacio de la galería y así poder agregar otras.");
 				</script><?php
 			}
 		}//end if($_FILES['foto']['name']!="")
 		
 		if($_FILES['foto']['name']==""){
 			?><script type="text/javascript" language="javascript">
-				alert("Debe seleccionar una foto");
+				alert("¡¡¡ ALERTA !!! Debe seleccionar una foto");
 			</script><?php
 		}
 	}//end isset($_POST["Agregar"] (Botón AGREGAR A GALERÍA)
@@ -155,7 +212,7 @@
 		?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Galería de fotos de <?php echo $nombreSitio; ?></div>
+    	<div class="titulo_panel">Galería de fotos de <?php echo $nombreSitio; ?></div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
 				<a href="listadositios.php">Listar Sitios</a>
@@ -175,23 +232,37 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			   	<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Seleccione la fotografía y luego haga clic en [AGREGAR A GALERIA], repita el proceso tantas veces como fotos desee agregar. Para finalizar la galería haga clic en [FINALIZAR GALERIA] </div>
+        	       	<div class="linea_titulo_rojo">Realice los siguientes pasos:</div>
+				</div>
+				<div class="linea_formulario">
+					<div class="linea_titulo">- PASO 1: Seleccione la fotografía deseada haciendo clic en "Seleccionar archivo"</div>
+				</div>
+				<div class="linea_formulario">
+					<div class="linea_titulo">- PASO 2: Una vez cargada la foto, haga clic en "Agregar foto a galería"</div>
+				</div>
+				<div class="linea_formulario">
+					<div class="linea_titulo">- PASO 3: Repita pasos 1 y 2 tantas veces como fotos desee agregar</div>
+				</div>
+				<div class="linea_formulario">
+					<div class="linea_titulo">- PASO 4: Para finalizar, haga clic en "Finalizar galería"</div>
+				</div>
+				<div class="linea_formulario">
 					<div class="linea_titulo"></div>
 				</div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido"><input name="foto" type="file" id="foto" /></div>
+                	<div class="linea_titulo_compartido"><input name="foto" type="file" id="foto"/></div>
                 </div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido"></div>
                 </div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido"><input type="submit" value="Agregar a galería" name="Agregar" style="font-size:12px;" align="left"/></div>
+                	<div class="linea_titulo_compartido"><input type="submit" value="Agregar foto a galería" name="Agregar" style="font-size:12px;" align="left"/></div>
                 </div>							
 				<div class="linea_formulario">
                     <div class="linea_campo"></div>
                 </div>	
 				<div class="linea_formulario">
-                	<div class="linea_titulo_2">-  Fotografías que conforman la galería  -</div>                    
+                	<div class="linea_titulo_2">Fotografías que conforman la galería</div>                    
                 </div>
 				<div class="capa_tabla_fotos">
 		        	<table border="1" class="estilo_tabla" id="highlight-table">
@@ -216,16 +287,17 @@
     	                		</tr>
 								<?php
 								for($i=0;$i<pg_num_rows($result_select);$i++){
-								    $foto_sitio = pg_fetch_array($result_select,$i);	
+								    $foto_sitio = pg_fetch_array($result_select,$i);
+									$idFotoSitio = $foto_sitio[0];
 									?>
 									<tr class="row-<?php echo $i+1; ?>" align="center">
 										<td><?php echo $i+1; ?></td>
 										<td><?php echo $foto_sitio[2]; ?></td>
 										<td><?php echo $foto_sitio[3]; ?></td>
-										<td title="Ver" style="cursor:pointer;" width="20">
+										<td title="Ver foto <?php echo $i+1; ?>" style="cursor:pointer;" width="20">
 											<a href="" ><img src="../imagenes/ver.png" width="16" height="16" /></a></td>
-										<td title="Eliminar <?php echo $categoria[1]; ?>" style="cursor:pointer;" width="20">
-											<a href="javascript:;" onClick="confirmar('eliminar.php?clave=7&idSitio=<?php echo $_GET["idSitio"];?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a></td>
+										<td title="Eliminar foto <?php echo $i+1; ?>" style="cursor:pointer;" width="20">
+											<a href="javascript:;" onClick="confirmar('eliminar.php?clave=7&id=<?php echo $idFotoSitio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a></td>
 									</tr>					    
 									<?php
 		        	        	}		

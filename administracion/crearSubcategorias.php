@@ -109,7 +109,6 @@
 						$nombreImagen = $idSubcategoria."-".$_POST["nombre"];	
 						$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
 						$subir->init($_FILES['icono']);
-						//$destino = $subir->_dest.$subir->_name;
 						$destino = "imagenes/subcategorias/".$subir->_name;
 		
 						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/

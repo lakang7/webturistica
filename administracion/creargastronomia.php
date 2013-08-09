@@ -1,5 +1,7 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
+	  
+	  //Variables recibidas en esta pág: $_GET["idSitio"]
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -34,7 +36,6 @@
 		*
 		**********************************************************************************************/
 		function validarCampo(formulario) {
-        	//obteniendo el valor que se puso en el campo texto del formulario
         	campoPromComida = formulario.promedio_comida.value;
 			campoPromServicio = formulario.promedio_servicio.value;
 			campoPromAmbiente = formulario.promedio_ambiente.value;
@@ -150,7 +151,7 @@
 			?>
 			<script type="text/javascript" language="javascript">
 				alert("¡¡¡ Sitio de gastronomía agregado satisfactoriamente !!!");
-				location.href = "listadositios.php";
+				location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 			</script>
 			<?php
 		}//end else		
@@ -183,7 +184,7 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			   	<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Evaluación de "<?php echo $nombreSitio; ?>" -</div>                    
+                	<div class="linea_titulo_2">Evaluación de "<?php echo $nombreSitio; ?>"</div>                    
                 </div>
 				<div class="linea_formulario">
         	       	<div class="linea_titulo_rojo">Indique los promedios de "<?php echo $nombreSitio; ?>" en cuanto a comida, servicio, ambiente, higiene y precio. Valores entre 1 y 100: (Ejemplo: Promedio de Servicio = 95)</div>
@@ -223,7 +224,7 @@
                     <div class="linea_campo"></div>
                 </div>							
 				<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Especialidades gastronómicas en "<?php echo $nombreSitio; ?>" -</div>                    
+                	<div class="linea_titulo_2">Especialidades gastronómicas</div>                    
                 </div>	
 				<div class="linea_formulario">
         	       	<div class="linea_titulo_rojo">Seleccione las especialidades gastronómicas que ofrece "<?php echo $nombreSitio; ?>"</div>
@@ -234,12 +235,7 @@
 				$con = conectarse();		
 				$sql_select_especialidad = "SELECT * FROM especialidad ORDER BY nombre";
 				$result_select_especialidad = pg_exec($con, $sql_select_especialidad);	
-				
-				/*$sql_select_cantidad = "SELECT count(*) FROM especialidad";
-				$result_cantidad = pg_exec($con, $sql_select_cantidad);
-				$total = pg_fetch_array($result_cantidad,0);
-				$cantidad_especialidad = $total[0];*/
-									
+
 				/*Si existen, se construye una lista con todas*/						
 				if(pg_num_rows($result_select_especialidad)>0){
 				?>

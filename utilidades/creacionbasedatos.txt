@@ -41,7 +41,6 @@ create table sitio(
    resena VARCHAR(2000),
    pagfacebook VARCHAR(200),
    pagtwitter VARCHAR(200),
-   logo VARCHAR(200),
    latitud VARCHAR(200) NOT NULL,
    longitud VARCHAR(200) NOT NULL,
    imagen_perfil VARCHAR(200) NOT NULL,
@@ -186,6 +185,7 @@ create table sitio_medio_pago(
    CONSTRAINT fk_medio_pago FOREIGN KEY (idmedio_pago) REFERENCES medio_pago (idmedio_pago)
 );
 
+-------------------------------------------------------------CATEGORIAS-------------------------------------------------------------
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Hospedaje',2);
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Gastronomia',2);
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Recreación',4);
@@ -195,43 +195,29 @@ INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Salud',3);
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Dinero',2);
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Estaciones de Servicio',1);
 
+-----------------------------------------------------------SUBCATEGORIAS-------------------------------------------------------------
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),1,'Hoteles','imagenes/subcategorias/hoteles.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),1,'Posadas','imagenes/subcategorias/posadas.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),2,'Restaurantes','imagenes/subcategorias/restaurantes.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),2,'Cafeterias','imagenes/subcategorias/panaderias.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Aldeas','imagenes/subcategorias/aldeas.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Plazas','imagenes/subcategorias/plazas.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Parques','imagenes/subcategorias/parques.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),3,'Discos y Bares','imagenes/subcategorias/discos.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Iglesias','imagenes/subcategorias/iglesias.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Monasterios','imagenes/subcategorias/monasterios.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Santuarios','imagenes/subcategorias/santuarios.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),4,'Capillas','imagenes/subcategorias/capillas.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),5,'Museos','imagenes/subcategorias/museos.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),5,'Paseos Artesanales','imagenes/subcategorias/paseoartesanal.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),6,'Hospitales','imagenes/subcategorias/hospitales.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),6,'Clinicas','imagenes/subcategorias/clinicas.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),6,'Centros Asistenciales','imagenes/subcategorias/centrosasistenciales.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),7,'Bancos','imagenes/subcategorias/bancos.png');
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),7,'Cajeros Automaticos','imagenes/subcategorias/cajeros.png');
-
 INSERT INTO subcategoria values(nextval('subcategoria_idsubcategoria_seq'),8,'Gasolineras','imagenes/subcategorias/gasolineras.png');
 
-create table comodidad(
-   idcomodidad SERIAL,
-   nombre VARCHAR(45) NOT NULL,
-   posX INTEGER NOT NULL,  
-   posY INTEGER NOT NULL,  
-   CONSTRAINT pk_comodidad PRIMARY KEY (idcomodidad)   
-);
-
---Insertando COMODIDADES
+-----------------------------------------------------------COMODIDADES-------------------------------------------------------------
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Acceso Minusválidos',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Sala de Reuniones',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Desayuno',1,1);
@@ -259,9 +245,9 @@ INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Piscina Cubie
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Guardería',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'SPA',1,1);
 INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Servicio Maletero',1,1);
-INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Estacionamiento de Autobús',1,1);
+INSERT INTO comodidad VALUES(nextval('comodidad_idcomodidad_seq'),'Estacionam. de Bus',1,1);
 
---Insertando ESPECIALIDADES
+-----------------------------------------------------------ESPECIALIDADES-------------------------------------------------------------
 INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Americana','');
 INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Árabe','');
 INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Asiática','');
@@ -307,3 +293,30 @@ INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Sopa
 INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Thai','');
 INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Venezolana','');
 INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'Vinos y Tapas','');
+
+-----------------------------------------------------------TIPO DE HABITACION-------------------------------------------------------------
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Individual',1);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Doble',2);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Triple',3);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Junior Suites',1);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Suites',2);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Suite nupcial',2);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Con cama supletoria',3);
+INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'Suite Presidencial',4);
+
+-----------------------------------------------------------SERVICIOS-------------------------------------------------------------
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'WI-FI');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Estacionamiento');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Bar');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Coctelería');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Menú del día');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Menú para grupos');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Platos para celíacos');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Platos para diabéticos');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Platos para vegetarianos');
+INSERT INTO servicio VALUES(nextval('servicio_idservicio_seq'),'Servicio con camareros');
+
+
+
+
+

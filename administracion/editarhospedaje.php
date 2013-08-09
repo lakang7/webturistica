@@ -1,12 +1,14 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
 	  include_once("../recursos/class_imgUpldr.php");
+	  
+	  //Variables recibidas en esta pág: $_GET["idHospe"] y $_GET["idSitio"]
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Editar hospedaje</title>
+	<title>Editar Hospedaje</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -95,9 +97,17 @@
 			Funcion para guardar en variables ocultas, los checked que están seleccionados
 		*
 		**********************************************************************************************/
-		function guardarChecked(elementoCheck) {
+		function guardarChecked(elementoCheck,bandera) {
 			
-			var variableOculta = "Hid"+elementoCheck;
+			/*Si bandera es 1, se está llamando para pintar las comodidades*/
+			if(bandera==1){
+				var variableOculta = "Hid"+elementoCheck;
+			}
+			/*Si bandera es 2, se está llamando para pintar los check de los tipos de habitación*/
+			else if(bandera==2){
+				var variableOculta = "Tipo"+elementoCheck;
+			}
+			
 			if(document.all(variableOculta).value == -1){				
 				document.all(variableOculta).value = elementoCheck;	
 			}
@@ -124,13 +134,9 @@
 			Sino, hay que crear el registro desde cero
 		--------------------------------------------------------------------------------------------------------------------*/
 		if($_GET["idHospe"]!=-1){
-			//Se prepara el query de update
 			$sql_update = "UPDATE hospedaje SET promedio_servicio='".$_POST["promedio_servicio"]."', promedio_ubicacion='".$_POST["promedio_ubicacion"]."', promedio_limpieza='".$_POST["promedio_limpieza"]."', promedio_personal='".$_POST["promedio_personal"]."', promedio_precio='".$_POST["promedio_precio"]."', promedio='".$promedio_general."' WHERE idhospedaje='".$_GET["idHospe"]."' AND idsitio='".$_GET["idSitio"]."';";
-		
-			//Se ejecuta el update
 			$result_update = pg_exec($con,$sql_update);
 			
-			//Si devuelve FALSE, ocurrió un error que no permitió que se ejecutara el update
 			if(!$result_update){
 				?><script type="text/javascript" language="javascript">
 					alert("¡¡¡ ERROR !!! \n     No se pudieron modificar los promedios del hospedaje");
@@ -138,73 +144,28 @@
 				</script><?php
 			}
 			
-			//Si devuelve TRUE, se pudo ejecutar el UPDATE
-			else{	
+			//Si ya existen registros en hospedaje_comodidad y hospedaje_tipo_habitacion asociados a ESE sitio, se eliminan
+			$sql_delete = "DELETE FROM hospedaje_comodidad WHERE idhospedaje=".$_GET["idHospe"];
+			$result_delete = pg_exec($con,$sql_delete);
+						
+			$sql_delete_2 = "DELETE FROM hospedaje_tipo_habitacion WHERE idhospedaje=".$_GET["idHospe"];
+			$result_delete_2 = pg_exec($con,$sql_delete_2);
 			
-				/*-------------------------------------------------------------------------------------------------------------------
-					Se consulta la tabla hospedaje_comodidad para PRIMERO ELIMINAR cualquier registro que haya relacionado con
-					especialidades asociadas a ESTE sitio, pues al editar un sitio, puede o AGREGAR o QUITAR comodidades 
-					entonces es mejor eliminarlas todas primero y luego si agregarlas de nuevo
-				-------------------------------------------------------------------------------------------------------------------*/
-				
-				//Si ya existen registros en hospedaje_comodidad asociados a ESE sitio, se eliminan
-				if($_GET["idHospe"]!=-1){
-					$con = conectarse();
-					$sql_delete = "DELETE FROM hospedaje_comodidad WHERE idhospedaje=".$_GET["idHospe"];
-					$result_delete = pg_exec($con,$sql_delete);
-				}
-					
-				/*Se consultan las comodidades*/
-				$sql_select_comodidad = "SELECT * FROM comodidad";
-				$result_select_comodidad = pg_exec($con, $sql_select_comodidad);
-				
-				/*Si existen, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
-				if(pg_num_rows($result_select_comodidad)>0){
-					for($i=0; $i<pg_num_rows($result_select_comodidad); $i++){
-						$comodidad = pg_fetch_array($result_select_comodidad,$i);
-						$idComodidad = $comodidad[0];
-						$variableOculta = "Hid".$idComodidad;
-					
-						//Si la variable oculta es != -1 es porque está seleccionada, entonces...
-						if($_POST[$variableOculta] != -1){
-						
-							/*Se inserta el nuevo registro*/			
-							$sql_insert = "INSERT INTO hospedaje_comodidad VALUES( nextval('hospedaje_comodidad_idhospedaje_comodidad_seq'), '".$_GET["idHospe"]."','".$idComodidad."');";
-							$result_insert = pg_exec($con,$sql_insert);
-						
-	 						//Si NO se pudo insertar en la tabla el nuevo registro
- 							if(!$result_insert){
-								?>
-    			    			<script type="text/javascript" language="javascript">
-									alert("¡¡¡ ERROR !!! \n     No se pudo guardar la comodidad para este hospedaje");
-									location.href="../administracion/listadositios.php";
-								</script>
-					       		<?php
-							}							
-						}//end variable oculta != -1
-					}//end for
-					?>
-					<script type="text/javascript" language="javascript">
-					alert("¡¡¡ Hospedaje agregado satisfactoriamente !!!");
-					location.href = "../administracion/listadositios.php";
-					</script>
-					<?php	
-				}//end if num rows
-			}//end else if(!$result_update)
-		}//end del if($_GET["idHospe"]!=-1)
+			if(!$result_delete || !$result_delete_2){
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ERROR !!! \n     No se pudieron modificar las comodidades y tipos de habitacion");
+					location.href="../administracion/listadositios.php";
+				</script><?php
+			}
+		}//end $_GET["idHospe"]!=-1
 		
-		/*Si no habia ningun registro de este sitio en la tabla hospedaje, se crea desde cero*/
+		/*Si no habia registro en hospedaje asociado a este sitio, se debe crear desde CERO*/
 		else if($_GET["idHospe"]==-1){
-			$con = conectarse();
-			
-			//Se calcula el promedio GENERAL entre todos los promedios
-			$suma_promedios = $_POST["promedio_servicio"]+$_POST["promedio_ubicacion"]+$_POST["promedio_limpieza"]+$_POST["promedio_personal"]+$_POST["promedio_precio"];
-			$promedio_general = $suma_promedios/5;
 			
 			/*Se inserta el nuevo registro*/			
 			$sql_insert = "INSERT INTO hospedaje VALUES(nextval('hospedaje_idhospedaje_seq'),'".$_GET["idSitio"]."','".$_POST["promedio_servicio"]."','".$_POST["promedio_ubicacion"]."','".$_POST["promedio_limpieza"]."','".$_POST["promedio_personal"]."','".$_POST["promedio_precio"]."','".$promedio_general."');";
 			$result_insert = pg_exec($con,$sql_insert);
-				
+			
 			//Si NO se pudo insertar en la tabla el nuevo registro
 			if(!$result_insert){
 				?>
@@ -213,16 +174,108 @@
 					location.href="../administracion/listadositios.php";
 				</script>
 				<?php	
-			}
-			else{
-				?>
-				<script type="text/javascript" language="javascript">
-					alert("¡¡¡ Hospedaje agregado satisfactoriamente !!!");
-					location.href = "../administracion/listadositios.php";					
-				</script>
-				<?php	
-			}
-		}		
+			}		
+		}
+			
+		/*-------------------------------------------------------------------------------------------------------------------
+			Se consulta la tabla comodidad para verificar cuales están relacionadas con este sitio, de forma tal de 
+			mostrar los respectivos CHECK BOX activos
+		-------------------------------------------------------------------------------------------------------------------*/
+		$sql_select_comodidad = "SELECT * FROM comodidad";
+		$result_select_comodidad = pg_exec($con, $sql_select_comodidad);
+
+		/*Si existen comodidades, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
+		if(pg_num_rows($result_select_comodidad)>0){
+			for($i=0; $i<pg_num_rows($result_select_comodidad); $i++){
+				$comodidad = pg_fetch_array($result_select_comodidad,$i);
+				$idComodidad = $comodidad[0];
+				$variableOculta = "Hid".$idComodidad;
+					
+				//Si la variable oculta es != -1 es porque está seleccionada, entonces...
+				if($_POST[$variableOculta] != -1){
+						
+					/*Se inserta el nuevo registro*/			
+					$sql_insert = "INSERT INTO hospedaje_comodidad VALUES( nextval('hospedaje_comodidad_idhospedaje_comodidad_seq'), '".$_GET["idHospe"]."','".$idComodidad."');";
+					$result_insert = pg_exec($con,$sql_insert);
+						
+					//Si NO se pudo insertar en la tabla el nuevo registro
+					if(!$result_insert){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!! \n     No se pudo guardar la comodidad para este hospedaje");
+							location.href="../administracion/listadositios.php";
+						</script><?php
+					}							
+				}//end variable oculta != -1
+			}//end for	
+		}//end if num rows result_select_comodidad
+				
+		/*-------------------------------------------------------------------------------------------------------------------
+		Se consulta la tabla hospedaje_tipo_habitacion para PRIMERO ELIMINAR cualquier registro que haya relacionado con
+		especialidades asociadas a ESTE sitio, pues al editar un sitio, puede o AGREGAR o QUITAR comodidades 
+		entonces es mejor eliminarlas todas primero y luego si agregarlas de nuevo
+		-------------------------------------------------------------------------------------------------------------------*/
+		/*Se consulta los tipos de habitacion*/
+		$sql_select_tipo = "SELECT * FROM tipo_habitacion";
+		$result_select_tipo = pg_exec($con, $sql_select_tipo);
+				
+		/*Si existen, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
+		if(pg_num_rows($result_select_tipo)>0){
+			for($i=0; $i<pg_num_rows($result_select_tipo); $i++){
+				$tipo = pg_fetch_array($result_select_tipo,$i);
+				$idTipo = $tipo[0];
+				$variableOculta = "Tipo".$idTipo;
+				$campoTexto = "txt".$idTipo;
+				
+				//Si la variable oculta es != -1 es porque está seleccionada, entonces...
+				if($_POST[$variableOculta] != -1){
+						
+					/*Si los campos de nro de habitaciones tienen datos y son NUMERICOS, se inserta el nuevo registro*/								
+					if($_POST[$campoTexto]!="" && is_numeric($_POST[$campoTexto])){
+						$sql_insert = "INSERT INTO hospedaje_tipo_habitacion VALUES(nextval('hospedaje_tipo_habitacion_idhospedaje_tipo_habitacion_seq'),'".$idTipo."','".$_GET["idHospe"]."','".$_POST[$campoTexto]."');";
+						$result_insert = pg_exec($con,$sql_insert);
+					
+						//Si NO se pudo insertar en la tabla el nuevo registro
+						if(!$result_insert){
+							?><script type="text/javascript" language="javascript">
+								alert("¡¡¡ ERROR !!! \n     No se pudo guardar el tipo de habitación para este sitio");
+								location.href="../administracion/listadositios.php";
+							</script><?php
+						}
+					}//end if is_numeric		
+						
+					/*Si está seleccionado el check pero NO se indicó el nro. de habitaciones, igual se permite guardar*/
+					else if($_POST[$campoTexto]==""){
+						$sql_insert = "INSERT INTO hospedaje_tipo_habitacion VALUES(nextval('hospedaje_tipo_habitacion_idhospedaje_tipo_habitacion_seq'),'".$idTipo."','".$_GET["idHospe"]."',null);";
+						$result_insert = pg_exec($con,$sql_insert);
+							
+						//Si NO se pudo insertar en la tabla el nuevo registro
+						if(!$result_insert){
+							?><script type="text/javascript" language="javascript">
+								alert("¡¡¡ ERROR !!! \n     No se pudo guardar el tipo de habitación para este sitio");	
+								location.href="../administracion/listadositios.php";
+							</script>
+				       		<?php
+						}
+					}
+					/*Si algun campo esta vacio o no es numerico*/
+					else{
+						$algunoNoEsNumerico = 1;
+					}						
+				}//end variable oculta != -1
+			}//end for		
+					
+			if($algunoNoEsNumerico==1){
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ALERTA !!! \n     Los campos de Nro. de Habitaciones deben ser NUMERICOS");
+					location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $_GET["idSitio"]; ?>;
+				</script><?php
+			}			
+						
+		}//end if num rows
+		?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ Información de hospedaje editada satisfactoriamente !!!\n\n     A continuación podrá actualizar la galería de imagenes del sitio");
+			location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
+		</script><?php		
 	}//end del if(isset($_POST["Guardar"]))
 ?>
 
@@ -269,10 +322,10 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
 	  			<div class="linea_formulario">
-                	<div class="linea_titulo_2">-  Evaluación -</div>                    
+                	<div class="linea_titulo_2">Evaluación</div>                    
                 </div>
 				<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Indique los promedios de <?php echo $nombreSitio; ?> en cuanto a servicio, ubicación, limpieza, personal y precio:</div>
+        	       	<div class="linea_titulo_rojo">Indique los promedios de <?php echo $nombreSitio; ?> en cuanto a servicio, ubicación, limpieza, personal y precio. Valores entre 1 y 100: (Ejemplo: Promedio de Servicio = 95)</div>
 				</div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Promedio de Servicio (*)</div>
@@ -304,15 +357,12 @@
                     	<input type="text" class="campo_promedio" id="promedio_precio" name="promedio_precio" value="<? echo $hospedaje[6]; ?>"/>
                     </div>
                 </div>
+				<div class="linea_formulario"></div>
 				<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo"></div>
-                </div>							
-				<div class="linea_formulario">
-                	<div class="linea_titulo_2">-  Comodidades  -</div>                    
+                	<div class="linea_titulo_2">Comodidades</div>                    
                 </div>	
 				<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Seleccione las comodidades con las cuales cuenta <?php echo $nombreSitio; ?>:</div>
+        	       	<div class="linea_titulo_rojo">Seleccione las comodidades que ofrece <?php echo $nombreSitio; ?>:</div>
 				</div>	
 				<?php 		
 				
@@ -320,7 +370,7 @@
 				if($_GET["idHospe"]!=-1){
 					/*Se buscan todas las comodidades con las que cuenta ese sitio*/					
 					$sql_sel_hospe_como = "SELECT * FROM hospedaje_comodidad WHERE idhospedaje=".$_GET["idHospe"].";";
-					$result_sel_hospe_como = pg_exec($con, $sql_sel_hospe_como);					
+					$result_sel_hospe_como = pg_exec($con, $sql_sel_hospe_como);	
 				}
 				
 				/*Se consultan todas las comodidades para cargar los checkbox y MARCAR aquellos que están asociados al sitio*/
@@ -364,11 +414,11 @@
 										
 										//Si la comodidad no está para ese sitio, lo dibuja SIN MARCA
 										if($valorOculto==-1){
-											echo '<input type="checkbox" name="'.$idComodidad.'" value="'.$idComodidad.'" onclick="guardarChecked('.$idComodidad.')"/>'.$nombre;
+											echo '<input type="checkbox" name="'.$idComodidad.'" value="'.$idComodidad.'" onclick="guardarChecked('.$idComodidad.',1)"/>'.$nombre;
 										}
 										//Sino, se dibuja MARCADO
 										else{
-											echo '<input type="checkbox" name="'.$idComodidad.'" value="'.$idComodidad.'" onclick="guardarChecked('.$idComodidad.')" checked="checked"/>'.$nombre;
+											echo '<input type="checkbox" name="'.$idComodidad.'" value="'.$idComodidad.'" onclick="guardarChecked('.$idComodidad.',1)" checked="checked"/>'.$nombre;
 										}
 										
 										echo '<input type="hidden" name="Hid'.$idComodidad.'" value="'.$valorOculto.'" />';																				
@@ -382,11 +432,88 @@
 				</tr>
 				<?php
 				}
-				?>							
-            	<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo"></div>
-                </div>	
+				?>	
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Tipos de Habitación</div>                    
+                </div>
+				
+				<div class="linea_formulario">
+        	       	<div class="linea_titulo_rojo">Seleccione los tipos de habitaciones que ofrece "<?php echo $nombreSitio; ?>", así como también indique en el campo de texto junto a cada tipo, el número de habitaciones que tiene por cada uno:</div>
+				</div>
+				<div class="linea_formulario"></div>
+				<?php 		
+				
+				/*Si trae valor != -1 es porque ese sitio ya tenía un registro en la tabla hospedaje*/
+				if($_GET["idHospe"]!=-1){
+					/*Se buscan todos los tipos de habitacion con los que cuenta ese sitio*/
+					$sql_sel_hospe_tipo = "SELECT * FROM hospedaje_tipo_habitacion WHERE idhospedaje=".$_GET["idHospe"].";";
+					$result_sel_hospe_tipo = pg_exec($con, $sql_sel_hospe_tipo);	
+				}
+				
+				/*Se consultan todas las comodidades para cargar los checkbox y MARCAR aquellos que están asociados al sitio*/
+				$sql_sel_tipo = "SELECT * FROM tipo_habitacion ORDER BY nombre";
+				$result_select_tipo = pg_exec($con, $sql_sel_tipo);
+				
+				/*Se construye lista con todas*/						
+				if(pg_num_rows($result_select_tipo)>0){
+				?>
+				<tr>
+					<td>						
+						<?php
+						for($i=0; $i<pg_num_rows($result_select_tipo); $i++){
+							$tipo = pg_fetch_array($result_select_tipo,$i);
+							$idTipo = $tipo[0];
+							$nombre = $tipo[1];
+							
+							/*Se crean los checkbox de c/comodidad y en el onclick se llama a la funcion que guarda el valor en la 
+							  variable oculta Hid*/
+							echo '<div class="linea_formulario_promedio">';
+								echo '<div class="linea_titulo_promedio">';
+									echo '<div class="linea_campo_promedio">';
+										
+										/*Antes de crear el checkbox, se verifica si ese sitio posee esa comodidad para marcarlo*/
+										$valorOculto = -1;
+										
+										/*Si idHospe trae valor != -1 es porque ese sitio ya tenía un registro en la tabla hospedaje*/
+										if($_GET["idHospe"]!=-1){
+											if(pg_num_rows($result_sel_hospe_tipo)>0){
+												for($j=0; $j<pg_num_rows($result_sel_hospe_tipo); $j++){
+													$hospe_tipo = pg_fetch_array($result_sel_hospe_tipo,$j);
+												
+													//Si posee la comodidad
+													if($hospe_tipo[2]==$_GET["idHospe"] && $hospe_tipo[1]==$idTipo){
+														$valorOculto = $idTipo;
+														$j = pg_num_rows($result_sel_hospe_tipo);
+													}
+												}
+											}
+										}
+										
+										//Si la comodidad no está para ese sitio, lo dibuja SIN MARCA
+										if($valorOculto==-1){
+											echo '<input type="checkbox" name="'.$idTipo.'" value="'.$idTipo.'" onclick="guardarChecked('.$idTipo.',2)"/>';
+											echo '<input name="txt'.$idTipo.'" value="" type="text" size="1" maxlength="2" height="3" width="5px" style="font-size:small"/>'.$nombre;
+										}
+										//Sino, se dibuja MARCADO
+										else{
+											echo '<input type="checkbox" name="'.$idTipo.'" value="'.$idTipo.'" onclick="guardarChecked('.$idTipo.',2)" checked="checked"/>';
+											echo '<input name="txt'.$idTipo.'" value="'.$hospe_tipo[3].'" type="text" size="1" maxlength="2" height="3" width="5px" style="font-size:small"/>'.$nombre;
+										}										
+										echo '<input type="hidden" name="Tipo'.$idTipo.'" value="'.$valorOculto.'" />';																				
+									echo '</div>';	
+								echo '</div>';
+							echo '</div>';			
+						}//end for
+						?>
+						</select>							
+					</td>
+				</tr>
+				<?php
+				}
+				?>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
             	<div class="linea_formulario">
 					<div class="linea_titulo_rojo">
 						<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios

@@ -1,5 +1,7 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
+	  
+	  //Variables recibidas en esta pág: $_GET["idSitio"]
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -57,10 +59,8 @@
 		*
 		**********************************************************************************************/
 		$(function(){
-    		//Para escribir solo letras
-    		//$('#miCampo1').validCampoFranz(' abcdefghijklmnñopqrstuvwxyzáéiou');
 
-    		//Para escribir solo numeros	
+			//Para escribir solo numeros	
     		$('#promedio_servicio').funcionesJS('0123456789.,');
 			$('#promedio_ubicacion').funcionesJS('0123456789.,');
 			$('#promedio_limpieza').funcionesJS('0123456789.,');
@@ -72,9 +72,17 @@
 			Funcion para guardar en variables ocultas, los checked que están seleccionados
 		*
 		**********************************************************************************************/
-		function guardarChecked(elementoCheck) {
+		function guardarChecked(elementoCheck,bandera) {
 			
-			var variableOculta = "Hid"+elementoCheck;
+			/*Si bandera es 1, se está llamando para pintar las comodidades*/
+			if(bandera==1){
+				var variableOculta = "Hid"+elementoCheck;
+			}
+			/*Si bandera es 2, se está llamando para pintar los check de los tipos de habitación*/
+			else if(bandera==2){
+				var variableOculta = "Tipo"+elementoCheck;
+			}
+			
 			if(document.all(variableOculta).value == -1){				
 				document.all(variableOculta).value = elementoCheck;	
 			}
@@ -88,9 +96,9 @@
 
 <?php
 	if(isset($_POST["Guardar"])){
-		
+	
 		$con = conectarse();
-			
+		
 		//Se calcula el promedio GENERAL entre todos los promedios
 		$suma_promedios = $_POST["promedio_servicio"]+$_POST["promedio_ubicacion"]+$_POST["promedio_limpieza"]+$_POST["promedio_personal"]+$_POST["promedio_precio"];
 		$promedio_general = $suma_promedios/5;
@@ -109,8 +117,14 @@
 		   	<?php	
 		}
 		
-		//Si se pudieron insertar en la tabla 'hospedaje' los promedios, se procede a guardar las comodidades de ese hospedaje
+		//Si se pudieron insertar en la tabla 'hospedaje' los promedios...
 		else{
+		
+			/*---------------------------------------------------------------------------------------------------------------
+			*					 
+			*										PARA CREAR LAS COMODIDADES DEL SITIO
+			*
+			---------------------------------------------------------------------------------------------------------------*/
 			/*Se selecciona el id del hospedaje recien creado*/
 			$sql_select = "SELECT last_value FROM hospedaje_idhospedaje_seq;";
 			$result_select = pg_exec($con, $sql_select);
@@ -147,6 +161,75 @@
 					}//end variable oculta != -1
 				}//end for
 			}//end if num rows
+			
+			/*---------------------------------------------------------------------------------------------------------------
+			*					
+			*										PARA CREAR LOS TIPOS DE HABITACION DEL SITIO
+			*
+			---------------------------------------------------------------------------------------------------------------*/
+			/*Se consultan los tipos de habitacion*/
+			$sql_select_tipo = "SELECT * FROM tipo_habitacion";
+			$result_select_tipo = pg_exec($con, $sql_select_tipo);
+				
+			/*Si existen, se construye una lista con todos para revisar los checkbox que están seleccionados*/						
+			if(pg_num_rows($result_select_tipo)>0){
+				$algunoNoEsNumerico = 0;
+				for($i=0; $i<pg_num_rows($result_select_tipo); $i++){
+					$tipo = pg_fetch_array($result_select_tipo,$i);
+					$idTipo = $tipo[0];
+					$variableOculta = "Tipo".$idTipo; //checkbox
+					$campoTexto = "txt".$idTipo; //input
+					
+					//Si la variable oculta es != -1 es porque está seleccionada, entonces...
+					if($_POST[$variableOculta] != -1){
+						
+						/*Si los campos de nro de habitaciones tienen datos y son NUMERICOS, se inserta el nuevo registro*/								
+						if($_POST[$campoTexto]!="" && is_numeric($_POST[$campoTexto])){
+							$sql_insert = "INSERT INTO hospedaje_tipo_habitacion VALUES(nextval('hospedaje_tipo_habitacion_idhospedaje_tipo_habitacion_seq'),'".$idTipo."','".$idHospedaje."','".$_POST[$campoTexto]."');";
+							$result_insert = pg_exec($con,$sql_insert);
+						
+							//Si NO se pudo insertar en la tabla el nuevo registro
+							if(!$result_insert){
+								?>
+    			    			<script type="text/javascript" language="javascript">
+									alert("¡¡¡ ERROR !!! \n     No se pudo guardar el tipo de habitación para este sitio de hospedaje");
+									location.href="listadositios.php";
+								</script>
+					       		<?php
+							}
+						}//end if is_numeric		
+						
+						/*Si está seleccionado el check pero NO se indicó el nro. de habitaciones, igual se permite guardar*/
+						else if($_POST[$campoTexto]==""){
+							$sql_insert = "INSERT INTO hospedaje_tipo_habitacion VALUES(nextval('hospedaje_tipo_habitacion_idhospedaje_tipo_habitacion_seq'),'".$idTipo."','".$idHospedaje."',null);";
+							$result_insert = pg_exec($con,$sql_insert);
+						
+							//Si NO se pudo insertar en la tabla el nuevo registro
+							if(!$result_insert){
+								?>
+    			    			<script type="text/javascript" language="javascript">
+									alert("¡¡¡ ERROR !!! \n     No se pudo guardar el tipo de habitación para este sitio de hospedaje");
+									location.href="listadositios.php";
+								</script>
+					       		<?php
+							}
+						}
+						/*Si algun campo esta vacio o no es numerico*/
+						else{
+							$algunoNoEsNumerico = 1;
+						}					
+					}//end variable oculta != -1
+				}//end for
+				
+				if($algunoNoEsNumerico==1){
+					?>
+	    			<script type="text/javascript" language="javascript">
+						alert("¡¡¡ ALERTA !!! \n     Los campos de Nro. de Habitaciones deben ser NUMERICOS");
+						location.href="crearhospedaje.php?idSitio="+<?php echo $_GET["idSitio"]; ?>;
+					</script>
+		       		<?php
+				}
+			}//end if num rows
 			?>
 			<script type="text/javascript" language="javascript">
 				alert("¡¡¡ Hospedaje agregado satisfactoriamente !!!");
@@ -163,7 +246,7 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Sitios de Interés >> Hospedaje</div>
+    	<div class="titulo_panel">Crear Sitios - Hospedaje</div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
 				<a href="listadositios.php">Listar Sitios</a>
@@ -183,50 +266,47 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			   	<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Evaluación de "<?php echo $nombreSitio; ?>" -</div>                    
+                	<div class="linea_titulo_2">Evaluación de <?php echo $nombreSitio; ?></div>                    
                 </div>
 				<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Indique los promedios de "<?php echo $nombreSitio; ?>" en cuanto a servicio, ubicación, limpieza, personal y precio. Valores entre 1 y 100: (Ejemplo: Promedio de Servicio = 95)</div>
+        	       	<div class="linea_titulo_rojo">Indique los promedios de "<?php echo $nombreSitio; ?>" en cuanto a servicio, ubicación, limpieza, personal y precio. Valores entre 0 y 100: (Ejemplo: Promedio de Servicio = 95)</div>
 				</div>	
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Promedio de Servicio (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="promedio_servicio" name="promedio_servicio" />
+                    	<input type="text" class="campo_promedio" id="promedio_servicio" name="promedio_servicio"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Promedio de Ubicación (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="promedio_ubicacion" name="promedio_ubicacion" />
+                    	<input type="text" class="campo_promedio" id="promedio_ubicacion" name="promedio_ubicacion"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Promedio de Limpieza (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="promedio_limpieza" name="promedio_limpieza" />
+                    	<input type="text" class="campo_promedio" id="promedio_limpieza" name="promedio_limpieza"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Promedio de Personal (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="promedio_personal" name="promedio_personal" />
+                    	<input type="text" class="campo_promedio" id="promedio_personal" name="promedio_personal"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Promedio de Precio (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="promedio_precio" name="promedio_precio" />
+                    	<input type="text" class="campo_promedio" id="promedio_precio" name="promedio_precio"/>
                     </div>
                 </div>
+				<div class="linea_formulario"></div>						
 				<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo"></div>
-                </div>							
-				<div class="linea_formulario">
-                	<div class="linea_titulo_2">- Comodidades en "<?php echo $nombreSitio; ?>" -</div>                    
+                	<div class="linea_titulo_2">Comodidades</div>                    
                 </div>	
 				<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Seleccione las comodidades con las cuales cuenta "<?php echo $nombreSitio; ?>"</div>
+        	       	<div class="linea_titulo_rojo">Seleccione las comodidades que ofrece <?php echo $nombreSitio; ?>:</div>
 				</div>	
 						
 				<?php 
@@ -234,11 +314,6 @@
 				$con = conectarse();		
 				$sql_select_comodidad = "SELECT * FROM comodidad ORDER BY nombre";
 				$result_select_comodidad = pg_exec($con, $sql_select_comodidad);	
-				
-				$sql_select_cantidad = "SELECT count(*) FROM comodidad";
-				$result_cantidad = pg_exec($con, $sql_select_cantidad);
-				$total = pg_fetch_array($result_cantidad,0);
-				$cantidad_comodidades = $total[0];
 									
 				/*Si existen, se construye una lista con todas*/						
 				if(pg_num_rows($result_select_comodidad)>0){
@@ -257,7 +332,7 @@
 								echo '<div class="linea_titulo_promedio">';
 									echo '<div class="linea_campo_promedio">';
 										echo '<input type="hidden" name="Hid'.$idComodidad.'" value="-1" />';
-										echo '<input type="checkbox" name="'.$idComodidad.'" value="'.$idComodidad.'" onclick="guardarChecked('.$idComodidad.')"/>'.$nombre;										
+										echo '<input type="checkbox" name="'.$idComodidad.'" value="'.$idComodidad.'" onclick="guardarChecked('.$idComodidad.',1)"/>'.$nombre;										
 									echo '</div>';	
 								echo '</div>';
 							echo '</div>';			
@@ -269,10 +344,59 @@
 				<?php
 				}
 				?>							
-            	<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo"></div>
-                </div>	
+            	<div class="linea_formulario"></div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Tipos de Habitación</div>                    
+                </div>
+				
+				<div class="linea_formulario">
+        	       	<div class="linea_titulo_rojo">Seleccione los tipos de habitaciones que ofrece "<?php echo $nombreSitio; ?>", así como también indique en el campo de texto junto a cada tipo, el número de habitaciones que tiene por cada uno:</div>
+				</div>
+				<div class="linea_formulario"></div>
+				<?php 
+					/*Se buscan todas las comodidades para que el usuario seleccione las deseadas*/
+					$con = conectarse();
+					$sql_select_tipo = "SELECT * FROM tipo_habitacion ORDER BY nombre";
+					$result_select_tipo = pg_exec($con, $sql_select_tipo);
+									
+					/*Si existen, se construye una lista con todas*/						
+					if(pg_num_rows($result_select_tipo)>0){
+				?>
+				<tr>
+					<td>						
+						<?php
+						for($i=0; $i<pg_num_rows($result_select_tipo); $i++){
+							$tipo = pg_fetch_array($result_select_tipo,$i);
+							$idTipo = $tipo[0];
+							$nombre = $tipo[1].": ";
+							
+							/*Se crean los checkbox de c/comodidad y en el onclick se llama a la funcion que guarda el valor en la 
+							  variable oculta Hid*/
+							echo '<div class="linea_formulario_promedio">';
+								echo '<div class="linea_titulo_promedio">';
+									echo '<div class="linea_campo_promedio">';
+										echo '<input type="hidden" name="Tipo'.$idTipo.'" value="-1" />';										
+										echo '<input type="checkbox" name="'.$idTipo.'" value="'.$idTipo.'" onclick="guardarChecked('.$idTipo.',2)"/>'.$nombre;						
+										echo '<input name="txt'.$idTipo.'" value="" type="text" size="1" maxlength="2" height="3" width="10px" style="font-size:small"/>';	
+										?>
+										<script language="JavaScript" type="text/javascript">
+											var campo = "#txt"+<?php echo $idTipo; ?>;
+											$(campo).funcionesJS('0123456789');
+										</script>
+										<?php
+									echo '</div>';	
+								echo '</div>';
+							echo '</div>';			
+						}
+						?>
+						</select>							
+					</td>
+				</tr>
+				<?php
+				}
+				?>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
 				<div class="linea_formulario">
 					<div class="linea_titulo_rojo">
 						<input type="submit" value="Guardar datos hospedaje" name="Guardar" style="font-size:12px;" align="left"/>(*) Campos obligatorios
