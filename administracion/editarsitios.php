@@ -293,7 +293,7 @@
 						?>
 						<tr>
 							<td>
-								<select name="subcategoria" id="subcategoria" onChange="javascript:guardarValorCombo(this.value,1)">
+								<select name="subcategoria" id="subcategoria" onChange="javascript:guardarValorCombo(this.value,1)" disabled="disabled">
 								<option value="<?php echo $_GET["sub"]; ?>"><?php echo $nombreSeleccionado; ?></option>
 								<?php
 								for($i=0; $i<pg_num_rows($result_select); $i++){
@@ -338,7 +338,7 @@
 							?>
 							<tr>
 								<td>
-									<select name="ruta" id="ruta" onChange="javascript:guardarValorCombo(this.value,2)">
+									<select name="ruta" id="ruta" onChange="javascript:guardarValorCombo(this.value,2)" disabled="disabled">
 									<option value="<?php echo $_GET["ruta"]; ?>"><?php echo $nombreRutaSel; ?></option>
 									<?php
 									for($i=0; $i<pg_num_rows($result_select); $i++){

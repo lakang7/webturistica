@@ -356,7 +356,38 @@ if($_GET["clave"]==9){
 		}
 	 }     
 }//end $_GET["clave"]==9
-
-
+/*------------------------------------------------------------------------------------------------------------------------------
+*
+*											Clave = 10	-> ELIMINAR SERVICIO
+*
+------------------------------------------------------------------------------------------------------------------------------*/
+if($_GET["clave"]==10){ 
+	 
+	 $sql_select = "SELECT * FROM gastronomia_servicio WHERE idservicio='".$_GET["id"]."'";
+	 $result_select = pg_exec($con,$sql_select);
+	
+	 //Si hay registros en sitio_medio_pago asociados a este tipo de habitación, NO se puede eliminar
+	 if(pg_num_rows($result_select)>0){
+	 	?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ ERROR !!!\n\n     No se puede eliminar este servicio ya que está referenciado por algunos sitios.\n\n(Si realmente desea eliminarlo, primero debe eliminar todos los sitios asociados a este medio de pago))");
+			location.href="../administracion/listadoservicios.php";
+		 </script><?php	
+	 }
+	 else{	 	
+	 	$sql_delete = "DELETE FROM servicio WHERE idservicio='".$_GET["id"]."'";	
+		$result_delete = pg_exec($con,$sql_delete);
+		
+		if(!$result_delete){
+			?><script type="text/javascript" language="javascript">
+		 		alert("¡¡¡ ERROR !!! \n     No se pudo eliminar el servicio");
+			</script><?php
+		}else{
+		 	?><script type="text/javascript" language="javascript">
+	 			alert("¡¡¡ Servicio eliminado satisfactoriamente !!! ");	
+				location.href = "../administracion/listadoservicios.php";
+			</script><?php
+		}
+	 }     
+}//end $_GET["clave"]==10
 
 ?>
