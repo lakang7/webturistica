@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Crear Categoría</title>
+	<title>Prueba</title>
 		
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -40,8 +40,15 @@
 
 <?php
 	if(isset($_POST["Guardar"])){
-		
-						
+		//5_Cheque conformable			
+		//unlink(“./tutoriales/videotutoriales.fla”);
+		$archivo = "../imagenes/mediosdepago/2_Tarjeta de Crédito.png";
+		if(unlink($archivo)){ ?>
+		<script language="JavaScript" type="text/javascript">
+			alert("Elimino el archivo");
+		</script><?php
+
+		}
 	}
 ?>
 

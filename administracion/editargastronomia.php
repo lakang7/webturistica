@@ -266,7 +266,7 @@
                 </div>
 				<div class="linea_formulario"></div>							
 				<div class="linea_formulario">
-                	<div class="linea_titulo_2">Especialidades</div>                    
+                	<div class="linea_titulo_2">Especialidades Gastronómicas</div>                    
                 </div>	
 				<div class="linea_formulario">
         	       	<div class="linea_titulo_rojo">Seleccione las especialidades que ofrece <?php echo $nombreSitio; ?>:</div>

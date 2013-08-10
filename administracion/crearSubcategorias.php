@@ -81,7 +81,7 @@
 				}
 			}
 			
-			/*Si la subcategoria no existe, se crea*/
+			/*Si la subcategoria NO existe, se crea*/
 			if($yaExiste==0){
 					/*Se inserta el nuevo registro*/			
 					$sql_insert = "INSERT INTO subcategoria VALUES(nextval('subcategoria_idsubcategoria_seq'),".$_POST["HidCategoria"].",'".$_POST["nombre"]."',null);";
@@ -91,39 +91,40 @@
 					if(!$result_insert){
 						?>
         					<script type="text/javascript" language="javascript">
-								alert("ERROR: No se pudo crear la subcategoria");
-								location.href="../administracion/listadocategorias.php";
+								alert("¡¡¡ ERROR !!!\n\n     No se pudo crear la subcategoria");
+								location.href="../administracion/listadosubcategorias.php";
 							</script>
 				       	<?php	
 					}else{	
 						$con = conectarse();
 						
-						/*Se consulta el id de la ultima subcategoria recien creada*/
-						$sql_select = "SELECT last_value FROM subcategoria_idsubcategoria_seq;";
-						$result_select = pg_exec($con, $sql_select);
-						$arreglo = pg_fetch_array($result_select,0);
-						$idSubcategoria = $arreglo[0];
+						//Si hay cargada alguna imagen de icono
+						if($_FILES['icono']['name']!=""){
+							/*Se consulta el id de la ultima subcategoria recien creada*/
+							$sql_select = "SELECT last_value FROM subcategoria_idsubcategoria_seq;";
+							$result_select = pg_exec($con, $sql_select);
+							$arreglo = pg_fetch_array($result_select,0);
+							$idSubcategoria = $arreglo[0];
 					
-						/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
-						$subir = new imgUpldr;	
-						$nombreImagen = $idSubcategoria."-".$_POST["nombre"];	
-						$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
-						$subir->init($_FILES['icono']);
-						$destino = "imagenes/subcategorias/".$subir->_name;
+							/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
+							$subir = new imgUpldr;	
+							$nombreImagen = $idSubcategoria."-".$_POST["nombre"];	
+							$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
+							$subir->init($_FILES['icono']);
+							$destino = "imagenes/subcategorias/".$subir->_name;
 		
-						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-						$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";
-						$result_update = pg_exec($con, $sql_update);	
+							/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+							$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";
+							$result_update = pg_exec($con, $sql_update);	
 						
-						if(!$result_update){
-						?>
-        					<script type="text/javascript" language="javascript">
-								alert("ERROR: No se pudo guardar el icono asociado a esta subcategoría");
-								location.href="../administracion/listadocategorias.php";
-							</script>
-				       	<?php	
-					    }
-			
+							if(!$result_update){
+								?><script type="text/javascript" language="javascript">
+									alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar el icono asociado a esta subcategoría");
+									location.href="../administracion/listadosubcategorias.php";
+								</script><?php	
+					    	}
+						}
+									
 						/*Se actualiza el Nro. de Hijos de la CATEGORIA padre*/
 
 						//Primero se consulta la cantidad de hijos del padre
@@ -139,13 +140,13 @@
 						if(!$result_update){
 						?>
         					<script type="text/javascript" language="javascript">
-								alert("ERROR: No se pudo actualizar el número de hijos de la categoría padre");
-								location.href="../administracion/listadocategorias.php";
+								alert("¡¡¡ ERROR !!!\n\n     No se pudo actualizar el número de hijos de la categoría padre");
+								location.href="../administracion/listadosubcategorias.php";
 							</script>
 				       	<?php	
 					    }
 					
-						$i = pg_num_rows($res);
+						//$i = pg_num_rows($res);
 							
 						?>
 		        		<script type="text/javascript" language="javascript">
@@ -160,7 +161,7 @@
 		else{
 		?>
 			<script type="text/javascript" language="javascript">
-				alert("Debe seleccionar una categoria");
+				alert("¡¡¡ ALERTA !!!\n\n     Debe seleccionar una categoria");
 			</script>
 		<?php
 		}			

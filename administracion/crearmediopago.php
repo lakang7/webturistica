@@ -1,5 +1,6 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
+	  include_once("../recursos/class_imgUpldr.php");
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -40,14 +41,6 @@
 			}			
         	return true;
 	    }
-		/*********************************************************************************************
-		*
-			Funcion para validar SOLO NUMEROS o SOLO LETRAS en un campo determinado
-		*
-		**********************************************************************************************/
-		$(function(){
-    		$('#capacidad').funcionesJS('0123456789-');
-    	});	
 	</script>
 </head>
 
@@ -56,51 +49,70 @@
 		
 		$con = conectarse();
 		
-		/*Se consulta la existencia de otro TIPO DE HABITACION con el mismo nombre*/
-		$sql = "SELECT * FROM tipo_habitacion ORDER BY idtipo_habitacion";
+		/*Se consulta la existencia de otro registro con ese mismo nombre para evitar crear registros repetidos*/
+		$sql = "SELECT * FROM medio_pago ORDER BY idmedio_pago";
 		$res = pg_exec($con, $sql);	
 		$yaExiste = 0;
 					
 		if(pg_num_rows($res)>0){
 			for($i=0; $i<pg_num_rows($res); $i++){				
-				$tipo = pg_fetch_array($res,$i);	
-				$nombre = $tipo[1];
+				$medioPago = pg_fetch_array($res,$i);	
+				$nombre = $medioPago[1];
 				
-				/*Si efectivamente ya existe esa comodidad, no se le permite crearla*/
+				/*Si efectivamente ya existe, no se le permite crear*/
 				if($nombre==$_POST["nombre"]){
 					$yaExiste = 1;
-					?>
-		        	<script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!! \n\n     Ese tipo de habitación ya existe, por favor ingrese otro nombre");
-						location.href = "../administracion/creartipohabitacion.php";
-					</script>
-       				<?php
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! \n\n     Ese medio de pago ya existe, por favor ingrese otro nombre");
+						location.href = "../administracion/crearmediopago.php";
+					</script><?php
 				}
 			}
 		}
 		
-		/*Si el TIPO DE HABITACION NO existe, se crea*/
+		/*Si NO existe, se crea*/
 		if($yaExiste==0){
-			$sql_insert = "INSERT INTO tipo_habitacion VALUES(nextval('tipo_habitacion_idtipo_habitacion_seq'),'".$_POST["nombre"]."',".$_POST["capacidad"].");";
+			$sql_insert = "INSERT INTO medio_pago VALUES(nextval('medio_pago_idmedio_pago_seq'),'".$_POST["nombre"]."',null);";
 			$result_insert = pg_exec($con,$sql_insert);
 		
 			if(!$result_insert){
-				?>
-        		<script type="text/javascript" language="javascript">
-					alert("¡¡¡ ERROR !!!\n\n     No se pudo crear el tipo de habitación");
-					location.href="../administracion/listadotipohabitacion.php";
-				</script>
-    	    	<?php	
-			}else{		
-				?>
-	        	<script type="text/javascript" language="javascript">
-					alert("¡¡¡ Tipo de habitación agregado satisfactoriamente !!!");
-					location.href="../administracion/listadotipohabitacion.php";
-				</script>
-	    	    <?php		
-			}
-		}		
-	}
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ERROR !!!\n\n     No se pudo crear el medio de pago");
+					location.href="../administracion/listadomediopago.php";
+				</script><?php	
+			}else{						
+				/*Se consulta el id del registro recien creado*/
+				$sql_select = "SELECT last_value FROM medio_pago_idmedio_pago_seq;";
+				$result_select = pg_exec($con, $sql_select);
+				$arreglo = pg_fetch_array($result_select,0);
+				$idMedioPago = $arreglo[0];
+					
+				if($_FILES['icono']['name']!=""){
+					/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
+					$subir = new imgUpldr;	
+					$nombreImagen = $idMedioPago."_".$_POST["nombre"];	
+					$subir->configurar($nombreImagen,"../imagenes/mediosdepago/",591,591);
+					$subir->init($_FILES['icono']);
+					$destino = "imagenes/mediosdepago/".$subir->_name;
+		
+					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+					$sql_update = "UPDATE medio_pago SET icono='".$destino."' WHERE idmedio_pago='".$idMedioPago."'";
+					$result_update = pg_exec($con, $sql_update);	
+							
+					if(!$result_update){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar el icono asociado a este medio de pago");
+							location.href="../administracion/listadomediopago.php";
+						</script><?php	
+				    }
+				}	
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ Medio de pago creado satisfactoriamente !!!");
+					location.href="../administracion/listadomediopago.php";
+				</script><?php
+			}//end else de result_insert
+		}//end yaExiste==0		
+	}//end boton Guardar
 ?>
 
 <body onload="cargo()">
@@ -110,29 +122,29 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Tipo de Habitación</div>
+    	<div class="titulo_panel">Crear Medio de Pago</div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
-				<a href="listadotipohabitacion.php">Listar Tipos</a>
+				<a href="listadomediopago.php">Listar Medios de Pago</a>
 			</div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="creartipohabitacion.php">Registrar Nuevo Tipo de Habitación</a>
+				<a href="crearmediopago.php">Registrar Nuevo Medio de Pago</a>
 			</div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >    
             	<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Nombre del Tipo de Habitación (*)</div>
+                	<div class="linea_titulo_compartido">Medio de Pago(*)</div>
                     <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="45"/>
+                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="45" value="<?php echo $tipo[1]; ?>"/>
                     </div>
                 </div>
-				<div class="linea_formulario_promedio">
-                	<div class="linea_titulo_promedio">Capacidad (Nro. Personas) (*)</div>
-                    <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="capacidad" name="capacidad" />
+				<div class="linea_formulario_doble">
+                	<div class="linea_titulo_doble">Icono Identificador</div>
+                    <div class="linea_campo_doble">
+                    	<input name="icono" class="campo_doble" type="file" id="icono" />
                     </div>
-                </div>				
+                </div>					
 				<div class="linea_formulario">
 					<div class="linea_titulo_rojo">
 						<input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios

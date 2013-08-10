@@ -143,6 +143,16 @@ body{
 	margin-bottom:0px;	
 }
 
+/*Para las lineas de formulario que contemplan 2 columnas en una misma línea*/
+.linea_formulario_doble{
+	float:left;
+	width:430px;
+	height:auto;
+	/*border:1px solid #CCC;*/
+	margin:10px;
+	margin-bottom:0px;	
+}
+
 /*Para dar estilo a los campos de PROMEDIO dentro de hospedaje y gastronomía, tambien para COMODIDADES en hospedaje*/
 .linea_formulario_promedio{
 	float:left;
@@ -184,6 +194,17 @@ body{
 	color:#333;	
 }
 
+/*Para las lineas de titulo que contemplan 2 columnas en una misma línea*/
+.linea_titulo_doble{
+	float:left;
+	width:430px;
+	height:15px;
+	/*border-bottom:1px solid #CCC;*/
+	font-size:12px;
+	line-height:15px;
+	color:#333;	
+}
+
 .linea_titulo_compartido_rojo{
 	float:left;
 	width:266px;
@@ -203,14 +224,6 @@ body{
 	font-size:12px;
 	line-height:15px;
 	color:#333;	
-	/*Para que ajuste el texto al ancho de la columna, por si es más largo que ella*/
-	/*white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 
-	white-space: -pre-wrap;     /*  Opera 4-6
-	white-space: -o-pre-wrap;   /*  Opera 7 
-	white-space: pre-wrap;      /*  css-3
-	word-wrap: break-word;      /*  Internet Explorer 5.5+
-	word-break: break-all;
-	white-space: normal;*/
 }
 
 /*Para titulos dentro del formulario, que separan secciones de información*/
@@ -239,6 +252,13 @@ body{
 	height:25px;		
 }
 
+/*Para las lineas de titulo que contemplan 2 columnas en una misma línea*/
+.linea_campo_doble{
+	float:left;
+	width:430px;
+	height:25px;		
+}
+
 /*Para dar estilo a los campos de PROMEDIO dentro de hospedaje y gastronomía, tambien para COMODIDADES en hospedaje*/
 .linea_campo_promedio{
 	float:left;
@@ -258,6 +278,14 @@ body{
 	float:left;
 	margin:0px;
 	width:266px;
+	height:25px;	
+}
+
+/*Para los campos que contemplan hasta 3 columnas/campos en una misma línea*/
+.campo_doble{
+	float:left;
+	margin:0px;
+	width:430px;
 	height:25px;	
 }
 

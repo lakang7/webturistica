@@ -219,12 +219,9 @@
                     	<input type="text" class="campo_promedio" id="promedio_precio" name="promedio_precio" />
                     </div>
                 </div>
+				<div class="linea_formulario"></div>							
 				<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo"></div>
-                </div>							
-				<div class="linea_formulario">
-                	<div class="linea_titulo_2">Especialidades gastronómicas</div>                    
+                	<div class="linea_titulo_2">Especialidades Gastronómicas</div>                    
                 </div>	
 				<div class="linea_formulario">
         	       	<div class="linea_titulo_rojo">Seleccione las especialidades gastronómicas que ofrece "<?php echo $nombreSitio; ?>"</div>
@@ -265,10 +262,7 @@
 				<?php
 				}
 				?>							
-            	<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo"></div>
-                </div>	
+            	<div class="linea_formulario"></div>	
 				<div class="linea_formulario">
 					<div class="linea_titulo_rojo">
 						<input type="submit" value="Guardar datos" name="Guardar" style="font-size:12px;" align="left"/>(*) Campos obligatorios

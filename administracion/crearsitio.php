@@ -289,7 +289,6 @@
 			}
 			
 			if($_POST["HidRuta"]==-1){
-				//$mensaje += " ruta";
 				?>
 				<script type="text/javascript" language="javascript">
 					txt += "\n"+cont+") Ruta a la que pertenece el sitio";
@@ -299,7 +298,6 @@
 			}
 			
 			if($_FILES['perfil']['name']==""){
-				//$mensaje += " imagen de perfil";
 				?>
 				<script type="text/javascript" language="javascript">
 					txt += "\n"+cont+") Imagen de perfil";

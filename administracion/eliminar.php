@@ -264,7 +264,6 @@ if($_GET["clave"]==6){
 	 </script><?php		 			 
 	 }
 }//end CLAVE=6 ELIMINAR SITIO
-
 /*------------------------------------------------------------------------------------------------------------------------------
 *
 *											Clave = 7	-> ELIMINAR FOTO DE GALERIA
@@ -290,4 +289,74 @@ if($_GET["clave"]==7){
 			location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $idSitio;?>;
 		</script><?php
 	}
-}?>
+}//END CLAVE 7
+/*------------------------------------------------------------------------------------------------------------------------------
+*
+*											Clave = 8	-> ELIMINAR TIPO DE HABITACION
+*
+------------------------------------------------------------------------------------------------------------------------------*/
+if($_GET["clave"]==8){ 
+	 
+	 $sql_select = "SELECT * FROM hospedaje_tipo_habitacion WHERE idtipo_habitacion='".$_GET["id"]."'";
+	 $result_select = pg_exec($con,$sql_select);
+	
+	 //Si hay registros en hospedaje_tipo_habitacion asociados a este tipo de habitación, NO se puede eliminar
+	 if(pg_num_rows($result_select)>0){
+	 	?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ ERROR !!!\n\n     No se puede eliminar este tipo de habitación ya que existen hospedajes asociados al mismo.\n\n(Si realmente desea eliminarlo, primero elimine todos los sitios asociados a este tipo de habitación))");
+			location.href="../administracion/listadotipohabitacion.php";
+		 </script><?php	
+	 }
+	 else{	 	
+	 	$sql_delete = "DELETE FROM tipo_habitacion WHERE idtipo_habitacion='".$_GET["id"]."'";	
+		$result_delete = pg_exec($con,$sql_delete);
+		
+		if(!$result_delete){
+			?><script type="text/javascript" language="javascript">
+		 		alert("¡¡¡ ERROR !!! \n     No se pudo eliminar el tipo de habitación");
+			</script><?php
+		}else{
+		 	?><script type="text/javascript" language="javascript">
+	 			alert("¡¡¡ Tipo de habitación eliminado satisfactoriamente !!! ");	
+				location.href = "../administracion/listadotipohabitacion.php";
+			</script><?php
+		}
+	 }     
+}//end $_GET["clave"]==8
+/*------------------------------------------------------------------------------------------------------------------------------
+*
+*											Clave = 9	-> ELIMINAR MEDIO DE PAGO
+*
+------------------------------------------------------------------------------------------------------------------------------*/
+if($_GET["clave"]==9){ 
+	 
+	 $sql_select = "SELECT * FROM sitio_medio_pago WHERE idmedio_pago='".$_GET["id"]."'";
+	 $result_select = pg_exec($con,$sql_select);
+	
+	 //Si hay registros en sitio_medio_pago asociados a este tipo de habitación, NO se puede eliminar
+	 if(pg_num_rows($result_select)>0){
+	 	?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ ERROR !!!\n\n     No se puede eliminar este medio de pago ya que está referenciado por algunos sitios.\n\n(Si realmente desea eliminarlo, primero debe eliminar todos los sitios asociados a este medio de pago))");
+			location.href="../administracion/listadomediopago.php";
+		 </script><?php	
+	 }
+	 else{	 	
+	 	$sql_delete = "DELETE FROM medio_pago WHERE idmedio_pago='".$_GET["id"]."'";	
+		$result_delete = pg_exec($con,$sql_delete);
+		
+		if(!$result_delete){
+			?><script type="text/javascript" language="javascript">
+		 		alert("¡¡¡ ERROR !!! \n     No se pudo eliminar el medio de pago");
+			</script><?php
+		}else{
+		 	?><script type="text/javascript" language="javascript">
+	 			alert("¡¡¡ Medio de pago eliminado satisfactoriamente !!! ");	
+				location.href = "../administracion/listadomediopago.php";
+			</script><?php
+		}
+	 }     
+}//end $_GET["clave"]==9
+
+
+
+?>

@@ -55,14 +55,14 @@
 			$con = conectarse();
 			
 			/*---------------------------------------------------------------------------------------------------------------------
-			*								Solo se pueden subir máximo 15 fotografías por sitio
+			*								Solo se pueden subir máximo 20 fotografías por sitio
 			*								por lo tanto ANTES de insertar la foto, se consulta
 			*								la cant de fotos que hay cargadas hasta el momento
 			---------------------------------------------------------------------------------------------------------------------*/
 			$sql_select = "SELECT * FROM foto_sitio WHERE idsitio=".$_GET["idSitio"].";";
 			$result_select = pg_exec($con,$sql_select);
 			
-			if(pg_num_rows($result_select)<15){
+			if(pg_num_rows($result_select)<20){
 				$hoy = date("Y-m-d");
 				
 				/*-------------------------------------------------------------------------------------------------------------------
@@ -93,11 +93,19 @@
 					
 					/*Se prepara la fotografía en tamaño GRANDE*/
 					$subir = new imgUpldr;
-					$nombreImagenGrande = $nombreSitio."_".$arreglo[0]."_Grande";
+					$nombreImagenGrande = "Grande_".$arreglo[0]."_".$nombreSitio;
 					$subir->configurar($nombreImagenGrande, "../imagenes/sitios/galeria/",1024,768);
 					$subir->init($_FILES['foto']);			
 					$destino = "imagenes/sitios/galeria/".$subir->_name;
 				
+					/*------------------------------------------------------------------------------------------------------------
+					*  					   	        SE GUARDA EN LA CARPETA LA FOTO EN TAMAÑO PEQUEÑO
+					------------------------------------------------------------------------------------------------------------*/
+					$subirP = new imgUpldr;
+					$nombreImagenPeque = "Peque_".$arreglo[0]."_".$nombreSitio;
+					$subirP->configurar($nombreImagenPeque, "../imagenes/sitios/galeria/",200,150);
+					$subirP->init($_FILES['foto']);	
+					
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE foto_sitio SET foto='".$destino."' WHERE idfoto_sitio='".$arreglo[0]."'";
 					$result_update = pg_exec($con, $sql_update);
@@ -112,66 +120,14 @@
 					}	
 					
 					?><script type="text/javascript" language="javascript">
-						alert("Fotografía almacenada exitosamente");
+						alert("¡¡¡ Fotografía almacenada exitosamente !!!");
 						location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 					</script><?php
-				}				
-				/*-------------------------------------------------------------------------------------------------------------------
-				*										PARA INSERTAR LA FOTO EN TAMAÑO PEQUEÑO
-				-------------------------------------------------------------------------------------------------------------------*/
-				$sql_insert = "INSERT INTO foto_sitio VALUES(nextval('foto_sitio_idfoto_sitio_seq'),'".$_GET["idSitio"]."','".$hoy."','');";
-				$result_insert = pg_exec($con,$sql_insert);	
-				
-				//Si NO se pudo insertar en la tabla el nuevo registro
-				if(!$result_insert){
-					?><script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!! No se pudo guardar la foto en la galería");
-						location.href="../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
-					</script><?php	
-				}
-				//Si se insertó el nuevo sitio satisfactoriamente
-				else{				
-					/*Se consulta el NOMBRE del sitio*/
-					$sql_select_sitio = "SELECT * FROM sitio WHERE idsitio=".$_GET["idSitio"].";";
-					$result_select_sitio = pg_exec($con, $sql_select_sitio);
-					$sitio = pg_fetch_array($result_select_sitio,0);
-					$nombreSitio = $sitio[3];		
-			
-					/*Se selecciona el ultimo id asignado a foto_sitio*/
-					$sql_select = "SELECT last_value FROM foto_sitio_idfoto_sitio_seq";
-					$result_select = pg_exec($con, $sql_select);
-					$arreglo = pg_fetch_array($result_select,0);
-					$id_foto_sitio = $arreglo[0];
-					
-					/*Se prepara la fotografía en tamaño PEQUEÑO*/
-					$subir = new imgUpldr;
-					$nombreImagenPeque = $nombreSitio."_".$id_foto_sitio."_Peque";
-					$subir->configurar($nombreImagenPeque, "../imagenes/sitios/galeria/",200,150);
-					$subir->init($_FILES['foto']);			
-					$destino = "imagenes/sitios/galeria/".$subir->_name;
-				
-					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-					$sql_update = "UPDATE foto_sitio SET foto='".$destino."' WHERE idfoto_sitio='".$id_foto_sitio."'";
-					$result_update = pg_exec($con, $sql_update);
-					
-					if(!$result_update){
-						?>
-   					    <script type="text/javascript" language="javascript">
-							alert("¡¡¡ ERROR !!!\n\n     No se pudo insertar la imagen");
-							location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
-						</script>
-				       	<?php	
-					}	
-					
-					?><script type="text/javascript" language="javascript">
-						alert("Fotografía almacenada exitosamente");
-						location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
-					</script><?php
-				}				
-			}//end pg_num_rows($result_select)<15
+				}							
+			}//end pg_num_rows($result_select)<20
 			else{
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ ALERTA !!!\n\nEstimado usuario, solo puede guardar quince (15) fotografías en la galería de cada sitio. Le invitamos a eliminar fotografías para liberar el espacio de la galería y así poder agregar otras.");
+					alert("¡¡¡ ALERTA !!!\n\nEstimado usuario, solo puede guardar veinte (20) fotografías en la galería de cada sitio. Le invitamos a eliminar fotografías para liberar el espacio de la galería y así poder agregar otras.");
 				</script><?php
 			}
 		}//end if($_FILES['foto']['name']!="")
@@ -214,12 +170,8 @@
     <div class="panel">
     	<div class="titulo_panel">Galería de fotos de <?php echo $nombreSitio; ?></div>
         <div class="opcion_panel">
-	        <div class="opcion"> 
-				<a href="listadositios.php">Listar Sitios</a>
-			</div>
-        	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearsitio.php">Registrar Nuevo Sitio</a>
-			</div>
+	        <div class="opcion"> <a href="listadositios.php">Listar Sitios</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsitio.php">Registrar Nuevo Sitio</a></div>
         </div>
 		<?php 
 			/*Se busca el nombre del sitio (hospedaje) con el id recibido por GET*/

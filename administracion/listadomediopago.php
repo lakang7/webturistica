@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Listado Tipo Habitación</title>
+	<title>Listado Medios de Pago</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -37,48 +37,48 @@
 	<div class="banner"></div>
     <div class="menu"><?php menu_administrativo();?></div>
     <div class="panel">
-    	<div class="titulo_panel">Listado de Tipos de Habitaciones</div>
+    	<div class="titulo_panel">Listado Medios de Pago</div>
         <div class="opcion_panel">
-	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadotipohabitacion.php" style="text-decoration:none; color:#FFF;">Listar Tipos</a></div>
-        	<div class="opcion"><a href="creartipohabitacion.php">Registrar Nuevo Tipo de Habitación</a></div>
+	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadomediopago.php" style="text-decoration:none; color:#FFF;">Listar Medios de Pago</a></div>
+        	<div class="opcion"><a href="crearmediopago.php">Registrar Nuevo Medio de Pago</a></div>
         </div>
   		<div class="capa_tabla">
         	<table border="1" class="estilo_tabla" id="highlight-table">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Código</td><td>Tipo de habitación</td><td>Capacidad (Nro. Personas)</td><td width="20"></td><td width="20"></td>
+                    	<td>Código</td><td>Medio de Pago</td><td>Icono identificador</td><td width="20">Editar</td><td width="20">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM tipo_habitacion ORDER BY nombre";
+			 	$sql_select = "SELECT * FROM medio_pago ORDER BY nombre";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
 					?><tr>
-    	                 <td colspan=6 align="center">No existen tipos de habitaciones registradas hasta el momento</td>
+    	                 <td colspan=6 align="center">No existen medios de pago registrados hasta el momento</td>
         	        </tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
-				    $tipo = pg_fetch_array($result_select,$i);	
-					$idTipo = $tipo[0];
+				    $medio = pg_fetch_array($result_select,$i);	
+					$idMedio = $medio[0];
 				    ?>
 					<tr class="row-<?php echo $i+1; ?>">
 						<td>
-							<?php echo Codigo("TIPHAB",$tipo[0]); ?>
+							<?php echo Codigo("MP",$medio[0]); ?>
 						</td>
 						<td>
-							<?php echo $tipo[1]; ?>
+							<?php echo $medio[1]; ?>
 						</td>
 						<td>
-							<?php echo $tipo[2]; ?>
+							<?php echo $medio[2]; ?>
 						</td>
-						<td title="Editar <?php echo $tipo[1]; ?>" style="cursor:pointer;">
-							<a href="editartipohabitacion.php?id=<?php echo $tipo[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $tipo[1]; ?>" style="cursor:pointer;">
-							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=8&id=<?php echo $idTipo;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td title="Editar <?php echo $medio[1]; ?>" style="cursor:pointer;" align="center">
+							<a href="editarmediopago.php?id=<?php echo $idMedio[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $medio[1]; ?>" style="cursor:pointer;" align="center">
+							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=9&id=<?php echo $idMedio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php
