@@ -99,6 +99,20 @@
 	if(isset($_POST["Guardar"])){
 		
 		$con = conectarse();
+		
+		//Si ya existen registros en GASTRONOMIA correspondientes a ESTE sitio, se deben eliminar PRIMERO
+		$sql_sel_gastronomia = "SELECT * FROM gastronomia WHERE idsitio=".$_GET["idSitio"];
+		$result_sql_gastronomia = pg_exec($con,$sql_sel_gastronomia);
+		if(pg_num_rows($result_sql_gastronomia)>0){
+			$sql_delete_gastronomia = "DELETE FROM hospedaje WHERE idsitio=".$_GET["idSitio"];
+			$result_sql_delete_gastronomia = pg_exec($con,$sql_delete_gastronomia);
+			if(!$result_sql_delete_gastronomia){
+				?><script type="text/javascript" language="javascript">
+				alert("¡¡¡ ERROR !!! \n     No se podrá crear el hospedaje, por favor inténtelo de nuevo");
+				location.href="crearhospedaje.php?idSitio=".$_GET["idSitio"];
+			</script><?php	
+			}
+		}	
 			
 		//Se calcula el promedio GENERAL entre todos los promedios
 		$suma_promedios = $_POST["promedio_comida"]+$_POST["promedio_servicio"]+$_POST["promedio_ambiente"]+$_POST["promedio_higiene"]+$_POST["promedio_precio"];
@@ -212,7 +226,7 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Sitios >> Crear Sitio de Gastronomía</div>
+    	<div class="titulo_panel">Crear Sitio de Gastronomía</div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
 				<a href="listadositios.php">Listar Sitios</a>

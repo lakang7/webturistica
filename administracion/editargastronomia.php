@@ -74,9 +74,17 @@
 			Funcion para guardar en variables ocultas, los checked que están seleccionados
 		*
 		**********************************************************************************************/
-		function guardarChecked(elementoCheck) {
+		function guardarChecked(elementoCheck,bandera) {
 			
-			var variableOculta = "Hid"+elementoCheck;
+			/*Si bandera es 1, se está llamando para pintar las ESPECIALIDADES*/
+			if(bandera==1){
+				var variableOculta = "Hid"+elementoCheck;
+			}
+			/*Si bandera es 2, se está llamando para pintar los check de los SERVICIOS*/
+			else if(bandera==2){
+				var variableOculta = "Ser"+elementoCheck;
+			}
+			
 			if(document.all(variableOculta).value == -1){				
 				document.all(variableOculta).value = elementoCheck;	
 			}
@@ -149,7 +157,7 @@
 		}//end $_GET["idGastro"]==-1	
 			
 		/*-------------------------------------------------------------------------------------------------------------------
-			Se consulta la tabla comodidad para verificar cuales están relacionadas con este sitio, de forma tal de 
+			Se consulta la tabla especialidad para verificar cuales están relacionadas con este sitio, de forma tal de 
 			mostrar los respectivos CHECK BOX activos
 		-------------------------------------------------------------------------------------------------------------------*/				
 		$sql_select_especialidad = "SELECT * FROM especialidad";
@@ -183,6 +191,43 @@
 				location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 			</script><?php	
 		}//end if num rows
+		
+		/*-------------------------------------------------------------------------------------------------------------------
+			Se consulta la tabla servicios para verificar cuales están relacionados con este sitio, de forma tal de 
+			mostrar los respectivos CHECK BOX activos
+		-------------------------------------------------------------------------------------------------------------------*/				
+		$sql_select_servicio = "SELECT * FROM servicio";
+		$result_select_servicio = pg_exec($con, $sql_select_servicio);
+				
+		/*Si existen, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
+		if(pg_num_rows($result_select_servicio)>0){
+			for($i=0; $i<pg_num_rows($result_select_servicio); $i++){
+				$servicio = pg_fetch_array($result_select_servicio,$i);
+				$idServicio = $servicio[0];
+				$variableOculta = "Ser".$servicio;
+					
+				//Si la variable oculta es != -1 es porque está seleccionada, entonces...
+				if($_POST[$variableOculta] != -1){
+						
+					/*Se inserta el nuevo registro*/			
+					$sql_insert = "INSERT INTO gastronomia_servicio VALUES( nextval('gastronomia_servicio_idgastronomia_servicios_seq'), '".$_GET["idGastro"]."','".$idServicio."');";
+					$result_insert = pg_exec($con,$sql_insert);
+					
+					//Si NO se pudo insertar en la tabla el nuevo registro
+					if(!$result_insert){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!! \n     No se pudo guardar el servicio para este sitio");
+							location.href="../administracion/listadositios.php";
+						</script><?php
+					}							
+				}//end variable oculta != -1
+			}//end for
+			?><script type="text/javascript" language="javascript">
+				alert("¡¡¡ Servicios actualizados satisfactoriamente !!!\n\n     A continuación podrá actualizar la galería de imagenes del sitio");
+				location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
+			</script><?php	
+		}//end if num rows
+		
 	}//end del if(isset($_POST["Guardar"]))
 ?>
 
@@ -269,7 +314,7 @@
                 	<div class="linea_titulo_2">Especialidades Gastronómicas</div>                    
                 </div>	
 				<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Seleccione las especialidades que ofrece <?php echo $nombreSitio; ?>:</div>
+        	       	<div class="linea_titulo_rojo">Seleccione las especialidades gastronómicas que ofrece "<?php echo $nombreSitio; ?>":</div>
 				</div>	
 				<?php 		
 				
@@ -321,11 +366,11 @@
 										
 										//Si la comodidad no está para ese sitio, lo dibuja SIN MARCA
 										if($valorOculto==-1){
-											echo '<input type="checkbox" name="'.$idEspecialidad.'" value="'.$idEspecialidad.'" onclick="guardarChecked('.$idEspecialidad.')"/>'.$nombre;
+											echo '<input type="checkbox" name="'.$idEspecialidad.'" value="'.$idEspecialidad.'" onclick="guardarChecked('.$idEspecialidad.',1)"/>'.$nombre;
 										}
 										//Sino, se dibuja MARCADO
 										else{
-											echo '<input type="checkbox" name="'.$idEspecialidad.'" value="'.$idEspecialidad.'" onclick="guardarChecked('.$idEspecialidad.')" checked="checked"/>'.$nombre;
+											echo '<input type="checkbox" name="'.$idEspecialidad.'" value="'.$idEspecialidad.'" onclick="guardarChecked('.$idEspecialidad.',1)" checked="checked"/>'.$nombre;
 										}
 										
 										echo '<input type="hidden" name="Hid'.$idEspecialidad.'" value="'.$valorOculto.'" />';																				
@@ -339,7 +384,83 @@
 				</tr>
 				<?php
 				}
-				?>							
+				?>	
+				<div class="linea_formulario"></div>							
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Servicios</div>                    
+                </div>	
+				<div class="linea_formulario">
+        	       	<div class="linea_titulo_rojo">Seleccione los servicios que ofrece "<?php echo $nombreSitio; ?>"</div>
+				</div>	
+				<?php 		
+				
+				/*Si trae valor != -1 es porque ese sitio ya tenía un registro en la tabla hospedaje*/
+				if($_GET["idGastro"]!=-1){
+					/*Se buscan todas las especialidades que ofrece ese sitio*/					
+					$sql_sel_gastro_serv = "SELECT * FROM gastronomia_servicio WHERE idgastronomia=".$_GET["idGastro"].";";
+					$result_sel_gastro_serv = pg_exec($con, $sql_sel_gastro_serv);	
+				}
+				
+				/*Se consultan los servicios  para cargar los checkbox y MARCAR aquellos que están asociados al sitio*/
+				$sql_sel_servicio = "SELECT * FROM servicio ORDER BY nombre";
+				$result_select_servicio = pg_exec($con, $sql_sel_servicio);
+				
+				/*Se construye lista con todas*/						
+				if(pg_num_rows($result_select_servicio)>0){
+				?>
+				<tr>
+					<td>						
+						<?php
+						for($i=0; $i<pg_num_rows($result_select_servicio); $i++){
+							$servicio = pg_fetch_array($result_select_servicio,$i);
+							$idServicio = $servicio[0];
+							$nombre = $servicio[1];
+							
+							/*Se crean los checkbox de c/servicio y en el onclick se llama a la funcion que guarda el valor en la 
+							  variable oculta*/
+							echo '<div class="linea_formulario_promedio">';
+								echo '<div class="linea_titulo_promedio">';
+									echo '<div class="linea_campo_promedio">';
+										
+										/*Antes de crear el checkbox, se verifica si ese sitio posee esa comodidad para marcarlo*/
+										$valorOculto = -1;
+										
+										/*Si idHospe trae valor != -1 es porque ese sitio ya tenía un registro en la tabla hospedaje*/
+										if($_GET["idGastro"]!=-1){
+											if(pg_num_rows($result_sel_gastro_serv)>0){
+												for($j=0; $j<pg_num_rows($result_sel_gastro_serv); $j++){
+													$gastro_serv = pg_fetch_array($result_sel_gastro_serv,$j);
+												
+													//Si posee la comodidad
+													if($gastro_serv[1]==$_GET["idGastro"] && $gastro_serv[2]==$idServicio){
+														$valorOculto = $idServicio;
+														$j = pg_num_rows($result_sel_gastro_serv);
+													}
+												}
+											}
+										}
+										
+										//Si el servicio no está para ese sitio, lo dibuja SIN MARCA
+										if($valorOculto==-1){
+											echo '<input type="checkbox" name="'.$idServicio.'" value="'.$idServicio.'" onclick="guardarChecked('.$idServicio.',2)"/>'.$nombre;
+										}
+										//Sino, se dibuja MARCADO
+										else{
+											echo '<input type="checkbox" name="'.$idServicio.'" value="'.$idServicio.'" onclick="guardarChecked('.$idServicio.',2)" checked="checked"/>'.$nombre;
+										}
+										
+										echo '<input type="hidden" name="Ser'.$idServicio.'" value="'.$valorOculto.'" />';																				
+									echo '</div>';	
+								echo '</div>';
+							echo '</div>';			
+						}
+						?>
+						</select>							
+					</td>
+				</tr>
+				<?php
+				}
+				?>						
             	<div class="linea_formulario"></div>	
             	<div class="linea_formulario">
 					<div class="linea_titulo_rojo">
