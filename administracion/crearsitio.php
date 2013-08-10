@@ -126,6 +126,23 @@
 			     //var marcador = new google.maps.Marker({position: coordenadas,map: mapa, animation: google.maps.Animation.DROP, title:"Un marcador cualquiera"});
      		}); //Fin del evento click
 		} // Fin inicializacion()
+		/*********************************************************************************************
+		*
+			Funcion para guardar en variables ocultas, los checked que están seleccionados
+		*
+		**********************************************************************************************/
+		function guardarChecked(elementoCheck) {
+			
+			var variableOculta = "Hid"+elementoCheck;
+			
+			if(document.all(variableOculta).value == -1){				
+				document.all(variableOculta).value = elementoCheck;	
+			}
+			else{
+				document.all(variableOculta).value = -1;
+			}			
+			//alert(document.all(variableOculta).value);        			
+	    }
     </script>
 </head>
 
@@ -215,7 +232,48 @@
 							location.href="crearsitio.php";
 						</script>
 			    	   	<?php
-					}							
+					}				
+					
+					/*--------------------------------------------------------------------------------------------------------------
+					*
+						Para crear la relacion sitio_mediopago
+					*
+					--------------------------------------------------------------------------------------------------------------*/
+					$con = conectarse();
+					/*Se selecciona el id del sitio recien creado*/
+					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
+					$result_select = pg_exec($con, $sql_select);
+					$sitio = pg_fetch_array($result_select,0);
+					$idSitio = $sitio[0];
+			
+					/*Se consultan los medios de pago*/
+					$sql_select_mp = "SELECT * FROM medio_pago";
+					$result_select_mp = pg_exec($con, $sql_select_mp);
+				
+					/*Si existen, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
+					if(pg_num_rows($result_select_mp)>0){
+						for($i=0; $i<pg_num_rows($result_select_mp); $i++){
+							$medioPago = pg_fetch_array($result_select_mp,$i);
+							$idMedioPago = $medioPago[0];
+							$variableOculta = "Hid".$idMedioPago;
+					
+							//Si la variable oculta es != -1 es porque está seleccionada, entonces...
+							if($_POST[$variableOculta] != -1){
+						
+								/*Se inserta el nuevo registro*/			
+								$sql_insert = "INSERT INTO sitio_medio_pago VALUES(nextval('sitio_medio_pago_idsitio_medio_pago_seq'),'".$idSitio."','".$idMedioPago."');";
+								$result_insert = pg_exec($con,$sql_insert);
+						
+								//Si NO se pudo insertar en la tabla el nuevo registro
+								if(!$result_insert){
+									?><script type="text/javascript" language="javascript">
+										alert("¡¡¡ ERROR !!! \n     No se pudo guardar el medio de pago paara este sitio");
+										location.href="listadositios.php";
+									</script><?php
+								}
+							}//end variable oculta != -1
+						}//end for
+					}//end if num rows			
 						
 					/*--------------------------------------------------------------------------------------------------------------
 					*
@@ -223,12 +281,12 @@
 						para redireccionar a diversas páginas según sea el caso
 					*
 					--------------------------------------------------------------------------------------------------------------*/
-					$con = conectarse();
+					/*$con = conectarse();
 				
-					/*Se selecciona el ultimo id asignado al sitio recien creado*/
+					/*Se selecciona el ultimo id asignado al sitio recien creado
 					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
 					$result_select = pg_exec($con, $sql_select);
-					$sitio = pg_fetch_array($result_select,0);
+					$sitio = pg_fetch_array($result_select,0);*/
 						
 					/*Se busca la categoria padre*/
 					$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"].";";					
@@ -333,11 +391,11 @@
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			   	<div class="linea_formulario">
-                	<div class="linea_titulo_2">Datos Básicos del Sitio</div>                    
+                	<div class="linea_titulo_2">Información Básica</div>                    
                 </div>
-				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Tipo de Sitio (*)</div>
-                    <div class="linea_campo_compartido">
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio">Tipo de Sitio (*)</div>
+                    <div class="linea_campo_promedio">
 						<input type="hidden" name="HidSubCategoria" value="-1" />                    	
 						<?php 
 						/*Se buscan todas las subcategorias de la categoria seleccionada*/
@@ -367,9 +425,9 @@
                 	</div>
                 </div>  
 				
-				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Ruta a la que pertenece el sitio (*)</div>
-                    <div class="linea_campo_compartido">
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio">Ruta (*)</div>
+                    <div class="linea_campo_promedio">
 						<input type="hidden" name="HidRuta" value="-1" />
                     	<?php
 						/*Se buscan todas las rutas*/
@@ -398,40 +456,46 @@
 						?>
                     </div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="100"/>
-                    </div>
+				<div class="linea_formulario_doble">
+                	<div class="linea_titulo_doble">Imagen de Perfil (*): <input name="perfil" type="file" id="perfil"/></div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Dirección (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="direccion" name="direccion" maxlength="400"/>
+				<div class="linea_formulario_doble">
+                	<div class="linea_titulo_doble"></div>
+                </div>
+				<div class="linea_formulario_tres_cuartos">
+                	<div class="linea_titulo_tres_cuartos">Nombre del Sitio (*)</div>
+                    <div class="linea_campo_tres_cuartos">
+                    	<input type="text" class="campo_tres_cuartos" id="nombre" name="nombre" maxlength="100"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Teléfono 1 (*)    -   Ejemplo: 0277-3575555</div>
+                	<div class="linea_titulo_compartido">Teléfono 1 (*) [Ej:0277-5123456]</div>
                     <div class="linea_campo_compartido">
                     	<input type="text" class="campo_compartido" id="tel1" name="tel1" maxlength="12"/>
                     </div>					
                 </div>
+				<div class="linea_formulario_tres_cuartos">
+                	<div class="linea_titulo_tres_cuartos">Dirección (*)</div>
+                    <div class="linea_campo_tres_cuartos">
+                    	<input type="text" class="campo_tres_cuartos" id="direccion" name="direccion" maxlength="400"/>
+                    </div>
+                </div>			
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Teléfono 2    -   Ejemplo: 0277-3575555</div>
+                	<div class="linea_titulo_compartido">Teléfono 2 [Ej:0277-5123456]</div>
                     <div class="linea_campo_compartido">
                     	<input type="text" class="campo_compartido" id="tel2" name="tel2" maxlength="12"/>
-                    </div>
-                </div>
-				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Correo electrónico</div>
-                    <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="correo" name="correo" maxlength="60"/>
                     </div>
                 </div>
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Reseña histórica</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="resena" name="resena" maxlength="2000"/>
+                    </div>
+                </div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Correo electrónico</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="correo" name="correo" maxlength="60"/>
                     </div>
                 </div>
 				<div class="linea_formulario_compartido">
@@ -445,21 +509,18 @@
                     <div class="linea_campo_compartido">
                     	<input type="text" class="campo_compartido" id="twitter" name="twitter" maxlength="200"/>
                     </div>
+                </div>				
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Ubicación Geográfica</div>                    
                 </div>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario"></div>
+				<div id="map_canvas" style="width:70%; height:280px; margin-left:auto; margin-right:auto" align="center"></div>
 				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido"></div>
-                    <div class="linea_campo_compartido"></div>
+                	<div class="linea_titulo_compartido_rojo">Busque el sitio en el mapa y haga clic en él</div>
+                    <div class="linea_titulo_compartido_rojo">para cargar las coordenadas</div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Imagen de Perfil (*): <input name="perfil" type="file" id="perfil"/></div>
-                </div>
-				<div class="linea_formulario"></div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo_2">Datos de Ubicación del Sitio</div>                    
-                </div>
-				<div class="linea_formulario"></div>
-				<div class="linea_formulario"></div>
-				<div id="map_canvas" style="width:70%; height:300px; margin-left:auto; margin-right:auto" align="center"></div>
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Latitud (*)</div>
                     <div class="linea_campo_compartido">
@@ -472,10 +533,45 @@
                     	<input type="text" class="campo_compartido" id="longitud" name="longitud" maxlength="200"/>
                     </div>
                 </div>
-				<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido_rojo">Busque el sitio en el mapa y haga clic en él</div>
-                    <div class="linea_titulo_compartido_rojo">para seleccionar las coordenadas del sitio</div>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Medios de Pago Permitidos</div>                    
                 </div>
+				<?php 
+				/*Se buscan todos los medios de pago para que el usuario seleccione los deseados*/
+				$con = conectarse();		
+				$sql_select_mp = "SELECT * FROM medio_pago ORDER BY nombre";
+				$result_select_mp = pg_exec($con, $sql_select_mp);	
+									
+				/*Si existen, se construye una lista con todas*/						
+				if(pg_num_rows($result_select_mp)>0){
+				?>
+				<tr>
+					<td>						
+						<?php
+						for($i=0; $i<pg_num_rows($result_select_mp); $i++){
+							$mediopago = pg_fetch_array($result_select_mp,$i);
+							$idMedioPago = $mediopago[0];
+							$nombre = $mediopago[1];
+							
+							/*Se crean los checkbox de c/comodidad y en el onclick se llama a la funcion que guarda el valor en la 
+							  variable oculta Hid*/
+							echo '<div class="linea_formulario_promedio">';
+								echo '<div class="linea_titulo_promedio">';
+									echo '<div class="linea_campo_promedio">';
+										echo '<input type="hidden" name="Hid'.$idMedioPago.'" value="-1" />';
+										echo '<input type="checkbox" name="'.$idMedioPago.'" value="'.$idMedioPago.'" onclick="guardarChecked('.$idMedioPago.')"/>'.$nombre;										
+									echo '</div>';	
+								echo '</div>';
+							echo '</div>';			
+						}
+						?>
+						</select>							
+					</td>
+				</tr>
+				<?php
+				}
+				?>
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
             	<div class="linea_formulario">
