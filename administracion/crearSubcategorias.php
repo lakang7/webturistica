@@ -108,7 +108,7 @@
 					
 							/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
 							$subir = new imgUpldr;	
-							$nombreImagen = $idSubcategoria."-".$_POST["nombre"];	
+							$nombreImagen = $idSubcategoria."_".$_POST["nombre"];	
 							$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
 							$subir->init($_FILES['icono']);
 							$destino = "imagenes/subcategorias/".$subir->_name;

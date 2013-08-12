@@ -12,6 +12,14 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/default.css" />    
     <link href='http://fonts.googleapis.com/css?family=Oswald:400,700' rel='stylesheet' type='text/css' />       
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBViGAK8QcqvLcl0Pgilw-ENvMhmL88E6A&sensor=true"></script>
+	
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.9.1.js" ></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" ></script>    
@@ -20,7 +28,12 @@
 	
     <script type="text/javascript">  
 	
-		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		/*********************************************************************************************
+		*
+			Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo 
+			espacios en blanco
+		*
+		**********************************************************************************************/
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	campoNombre = formulario.nombre.value;
@@ -37,7 +50,37 @@
 			}			
 			
         	return true;
-	    }
+	    }		
+		/*********************************************************************************************
+		*
+			FUNCION PARA INICIALIZAR EL MAPA, se debe llamar en el onload() de la página
+		*
+		**********************************************************************************************/
+      	function inicializacion() {
+     	     //Se crea un nuevo mapa situado en La Grita
+	         var mapa = new google.maps.Map(document.getElementById("map_canvas"),{center: new google.maps.LatLng(8.1310,-71.9813),zoom: 17,mapTypeId: google.maps.MapTypeId.HYBRID});
+
+     	 	//Se crea un evento asociado a "mapa" cuando se hace "click" sobre el
+		    google.maps.event.addListener(mapa, "click", function(evento) {
+    	 	 
+			 	//Se obtienen las coordenadas por separado
+			     var latitud = evento.latLng.lat();
+    			 var longitud = evento.latLng.lng();
+		
+			     //Se pueden unir en una unica variable
+    			 var coordenadas = evento.latLng.lat() + ", " + evento.latLng.lng();
+
+			     //Se cargan las coordenadas en los campos de texto
+				 document.getElementById("latitud").value = latitud;
+				 document.getElementById("longitud").value = longitud;
+    			 //alert(coordenadas);
+
+	    		 /*Se crea un marcador usando las coordenadas obtenidas y almacenadas por separado en "latitud" y "longitud"
+					/* (para ello se debe crear un punto geografico utilizando google.maps.LatLng) */
+		    	 var coordenadas = new google.maps.LatLng(latitud, longitud); 
+			     var marcador = new google.maps.Marker({position: coordenadas,map: mapa, animation: google.maps.Animation.DROP, title:""});
+     		}); //Fin del evento click
+		} // Fin inicializacion()	
 	</script>
 </head>
 
@@ -93,7 +136,7 @@
 	}
 ?>
 
-<body onload="cargo()">
+<body onload="cargo(),inicializacion()">
 	<div class="banner">        
     </div>
     <div class="menu">    				
@@ -111,8 +154,10 @@
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
             	<div class="linea_formulario">
+                	<div class="linea_titulo_2">Información Básica de la Ruta</div>                    
+                </div>
+				<div class="linea_formulario">
                 	<div class="linea_titulo">Nombre (*)</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" />
@@ -122,6 +167,27 @@
                 	<div class="linea_titulo">Reseña Histórica</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="resena" name="resena" />
+                    </div>
+                </div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Puntos de la ruta</div>                    
+                </div>
+				<div class="linea_formulario"></div>
+				<div id="map_canvas" style="width:70%; height:280px; margin-left:auto; margin-right:auto" align="center"></div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido_rojo">Busque el punto de la ruta en el mapa y haga</div>
+                    <div class="linea_titulo_compartido_rojo">clic en él para cargar las coordenadas</div>
+                </div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio">Latitud (*)</div>
+                    <div class="linea_campo_promedio">
+                    	<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="200"/>
+                    </div>
+                </div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio">Longitud (*)</div>
+                    <div class="linea_campo_promedio">
+                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="200"/>
                     </div>
                 </div>
             	<div class="linea_formulario">

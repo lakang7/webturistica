@@ -77,7 +77,7 @@
 	
 				/*Se sube la imagen a la ruta predefinida*/
 				$subir = new imgUpldr;		
-				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
+				$nombreImagen = $_GET["id"]."_".$_POST["nombre"];	
 				$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
 				$subir->init($_FILES['icono']);
 				//$destino = $subir->_dest.$subir->_name;

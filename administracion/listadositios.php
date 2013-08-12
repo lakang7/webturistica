@@ -46,7 +46,7 @@
         	<table border="1" class="estilo_tabla" id="highlight-table">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Categoría</td><td>Subcategoría</td><td>Nombre Sitio</td><td>Dirección</td><td width="20"></td><td width="20"></td>
+                    	<td align="center">Categoría</td><td align="center">Subcategoría</td><td align="center">Ruta</td><td align="center">Nombre del Sitio</td><td  align="center">Dirección</td><td width="20" align="center">Ver</td><td width="40" align="center">Editar</td><td width="40" align="center">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,16 +81,25 @@
 						$result_categoria = pg_exec($con,$sql_select_categoria);
 						$categoria = pg_fetch_array($result_categoria,0);
 					
+						//Para consultar la ruta
+						$sql_select_ruta = "SELECT nombre FROM ruta WHERE idruta=".$sitio[2];
+						$result_ruta = pg_exec($con,$sql_select_ruta);
+						$ruta = pg_fetch_array($result_ruta,0);
+						
 					    ?>
 						<tr class="row-<?php echo $i+1; ?>">
-							<td><?php echo $categoria[0];?></td>
-							<td><?php echo $subCategoria[2];?></td>
-							<td><?php echo $sitio[3];?></td>
-							<td><?php echo $sitio[4];?></td>
-							<td title="Editar <?php echo $sitio[3]; ?>" style="cursor:pointer;">
+							<td align="center"><?php echo $categoria[0];?></td>
+							<td align="center"><?php echo $subCategoria[2];?></td>
+							<td align="center"><?php echo $ruta[0];?></td>
+							<td align="center"><?php echo $sitio[3];?></td>
+							<td align="center"><?php echo $sitio[4];?></td>
+							<td align="center" title="Ver <?php echo $sitio[3]; ?>">
+								<a href="" ><img src="../imagenes/ver.png" width="16" height="16" /></a>
+							</td>
+							<td align="center" title="Editar <?php echo $sitio[3]; ?>" style="cursor:pointer;">
 								<a href="editarsitios.php?id=<?php echo $idSitio;?>&sub=<?php echo $idSubcategoria;?>&ruta=<?php echo $idRuta;?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
 							</td>
-							<td title="Eliminar <?php echo $sitio[3]; ?>" style="cursor:pointer;">
+							<td title="Eliminar <?php echo $sitio[3]; ?>" style="cursor:pointer;" align="center">
 								<a href="javascript:;" onClick="confirmar('eliminar.php?clave=6&id=<?php echo $idSitio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 							</td>
 						</tr>					    

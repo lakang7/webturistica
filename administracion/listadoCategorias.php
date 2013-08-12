@@ -46,7 +46,7 @@
         	<table border="1" class="estilo_tabla" id="highlight-table">
             	<thead style="background:#F00; color:#FFF;">
 					<tr>
-                    	<td>Código</td><td>Descripción Categoría</td><td width="20"></td><td  width="20"></td>
+                    	<td align="center">Código</td><td align="center">Descripción Categoría</td><td width="20" align="center">Editar</td><td width="20" align="center">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,9 +74,9 @@
 						<td>
 							<?php echo $categoria[1]; ?>
 						</td>
-						<td title="Editar <?php echo $categoria[1]; ?>" style="cursor:pointer;">
+						<td title="Editar <?php echo $categoria[1]; ?>" style="cursor:pointer;" align="center">
 							<a href="editarcategorias.php?id=<?php echo $categoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $categoria[1]; ?>" style="cursor:pointer;">
+						<td title="Eliminar <?php echo $categoria[1]; ?>" style="cursor:pointer;" align="center">
 							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=1&id=<?php echo $idCategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    

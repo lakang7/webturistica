@@ -110,6 +110,7 @@
 			Sino, hay que crear el registro desde cero
 		--------------------------------------------------------------------------------------------------------------------*/
 		if($_GET["idGastro"]!=-1){
+			$idGastronomia = $_GET["idGastro"];
 			//Se prepara el query de update
 			$sql_update = "UPDATE gastronomia SET promedio_comida='".$_POST["promedio_comida"]."', promedio_servicio='".$_POST["promedio_servicio"]."', promedio_ambiente='".$_POST["promedio_ambiente"]."', promedio_higiene='".$_POST["promedio_higiene"]."', promedio_precio='".$_POST["promedio_precio"]."', promedio='".$promedio_general."' WHERE idgastronomia='".$_GET["idGastro"]."' AND idsitio='".$_GET["idSitio"]."';";
 		
@@ -154,6 +155,13 @@
 					location.href="../administracion/listadositios.php";
 				</script><?php	
 			}
+			else{
+				/*Se guarda en una variable el id de la gastronomia para futuros usos*/
+				$sql_select = "SELECT last_value FROM gastronomia_idgastronomia_seq;";
+				$result_select = pg_exec($con, $sql_select);
+				$arreglo = pg_fetch_array($result_select,0);
+				$idGastronomia = $arreglo[0];
+			}
 		}//end $_GET["idGastro"]==-1	
 			
 		/*-------------------------------------------------------------------------------------------------------------------
@@ -172,9 +180,9 @@
 					
 				//Si la variable oculta es != -1 es porque está seleccionada, entonces...
 				if($_POST[$variableOculta] != -1){
-						
+					
 					/*Se inserta el nuevo registro*/			
-					$sql_insert = "INSERT INTO gastronomia_especialidad VALUES( nextval('gastronomia_especialidad_idgastronomia_especialidad_seq'), '".$_GET["idGastro"]."','".$idEspecialidad."');";
+					$sql_insert = "INSERT INTO gastronomia_especialidad VALUES( nextval('gastronomia_especialidad_idgastronomia_especialidad_seq'), '".$idGastronomia."','".$idEspecialidad."');";
 					$result_insert = pg_exec($con,$sql_insert);
 					
 					//Si NO se pudo insertar en la tabla el nuevo registro
@@ -196,6 +204,7 @@
 			Se consulta la tabla servicios para verificar cuales están relacionados con este sitio, de forma tal de 
 			mostrar los respectivos CHECK BOX activos
 		-------------------------------------------------------------------------------------------------------------------*/				
+		$con = conectarse();	
 		$sql_select_servicio = "SELECT * FROM servicio";
 		$result_select_servicio = pg_exec($con, $sql_select_servicio);
 				
@@ -204,13 +213,13 @@
 			for($i=0; $i<pg_num_rows($result_select_servicio); $i++){
 				$servicio = pg_fetch_array($result_select_servicio,$i);
 				$idServicio = $servicio[0];
-				$variableOculta = "Ser".$servicio;
+				$variableOculta = "Ser".$idServicio;
 					
 				//Si la variable oculta es != -1 es porque está seleccionada, entonces...
 				if($_POST[$variableOculta] != -1){
 						
 					/*Se inserta el nuevo registro*/			
-					$sql_insert = "INSERT INTO gastronomia_servicio VALUES( nextval('gastronomia_servicio_idgastronomia_servicios_seq'), '".$_GET["idGastro"]."','".$idServicio."');";
+					$sql_insert = "INSERT INTO gastronomia_servicio VALUES( nextval('gastronomia_servicio_idgastronomia_servicio_seq'), '".$idGastronomia."','".$idServicio."');";
 					$result_insert = pg_exec($con,$sql_insert);
 					
 					//Si NO se pudo insertar en la tabla el nuevo registro
@@ -425,13 +434,13 @@
 										/*Antes de crear el checkbox, se verifica si ese sitio posee esa comodidad para marcarlo*/
 										$valorOculto = -1;
 										
-										/*Si idHospe trae valor != -1 es porque ese sitio ya tenía un registro en la tabla hospedaje*/
+										/*Si idGastro trae valor != -1 es porque ese sitio ya tenía un registro en la tabla gastronomia*/
 										if($_GET["idGastro"]!=-1){
 											if(pg_num_rows($result_sel_gastro_serv)>0){
 												for($j=0; $j<pg_num_rows($result_sel_gastro_serv); $j++){
 													$gastro_serv = pg_fetch_array($result_sel_gastro_serv,$j);
 												
-													//Si posee la comodidad
+													//Si posee el servicio
 													if($gastro_serv[1]==$_GET["idGastro"] && $gastro_serv[2]==$idServicio){
 														$valorOculto = $idServicio;
 														$j = pg_num_rows($result_sel_gastro_serv);

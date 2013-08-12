@@ -50,8 +50,7 @@
 			else if(/^\s+$/.test(campoNombre) || (/^\s+$/.test(campoDir)) || (/^\s+$/.test(campoTel1)) || (/^\s+$/.test(campoLat)) || (/^\s+$/.test(campoLong))){
 				alert("Ningún campo obligatorio puede quedar en blanco, ingrese valores válidos");
             	return false;
-			}		
-			//Para validar el correo	
+			}
         	return true;
 	    }		
 		/*********************************************************************************************
@@ -149,8 +148,8 @@
 <?php
 	if(isset($_POST["Guardar"])){
 		
-		/*Se verifica que haya seleccionado una subcategoria y una ruta, y que haya seleccionado logotipo e imagen de perfil*/
-		if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1 && $_FILES['perfil']['name']!=""/* && $_FILES['logo']['name']!=""*/){
+		/*Se verifica que haya seleccionado una subcategoria y una ruta y que haya seleccionado logotipo e imagen de perfil*/
+		if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1 && $_FILES['perfil']['name']!="" /* && $_FILES['logo']['name']!=""*/){
 			
 			$con = conectarse();
 			
@@ -170,7 +169,7 @@
 						?>
 			        	<script type="text/javascript" language="javascript">
 							alert("¡¡¡ ERROR !!! \n\n     Ese sitio ya existe, por favor ingrese otro nombre");
-							location.href = "crearsitio.php";
+							location.href="../administracion/crearsitio.php";
 						</script>
         				<?php
 					}
@@ -180,24 +179,25 @@
 			/*Si por el contrario, no existe, se crea*/
 			if($yaExiste==0){
 				
-				/*Se inserta el nuevo registro*/			
-				$sql_insert = "INSERT INTO sitio VALUES(nextval('sitio_idsitio_seq'),".$_POST["HidSubCategoria"].",".$_POST["HidRuta"].",'".$_POST["nombre"]."','".$_POST["direccion"]."','".$_POST["tel1"]."','".$_POST["tel2"]."','".$_POST["correo"]."','".$_POST["resena"]."','".$_POST["facebook"]."','".$_POST["twitter"]."','".$_POST["latitud"]."','".$_POST["longitud"]."','');";
-				$result_insert = pg_exec($con,$sql_insert);
-				
-				//Si NO se pudo insertar en la tabla el nuevo registro
-				if(!$result_insert){
-					?>
-        			<script type="text/javascript" language="javascript">
-						alert("ERROR: No se pudo crear el sitio");
-						location.href="listadositios.php";
-					</script>
-			       	<?php	
-				}
-				//Si se insertó el nuevo sitio satisfactoriamente
-				else{						
-					//Si seleccionó imagen de perfil
-					if($_FILES['perfil']['name']!=""){
-											
+				/*----------------------------------------------------------------------------------------------
+				* 								SE VALIDA LA DIRECCION DE CORREO
+				* Se permite la creación del sitio si: Escribió en el campo correo y es correo VALIDO
+				*									   NO escribió en el campo correo
+				----------------------------------------------------------------------------------------------*/
+				if( ($_POST["correo"]!="" && validaEmail($_POST["correo"])) || $_POST["correo"]==""){ 
+					/*Se inserta el nuevo registro*/			
+					$sql_insert = "INSERT INTO sitio VALUES(nextval('sitio_idsitio_seq'),".$_POST["HidSubCategoria"].",".$_POST["HidRuta"].",'".$_POST["nombre"]."','".$_POST["direccion"]."','".$_POST["tel1"]."','".$_POST["tel2"]."','".$_POST["correo"]."','".$_POST["resena"]."','".$_POST["facebook"]."','".$_POST["twitter"]."','".$_POST["latitud"]."','".$_POST["longitud"]."','');";
+					$result_insert = pg_exec($con,$sql_insert);
+					
+					//Si NO se pudo insertar en la tabla el nuevo registro
+					if(!$result_insert){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo crear el sitio");
+							location.href="../administracion/listadositios.php";
+						</script><?php	
+					}
+					//Si se insertó el nuevo sitio satisfactoriamente
+					else{						
 						/*Se selecciona el ultimo id asignado a sitio*/
 						$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
 						$result_select = pg_exec($con, $sql_select);
@@ -205,7 +205,7 @@
 						
 						/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
 						$subirPerfil = new imgUpldr;
-						$nombreImagen = $arreglo[0]."-".$_POST["nombre"];
+						$nombreImagen = $arreglo[0]."_".$_POST["nombre"];
 						$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",450,300);
 						$subirPerfil->init($_FILES['perfil']);
 						$destinoPerfil = "imagenes/sitios/perfil/".$subirPerfil->_name;
@@ -215,159 +215,124 @@
 						$result_update_perfil = pg_exec($con, $sql_update);	
 						
 						if(!$result_update_perfil){
-							?>
-       						<script type="text/javascript" language="javascript">
+							?><script type="text/javascript" language="javascript">
 								alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
 								location.href="../administracion/listadositios.php";
-							</script>
-			       			<?php	
-					    }
-					}//end if($_FILES['perfil']['name']!="")
-					
-					/*Si no seleccionó imagen de perfil*/
-					else{
-						?>
-	        			<script type="text/javascript" language="javascript">
-							alert("¡¡¡ ALERTA !!!\n\nDebe seleccionar una imagen de perfil");
-							location.href="crearsitio.php";
-						</script>
-			    	   	<?php
-					}				
-					
-					/*--------------------------------------------------------------------------------------------------------------
-					*
-						Para crear la relacion sitio_mediopago
-					*
-					--------------------------------------------------------------------------------------------------------------*/
-					$con = conectarse();
-					/*Se selecciona el id del sitio recien creado*/
-					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
-					$result_select = pg_exec($con, $sql_select);
-					$sitio = pg_fetch_array($result_select,0);
-					$idSitio = $sitio[0];
+							</script><?php	
+					    }					
+						/*--------------------------------------------------------------------------------------------------------------
+						*
+							Para crear la relacion sitio_mediopago
+						*
+						--------------------------------------------------------------------------------------------------------------*/
+						$con = conectarse();
+						/*Se selecciona el id del sitio recien creado*/
+						$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
+						$result_select = pg_exec($con, $sql_select);
+						$sitio = pg_fetch_array($result_select,0);
+						$idSitio = $sitio[0];
 			
-					/*Se consultan los medios de pago*/
-					$sql_select_mp = "SELECT * FROM medio_pago";
-					$result_select_mp = pg_exec($con, $sql_select_mp);
+						/*Se consultan los medios de pago*/
+						$sql_select_mp = "SELECT * FROM medio_pago";
+						$result_select_mp = pg_exec($con, $sql_select_mp);
 				
-					/*Si existen, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
-					if(pg_num_rows($result_select_mp)>0){
-						for($i=0; $i<pg_num_rows($result_select_mp); $i++){
-							$medioPago = pg_fetch_array($result_select_mp,$i);
-							$idMedioPago = $medioPago[0];
-							$variableOculta = "Hid".$idMedioPago;
+						/*Si existen, se construye una lista con todas para revisar los checkbox que están seleccionados*/						
+						if(pg_num_rows($result_select_mp)>0){
+							for($i=0; $i<pg_num_rows($result_select_mp); $i++){
+								$medioPago = pg_fetch_array($result_select_mp,$i);
+								$idMedioPago = $medioPago[0];
+								$variableOculta = "Hid".$idMedioPago;
 					
-							//Si la variable oculta es != -1 es porque está seleccionada, entonces...
-							if($_POST[$variableOculta] != -1){
+								//Si la variable oculta es != -1 es porque está seleccionada, entonces...
+								if($_POST[$variableOculta] != -1){
 						
-								/*Se inserta el nuevo registro*/			
-								$sql_insert = "INSERT INTO sitio_medio_pago VALUES(nextval('sitio_medio_pago_idsitio_medio_pago_seq'),'".$idSitio."','".$idMedioPago."');";
-								$result_insert = pg_exec($con,$sql_insert);
+									/*Se inserta el nuevo registro*/			
+									$sql_insert = "INSERT INTO sitio_medio_pago VALUES(nextval('sitio_medio_pago_idsitio_medio_pago_seq'),'".$idSitio."','".$idMedioPago."');";
+									$result_insert = pg_exec($con,$sql_insert);
 						
-								//Si NO se pudo insertar en la tabla el nuevo registro
-								if(!$result_insert){
-									?><script type="text/javascript" language="javascript">
-										alert("¡¡¡ ERROR !!! \n     No se pudo guardar el medio de pago paara este sitio");
-										location.href="listadositios.php";
-									</script><?php
-								}
-							}//end variable oculta != -1
-						}//end for
-					}//end if num rows			
+									//Si NO se pudo insertar en la tabla el nuevo registro
+									if(!$result_insert){
+										?><script type="text/javascript" language="javascript">
+											alert("¡¡¡ ERROR !!! \n     No se pudo guardar el medio de pago para este sitio");
+											location.href="../administracion/listadositios.php";
+										</script><?php
+									}
+								}//end variable oculta != -1
+							}//end for
+						}//end if num rows			
 						
-					/*--------------------------------------------------------------------------------------------------------------
-					*
-						Para saber si el sitio creado es de la categoría padre HOSPEDAJE, GASTRONOMÍA o ninguna de ellas
-						para redireccionar a diversas páginas según sea el caso
-					*
-					--------------------------------------------------------------------------------------------------------------*/
-					/*$con = conectarse();
-				
-					/*Se selecciona el ultimo id asignado al sitio recien creado
-					$sql_select = "SELECT last_value FROM sitio_idsitio_seq;";
-					$result_select = pg_exec($con, $sql_select);
-					$sitio = pg_fetch_array($result_select,0);*/
-						
-					/*Se busca la categoria padre*/
-					$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"].";";					
-					$res_sql_categoria = pg_exec($con, $sql_categoria);
+						/*--------------------------------------------------------------------------------------------------------------
+							Para saber si el sitio creado es de la categoría padre HOSPEDAJE, GASTRONOMÍA o ninguna de ellas
+							para redireccionar a diversas páginas según sea el caso
+						--------------------------------------------------------------------------------------------------------------*/
+						/*Se busca la categoria padre*/
+						$sql_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$_POST["HidSubCategoria"].";";					
+						$res_sql_categoria = pg_exec($con, $sql_categoria);
 					
-					if(pg_num_rows($res_sql_categoria)!=0){
-					
-						$categoria = pg_fetch_array($res_sql_categoria,0);
-						$nombreCategoria = $categoria[1];
+						if(pg_num_rows($res_sql_categoria)!=0){
 						
-						?>
-		        		<script type="text/javascript" language="javascript">
-							alert("¡¡¡ Sitio agregado satisfactoriamente !!!\n\n    A continuación complete más información relacionada con el sitio que acaba de crear");
-						</script>
-					    <?php
+							$categoria = pg_fetch_array($res_sql_categoria,0);
+							$nombreCategoria = $categoria[1];
 						
-						if($nombreCategoria=='Hospedaje'){
-							?>
-		        			<script type="text/javascript" language="javascript">
-								location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $sitio[0];?>;
-							</script>
-					       	<?php
-						}
-						else if($nombreCategoria=='Gastronomía'){
-							?>
-		        			<script type="text/javascript" language="javascript">
-								location.href = "../administracion/creargastronomia.php?idSitio="+<?php echo $sitio[0];?>;
-							</script>
-					       	<?php
-						}
-						else{
-							?>
-		        			<script type="text/javascript" language="javascript">
-								location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $sitio[0];?>;
-							</script>
-					       	<?php
-						}
-					}//end if																
-				}//end else	del if(!$result_insert)				
+							?><script type="text/javascript" language="javascript">
+								alert("¡¡¡ Sitio agregado satisfactoriamente !!!\n\n    A continuación complete más información relacionada con el sitio que acaba de crear");</script><?php
+						
+							if($nombreCategoria=='Hospedaje'){
+								?><script type="text/javascript" language="javascript">
+									location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $sitio[0];?>;
+								</script><?php
+							}
+							else if($nombreCategoria=='Gastronomía'){
+								?><script type="text/javascript" language="javascript">
+									location.href = "../administracion/creargastronomia.php?idSitio="+<?php echo $sitio[0];?>;
+								</script><?php
+							}
+							else{
+								?><script type="text/javascript" language="javascript">
+									location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $sitio[0];?>;
+								</script><?php
+							}
+						}//end if																
+					}//end else	del if(!$result_insert)	
+				}//end validacion de correo electronico
+				else{
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!!\n\n    Correo inválido");
+						location.href = "../administracion/crearsitio.php";
+					</script><?php
+				}
 			}//end if($yaExiste==0)
 		}//end if($_POST["HidSubCategoria"]!=-1 && $_POST["HidRuta"]!=-1)
 		
-		//Si las variables de SUBCATEGORIA y RUTA están en -1 es porque NO se ha seleccionado el combo
+		//Si las variables de SUBCATEGORIA, RUTA E IMAGEN DE PERFIL están en -1 es porque NO se ha seleccionado el combo
 		else{
-			?>
-			<script language="JavaScript" type="text/javascript">
-				var cont=1;
+			?><script language="JavaScript" type="text/javascript">
+				var cont = 1;
 				var txt = "¡¡¡ ALERTA !!!! Debe seleccionar...\n";
-			</script>
-			<?php
+			</script><?php
+			/*Falta seleccionar la SUBCATEGORIA*/
 			if($_POST["HidSubCategoria"]==-1){
-				?>
-				<script type="text/javascript" language="javascript">
+				?><script type="text/javascript" language="javascript">
 					txt += "\n"+cont+") Tipo de Sitio";
 					cont++;
-				</script>
-				<?php
-			}
-			
+				</script><?php
+			}			
+			/*Falta seleccionar la RUTA*/
 			if($_POST["HidRuta"]==-1){
-				?>
-				<script type="text/javascript" language="javascript">
+				?><script type="text/javascript" language="javascript">
 					txt += "\n"+cont+") Ruta a la que pertenece el sitio";
 					cont++;
-				</script>
-				<?php
-			}
-			
+				</script><?php
+			}			
+			/*Falta seleccionar la IMAGEN DE PERFIL*/
 			if($_FILES['perfil']['name']==""){
-				?>
-				<script type="text/javascript" language="javascript">
+				?><script type="text/javascript" language="javascript">
 					txt += "\n"+cont+") Imagen de perfil";
 					cont++;
-				</script>
-				<?php
+				</script><?php
 			}
-			?>
-				<script type="text/javascript" language="javascript">
-					alert(txt);
-				</script>
-				<?php
+			/*Muestra el mensaje alertando los campos que falta por completar*/
+			?><script type="text/javascript" language="javascript">alert(txt);</script><?php
 		}		
 	}
 ?>
@@ -421,6 +386,15 @@
 						</tr>
 						<?php
 						}
+						else{
+							?><tr>
+								<td>
+									<select name="subcategoria" id="subcategoria">
+										<option value="-1">No hay registros cargados</option>
+									</select>
+							  </td>
+							</tr><?php    
+						}
 						?>	
                 	</div>
                 </div>  
@@ -453,12 +427,22 @@
 							</tr>									    
 							<?php            		   		
 						}
+						else{
+							?><tr>
+								<td>
+									<select name="ruta" id="ruta">
+										<option value="-1">No hay rutas cargadas</option>
+									</select>
+							  </td>
+							</tr><?php    
+						}
 						?>
                     </div>
                 </div>
-				<div class="linea_formulario_doble">
-                	<div class="linea_titulo_doble">Imagen de Perfil (*): <input name="perfil" type="file" id="perfil"/></div>
-                </div>
+				<div class="linea_formulario_promedio">
+					<div class="linea_titulo_promedio">Imagen de Perfil (*): </div>
+					<div class="linea_campo_promedio"><input name="perfil" type="file" id="perfil"/></div>
+				</div>
 				<div class="linea_formulario_doble">
                 	<div class="linea_titulo_doble"></div>
                 </div>
@@ -570,6 +554,12 @@
 					</td>
 				</tr>
 				<?php
+				}
+				else{?>
+					<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">No hay medios de pago cargados</div>                  
+	                </div>
+					<?php
 				}
 				?>
 				<div class="linea_formulario"></div>

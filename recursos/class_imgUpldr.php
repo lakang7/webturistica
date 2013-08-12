@@ -11,8 +11,8 @@ Publicada bajo licencia Creative Commons Atribución-LicenciarIgual 3.0 Unported
 class imgUpldr {
 	# Variables #
 	private $_exts = array("image/jpg", "image/jpeg", "image/png", "image/gif"); // Tipos de archivos soportados
-	private $_width = 640; // Ancho máximo por defecto
-	private $_height = 420; // Alto máximo por defecto
+	private $_width = 1500; // Ancho máximo por defecto
+	private $_height = 1500; // Alto máximo por defecto
 	private $_size = 200000000; // Peso máximo. MAX_FILE_SIZE sobrescribe este valor
 	private $_name = "imagen"; // Nombre por defecto 
 	private $_dest = "";

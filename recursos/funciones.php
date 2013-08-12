@@ -9,7 +9,6 @@
 	    return $conexion;		
 	}
 
-
 	function Codigo($prefijo,$numero){
 		$codigo=$prefijo;																
 		if($numero>9999){
@@ -39,7 +38,27 @@
 		}
 		return $aux;
 	}
-
+	
+	/*Funcion para validar el email*/
+	function validaEmail($email){ 
+	  if (!ereg("^([a-zA-Z0-9._]+)@([a-zA-Z0-9.-]+).([a-zA-Z]{2,4})$",$email)){ 
+      	return FALSE; 
+  	  } 
+	  else { 
+         return TRUE; 
+	  } 
+	}
+	
+	/*Funcion para eliminar archivo de una ruta*/
+	function borrarArchivo($ruta){
+		if(file_exists($ruta)){
+			unlink($ruta);
+			return true; //para indicar que lo borro satisfactoriamente
+		}
+		else{
+			return false;
+		}
+	}
 	
 	function menu_administrativo(){
 				echo "<div class='container demo-0'>";

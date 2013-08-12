@@ -147,7 +147,7 @@
 			//Si ya existen registros en hospedaje_comodidad y hospedaje_tipo_habitacion asociados a ESE sitio, se eliminan
 			$sql_delete = "DELETE FROM hospedaje_comodidad WHERE idhospedaje=".$_GET["idHospe"];
 			$result_delete = pg_exec($con,$sql_delete);
-						
+					
 			$sql_delete_2 = "DELETE FROM hospedaje_tipo_habitacion WHERE idhospedaje=".$_GET["idHospe"];
 			$result_delete_2 = pg_exec($con,$sql_delete_2);
 			
@@ -178,8 +178,8 @@
 		}
 			
 		/*-------------------------------------------------------------------------------------------------------------------
-			Se consulta la tabla comodidad para verificar cuales están relacionadas con este sitio, de forma tal de 
-			mostrar los respectivos CHECK BOX activos
+			Luego, se consulta la tabla comodidad para verificar cuales están relacionadas con este sitio, de forma tal de 
+			guardar los respectivos CHECK BOX que están activos
 		-------------------------------------------------------------------------------------------------------------------*/
 		$sql_select_comodidad = "SELECT * FROM comodidad";
 		$result_select_comodidad = pg_exec($con, $sql_select_comodidad);
@@ -210,9 +210,8 @@
 		}//end if num rows result_select_comodidad
 				
 		/*-------------------------------------------------------------------------------------------------------------------
-		Se consulta la tabla hospedaje_tipo_habitacion para PRIMERO ELIMINAR cualquier registro que haya relacionado con
-		especialidades asociadas a ESTE sitio, pues al editar un sitio, puede o AGREGAR o QUITAR comodidades 
-		entonces es mejor eliminarlas todas primero y luego si agregarlas de nuevo
+			Luego, se consulta la tabla tipo_habitacion para verificar cuales están relacionadas con este sitio, de forma  
+			tal de guardar los respectivos CHECK BOX que están activos
 		-------------------------------------------------------------------------------------------------------------------*/
 		/*Se consulta los tipos de habitacion*/
 		$sql_select_tipo = "SELECT * FROM tipo_habitacion";
@@ -228,7 +227,8 @@
 				
 				//Si la variable oculta es != -1 es porque está seleccionada, entonces...
 				if($_POST[$variableOculta] != -1){
-						
+					
+					$algunoNoEsNumerico = 0;
 					/*Si los campos de nro de habitaciones tienen datos y son NUMERICOS, se inserta el nuevo registro*/								
 					if($_POST[$campoTexto]!="" && is_numeric($_POST[$campoTexto])){
 						$sql_insert = "INSERT INTO hospedaje_tipo_habitacion VALUES(nextval('hospedaje_tipo_habitacion_idhospedaje_tipo_habitacion_seq'),'".$idTipo."','".$_GET["idHospe"]."','".$_POST[$campoTexto]."');";
@@ -257,7 +257,7 @@
 				       		<?php
 						}
 					}
-					/*Si algun campo esta vacio o no es numerico*/
+					/*Finalmente, si algun campo esta vacio o no es numerico*/
 					else{
 						$algunoNoEsNumerico = 1;
 					}						

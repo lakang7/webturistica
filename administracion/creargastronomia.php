@@ -100,46 +100,51 @@
 		
 		$con = conectarse();
 		
-		//Si ya existen registros en GASTRONOMIA correspondientes a ESTE sitio, se deben eliminar PRIMERO
-		$sql_sel_gastronomia = "SELECT * FROM gastronomia WHERE idsitio=".$_GET["idSitio"];
-		$result_sql_gastronomia = pg_exec($con,$sql_sel_gastronomia);
-		if(pg_num_rows($result_sql_gastronomia)>0){
-			$sql_delete_gastronomia = "DELETE FROM hospedaje WHERE idsitio=".$_GET["idSitio"];
-			$result_sql_delete_gastronomia = pg_exec($con,$sql_delete_gastronomia);
-			if(!$result_sql_delete_gastronomia){
-				?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ ERROR !!! \n     No se podrá crear el hospedaje, por favor inténtelo de nuevo");
-				location.href="crearhospedaje.php?idSitio=".$_GET["idSitio"];
-			</script><?php	
-			}
-		}	
-			
 		//Se calcula el promedio GENERAL entre todos los promedios
 		$suma_promedios = $_POST["promedio_comida"]+$_POST["promedio_servicio"]+$_POST["promedio_ambiente"]+$_POST["promedio_higiene"]+$_POST["promedio_precio"];
 		$promedio_general = $suma_promedios/5;
+		
+		$sql_sel_gastronomia = "SELECT * FROM gastronomia WHERE idsitio=".$_GET["idSitio"];
+		$result_sql_gastronomia = pg_exec($con,$sql_sel_gastronomia);
+		
+		if(pg_num_rows($result_sql_gastronomia)>0){
+			$gastronomia = pg_fetch_array($result_sql_gastronomia,0);
+			$idGastronomia = $gastronomia[0];
+			$sql_update = "UPDATE gastronomia SET promedio_comida='".$_POST["promedio_comida"]."', promedio_servicio='".$_POST["promedio_servicio"]."', promedio_ambiente='".$_POST["promedio_ambiente"]."', promedio_higiene='".$_POST["promedio_higiene"]."', promedio_precio='".$_POST["promedio_precio"]."', promedio='".$promedio_general."' WHERE idsitio='".$_GET["idSitio"]."';";
 			
-		/*Se inserta el nuevo registro*/			
-		$sql_insert = "INSERT INTO gastronomia VALUES(nextval('gastronomia_idgastronomia_seq'),'".$_GET["idSitio"]."','".$_POST["promedio_comida"]."','".$_POST["promedio_servicio"]."','".$_POST["promedio_ambiente"]."','".$_POST["promedio_higiene"]."','".$_POST["promedio_precio"]."','".$promedio_general."');";
-		$result_insert = pg_exec($con,$sql_insert);
-				
-		//Si NO se pudo insertar en la tabla el nuevo registro
-		if(!$result_insert){
-			?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ ERROR !!! \n     No se pudieron guardar los promedios");
-				location.href="listadositios.php";
-			</script>
-		   	<?php	
+			$result_sql_update_gastronomia = pg_exec($con,$sql_update);
+			if(!$result_sql_update_gastronomia){
+				?><script type="text/javascript" language="javascript">
+				alert("¡¡¡ ERROR !!! \n     No se podrá crear la gastronomía, por favor inténtelo de nuevo");
+				location.href="creargastronomia.php?idSitio="+<?php echo $_GET["idSitio"]; ?>;
+			</script><?php	
+			}		
 		}
 		
-		//Si se pudieron insertar en la tabla 'hospedaje' los promedios, se procede a guardar las comodidades de ese hospedaje
+		/*Sino se crean desde CERO*/
 		else{
+			/*Se inserta el nuevo registro*/			
+			$sql_insert = "INSERT INTO gastronomia VALUES(nextval('gastronomia_idgastronomia_seq'),'".$_GET["idSitio"]."','".$_POST["promedio_comida"]."','".$_POST["promedio_servicio"]."','".$_POST["promedio_ambiente"]."','".$_POST["promedio_higiene"]."','".$_POST["promedio_precio"]."','".$promedio_general."');";
+			$result_insert = pg_exec($con,$sql_insert);
+			
+			//Si NO se pudo insertar en la tabla el nuevo registro
+			if(!$result_insert){
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ERROR !!! \n     No se pudieron guardar los promedios");
+					location.href="listadositios.php";
+				</script><?php	
+			}
+			
 			/*Se selecciona el id del hospedaje recien creado*/
 			$sql_select = "SELECT last_value FROM gastronomia_idgastronomia_seq;";
 			$result_select = pg_exec($con, $sql_select);
 			$arreglo = pg_fetch_array($result_select,0);
 			$idGastronomia = $arreglo[0];
-			
+		
+		}	
+		
+		//Si se pudieron insertar en la tabla 'hospedaje' los promedios, se procede a guardar las comodidades de ese hospedaje
+		else{
 			/*---------------------------------------------------------------------------------------------------------------
 			*					 
 			*										PARA CREAR LAS ESPECIALIDADES DEL SITIO
@@ -165,12 +170,10 @@
 						
 						//Si NO se pudo insertar en la tabla el nuevo registro
 						if(!$result_insert){
-							?>
-    		    			<script type="text/javascript" language="javascript">
+							?><script type="text/javascript" language="javascript">
 								alert("¡¡¡ ERROR !!! \n     No se pudo guardar la especialidad para este sitio de gastronomía");
 								location.href="listadositios.php";
-							</script>
-					       	<?php
+							</script><?php
 						}
 					}//end variable oculta != -1
 				}//end for
@@ -195,7 +198,7 @@
 					if($_POST[$variableOculta] != -1){
 						
 						/*Se inserta el nuevo registro*/			
-						$sql_insert = "INSERT INTO gastronomia_servicio VALUES(nextval('gastronomia_servicio_idgastronomia_servicios_seq'),'".$idGastronomia."','".$idServicio."');";
+						$sql_insert = "INSERT INTO gastronomia_servicio VALUES(nextval('gastronomia_servicio_idgastronomia_servicio_seq'),'".$idGastronomia."','".$idServicio."');";
 						$result_insert = pg_exec($con,$sql_insert);
 						
 						//Si NO se pudo insertar en la tabla el nuevo registro

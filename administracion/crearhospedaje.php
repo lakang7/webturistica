@@ -117,7 +117,7 @@
 			if(!$result_sql_update_hospedaje){
 				?><script type="text/javascript" language="javascript">
 				alert("¡¡¡ ERROR !!! \n     No se podrá crear el hospedaje, por favor inténtelo de nuevo");
-				location.href="crearhospedaje.php?idSitio=".$_GET["idSitio"];
+				location.href="crearhospedaje.php?idSitio="+<?php echo $_GET["idSitio"]; ?>;
 			</script><?php	
 			}		
 		}
@@ -142,9 +142,6 @@
 			$arreglo = pg_fetch_array($result_select,0);
 			$idHospedaje = $arreglo[0];
 		}
-		
-		//Si se pudieron insertar en la tabla 'hospedaje' los promedios...
-		//else{
 		
 		/*---------------------------------------------------------------------------------------------------------------
 		*					 
@@ -245,8 +242,7 @@
 		?><script type="text/javascript" language="javascript">
 			alert("¡¡¡ Hospedaje agregado satisfactoriamente !!!");
 			location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
-		</script><?php
-		//}//end else		
+		</script><?php	
 	}
 ?>
 

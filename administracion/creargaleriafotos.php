@@ -101,10 +101,15 @@
 					/*------------------------------------------------------------------------------------------------------------
 					*  					   	        SE GUARDA EN LA CARPETA LA FOTO EN TAMAÑO PEQUEÑO
 					------------------------------------------------------------------------------------------------------------*/
+					/*include_once("../recursos/class_imgUpldr.php");
 					$subirP = new imgUpldr;
 					$nombreImagenPeque = "Peque_".$arreglo[0]."_".$nombreSitio;
 					$subirP->configurar($nombreImagenPeque, "../imagenes/sitios/galeria/",200,150);
-					$subirP->init($_FILES['foto']);	
+					$subirP->init($_FILES['foto']);	*/
+					
+					$nombreImagenPeque = "Peque_".$arreglo[0]."_".$nombreSitio;
+					$subir->configurar($nombreImagenPeque, "../imagenes/sitios/galeria/",200,150);
+					$subir->init($_FILES['foto']);
 					
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
 					$sql_update = "UPDATE foto_sitio SET foto='".$destino."' WHERE idfoto_sitio='".$arreglo[0]."'";
@@ -120,7 +125,7 @@
 					}	
 					
 					?><script type="text/javascript" language="javascript">
-						alert("¡¡¡ Fotografía almacenada exitosamente !!!");
+						//alert("¡¡¡ Fotografía almacenada exitosamente !!!");
 						location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 					</script><?php
 				}							
@@ -235,7 +240,7 @@
 				
 							else{?>
 								<tr style="background:#F00; color:#FFF;" align="center">
-	                    			<td width="20">No.</td><td width="100">Fecha</td><td>Fotografía</td><td width="20"></td><td width="20"></td>
+	                    			<td width="20">No.</td><td width="100">Fecha</td><td>Fotografía</td><td width="20">Ver</td><td width="20">Eliminar</td>
     	                		</tr>
 								<?php
 								for($i=0;$i<pg_num_rows($result_select);$i++){

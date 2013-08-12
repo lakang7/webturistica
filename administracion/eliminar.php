@@ -220,49 +220,112 @@ if($_GET["clave"]==5){
 ------------------------------------------------------------------------------------------------------------------------------*/
 if($_GET["clave"]==6){
 	
-	 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
-	 $sql_select_sitio = "SELECT count(*) FROM sitio_medio_pago WHERE idsitio='".$_GET["id"]."'";
-	 $result_select_sitio = pg_exec($con,$sql_select_sitio);
-	 $tieneHijos_smp = pg_fetch_array($result_select_sitio,0);
-		 
-	 $sql_select_horario = "SELECT count(*) FROM horario WHERE idsitio='".$_GET["id"]."'";
-	 $result_select_horario = pg_exec($con,$sql_select_horario);
-	 $tieneHijos_horario = pg_fetch_array($result_select_horario,0);
-		 
-	 $sql_select_gastro = "SELECT count(*) FROM gastronomia WHERE idsitio='".$_GET["id"]."'";
-	 $result_select_gastro = pg_exec($con,$sql_select_gastro);
-	 $tieneHijos_gastronomia = pg_fetch_array($result_select_gastro,0);
-		 
-	 $sql_select_hospedaje = "SELECT count(*) FROM hospedaje WHERE idsitio='".$_GET["id"]."'";
-	 $result_select_hospedaje = pg_exec($con,$sql_select_hospedaje);
-	 $tieneHijos_hospedaje = pg_fetch_array($result_select_hospedaje,0);
-		 
-	 $sql_select_foto = "SELECT count(*) FROM foto_sitio WHERE idsitio='".$_GET["id"]."'";
-	 $result_select_foto = pg_exec($con,$sql_select_foto);
-	 $tieneHijos_foto = pg_fetch_array($result_select_foto,0);
+	 $sql_sel_sitio = "SELECT * FROM sitio WHERE idsitio='".$_GET["id"]."'";
+	 $result_sel_sitio = pg_exec($con,$sql_sel_sitio);
+	 $sitio = pg_fetch_array($result_sel_sitio,0); 
+	 $idSubcategoria = $sitio[1];
+	 
+	 $sql_sel_categoria = "SELECT * FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria=".$idSubcategoria;
+	 $result_sel_categoria = pg_exec($con,$sql_sel_categoria);
+	 $categoria = pg_fetch_array($result_sel_categoria,0);
+	 $nombreCategoria = $categoria[1];
+	 
+	 /*------------------------Si el sitio a eliminar es HOSPEDAJE------------------------*/
+	 if($nombreCategoria=='Hospedaje'){
+	 	/*Se consultan todos los hospedajes asociados a ese sitio*/
+	 	$sql_sel_hospe = "SELECT * FROM hospedaje WHERE idsitio='".$_GET["id"]."'";
+		$result_sel_hospe = pg_exec($con,$sql_sel_hospe);
+		
+		if(pg_num_rows($result_sel_hospe)>0){		
+			/*Para cada uno se eliminan los posibles hijos*/
+			for($i=0; $i<pg_num_rows($result_sel_hospe); $i++){
+				$hospedaje = pg_fetch_array($result_sel_hospe,$i);
+				
+				$sql_del_hospe_como = "DELETE FROM hospedaje_comodidad WHERE idhospedaje='".$hospedaje[0]."'";
+				$result_del_hospe_como = pg_exec($con, $sql_del_hospe_como);
+			
+				$sql_del_hospe_tipo = "DELETE FROM hospedaje_tipo_habitacion WHERE idhospedaje='".$hospedaje[0]."'";
+				$result_del_hospe_tipo = pg_exec($con, $sql_del_hospe_tipo);
+			}
+			/*Finalmente se elimina el hospedaje*/
+			$sql_del_hospe = "DELETE FROM hospedaje WHERE idsitio='".$_GET["id"]."'";
+			$result_del_hospe = pg_exec($con, $sql_del_hospe);	
+			if($result_del_hospe_tipo){$listoParaEliminar++;}		
+		}	 	
+	 }//end eliminar hospedaje
+	 
+	 /*------------------------Si el sitio a eliminar es GASTRONOMIA------------------------*/
+	 else if($nombreCategoria=='Gastronomía'){
+	    /*Se consultan todas las gastronomias asociadas a ese sitio*/
+	 	$sql_sel_gastro = "SELECT * FROM gastronomia WHERE idsitio='".$_GET["id"]."'";
+		$result_sel_gastro = pg_exec($con,$sql_sel_gastro);
+		if(pg_num_rows($result_sel_gastro)>0){		
+			/*Para cada uno se eliminan los posibles hijos*/
+			for($i=0; $i<pg_num_rows($result_sel_gastro); $i++){
+				$gastronomia = pg_fetch_array($result_sel_gastro,$i);
+				
+				$sql_del_gastro_ser = "DELETE FROM gastronomia_servicio WHERE idgastronomia='".$gastronomia[0]."'";
+				$result_del_gastro_ser = pg_exec($con, $sql_del_gastro_ser);
+			
+				$sql_del_gastro_espe = "DELETE FROM gastronomia_especialidad WHERE idgastronomia='".$gastronomia[0]."'";
+				$result_del_gastro_espe = pg_exec($con, $sql_del_gastro_espe);								
+			}
+			/*Finalmente se elimina la gastronomia*/
+			$sql_del_gastro = "DELETE FROM gastronomia WHERE idsitio='".$_GET["id"]."'";
+			$result_del_gastro = pg_exec($con, $sql_del_gastro);
+		}		
+	 }//end eliminar gastronomía
+	 
+	/*------------------------Luego se elimina lo común a todos los sitios------------------------*/
+	$sql_del_sitio_mp = "DELETE FROM sitio_medio_pago WHERE idsitio='".$_GET["id"]."'";
+	$result_del_sitio_mp = pg_exec($con, $sql_del_sitio_mp);
 	
-     if($tieneHijos_smp[0]==0 && $tieneHijos_horario[0]==0 && $tieneHijos_gastronomia[0]==0 && $tieneHijos_hospedaje[0]==0 && $tieneHijos_foto[0]==0){
-	 	 $sql_delete = "DELETE FROM sitio WHERE idsitio='".$_GET["id"]."'";
-		 $result_delete = pg_exec($con,$sql_delete);
-			 
-		 if(!$result_delete){
-		 	?><script type="text/javascript" language="javascript">
-		 		alert("¡¡¡ ERROR !!! \n     El sitio no pudo ser eliminado");
-			</script><?php
-		 }else{
-		 	?><script type="text/javascript" language="javascript">
-		 		alert("¡¡¡ Sitio eliminado satisfactoriamente !!! ");					
-			</script><?php
-		 }?>
-		 <script type="text/javascript" language="javascript">
-		 	location.href="../administracion/listadositios.php";				
-		 </script><?php			 
+	//Elimino las fotos de galeria de ese sitio, de la carpeta
+	$sql_sel_imagenes = "SELECT * FROM foto_sitio WHERE idsitio='".$_GET["id"]."'";
+	$res_sel_imagenes = pg_exec($con, $sql_sel_imagenes);
+	if(pg_num_rows($res_sel_imagenes)>0){
+		for($i=0; $i<pg_num_rows($res_sel_imagenes); $i++){
+			$galeria = pg_fetch_array($res_sel_imagenes,$i);
+			$imagenGrande = $galeria["foto"];
+			$borrarFoto = borrarArchivo("../".$imagenGrande);	
+			
+			// Reemplazo del nombre de la imagen, el "Grande_" por "Peque_"
+			$imagenPeque = str_replace("Grande_", "Peque_", $imagenGrande);
+			$borrarFoto = borrarArchivo("../".$imagenPeque);	
+		}
+	}
+	
+	$sql_del_foto_sitio = "DELETE FROM foto_sitio WHERE idsitio='".$_GET["id"]."'";
+	$result_del_foto_sitio = pg_exec($con, $sql_del_foto_sitio);
+	
+	$sql_del_horario = "DELETE FROM horario WHERE idsitio='".$_GET["id"]."'";
+	$result_del_horario = pg_exec($con, $sql_del_horario);
+
+	/*------------------------ANTES de eliminar el sitio, elimino la imagen de perfil de la carpeta------------------------*/
+	$sql_sel_imagen = "SELECT * FROM sitio WHERE idsitio='".$_GET["id"]."'";
+	$res_sel_imagen = pg_exec($con, $sql_sel_imagen);
+	if(pg_num_rows($res_sel_imagen)>0){
+		for($i=0; $i<pg_num_rows($res_sel_imagen); $i++){
+			$sitio = pg_fetch_array($res_sel_imagen,$i);
+			$imagen = $sitio["imagen_perfil"];
+			$borrarImagen = borrarArchivo("../".$imagen);
+		}
+	}
+
+	/*------------------------Finalmente se elimina EL SITIO------------------------*/
+	 $sql_delete = "DELETE FROM sitio WHERE idsitio='".$_GET["id"]."'";
+	 $result_delete = pg_exec($con,$sql_delete);
+	 if(!$result_delete){
+	 	?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ Error !!!\n\n     No se pudo eliminar el sitio");
+		    location.href="../administracion/listadositios.php";				
+  	    </script><?php		 
 	 }else{
-	 ?><script type="text/javascript" language="javascript">
-		alert("ERROR: El sitio NO PUEDE SER ELIMINADO ya que existen registros en otras tablas que dependen de él.\n\n(Si realmente desea eliminar este sitio, primero elimine todos los registros asociados a él)");
-		location.href="../administracion/listadositios.php";
-	 </script><?php		 			 
-	 }
+	 	?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ Sitio eliminado satisfactoriamente !!!");
+		    location.href="../administracion/listadositios.php";				
+  	    </script><?php	
+	 }	 
 }//end CLAVE=6 ELIMINAR SITIO
 /*------------------------------------------------------------------------------------------------------------------------------
 *
@@ -273,9 +336,18 @@ if($_GET["clave"]==7){
 	
 	$sql_select = "SELECT * FROM foto_sitio WHERE idfoto_sitio='".$_GET["id"]."'";
 	$result_select = pg_exec($con,$sql_select);
-	$sitio = pg_fetch_array($result_select,0);
-	$idSitio = $sitio[1];
+	$foto_sitio = pg_fetch_array($result_select,0);
+	$idSitio = $foto_sitio[1];
 
+	//Primero se elimina la imagen de la ruta especificada por parametro
+	$imagenGrande = $foto_sitio["foto"];
+	$borrarFoto = borrarArchivo("../".$imagenGrande);	
+		
+	// Reemplazo del nombre de la imagen, el "Grande_" por "Peque_" para borrar la imagen pequeña
+	$imagenPeque = str_replace("Grande_", "Peque_", $imagenGrande);
+	$borrarFoto = borrarArchivo("../".$imagenPeque);
+
+	//Luego si se elimina el registro en foto_sitio de la BD
 	$sql_delete = "DELETE FROM foto_sitio WHERE idfoto_sitio='".$_GET["id"]."'";	
 	$result_delete = pg_exec($con,$sql_delete);
 			 

@@ -40,15 +40,36 @@
 
 <?php
 	if(isset($_POST["Guardar"])){
-		//5_Cheque conformable			
-		//unlink(“./tutoriales/videotutoriales.fla”);
-		$archivo = "../imagenes/mediosdepago/2_Tarjeta de Crédito.png";
-		if(unlink($archivo)){ ?>
-		<script language="JavaScript" type="text/javascript">
-			alert("Elimino el archivo");
-		</script><?php
-
-		}
+		//if(validaEmail("correo@gmail.com")){ 
+			
+			/*$con = conectarse();
+			$sql_sel = "SELECT * FROM sitio WHERE idsitio=4;";
+			$res_sql = pg_exec($con, $sql_sel);
+			if(pg_num_rows($res_sql)>0){
+				for($i=0; $i<pg_num_rows($res_sql); $i++){
+				$arreglo = pg_fetch_array($res_sql,$i);
+				$campo = $arreglo["imagen_perfil"];
+				echo "../".$campo;
+				$loBorro = borrarArchivo("../".$campo);	
+				echo $loBorro;
+				}
+			}*/
+			$loBorro = borrarArchivo("../imagenes/sitios/galeria/Grande_1_Aldea Quintanera Grande.jpg");
+			$ruta = str_replace("Grande_", "Peque_", "../imagenes/sitios/galeria/Grande_1_Aldea Quintanera Grande.jpg");
+			$loBorro = borrarArchivo($ruta);	
+				
+			/*if(file_exists($rutaImagen){
+				?><script language="JavaScript" type="text/javascript">
+				alert("La imagen existe");
+				</script><?php
+			    //unlink("./" . $_GET['archivo']);
+			}*/
+		/*}
+		else{
+			?><script language="JavaScript" type="text/javascript">
+				alert("NO VALIDO");
+			</script><?php
+		}*/
 	}
 ?>
 
@@ -70,13 +91,6 @@
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
-            	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Categoría</div>
-                    <div class="linea_campo">
-                    	<input type="checkbox" name="prueba" value="prueba" />
-                    </div>
-                </div>
             	<div class="linea_formulario">
 	              <input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />
                 </div>
