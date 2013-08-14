@@ -26,6 +26,7 @@ create table ruta(
    idruta SERIAL,
    nombre VARCHAR(100) NOT NULL,
    resena VARCHAR(1200),
+   foto_portada VARCHAR(200),
    CONSTRAINT pk_ruta PRIMARY KEY (idruta)   
 );
 
@@ -100,14 +101,19 @@ create table gastronomia_especialidad(
    CONSTRAINT fk_gastronomia_especialidad_idespecialidad FOREIGN KEY (idespecialidad) REFERENCES especialidad (idespecialidad)
 );
 
-create table punto_ruta(
-   idpunto_ruta SERIAL,
-   idruta INTEGER NOT NULL,
-   latitud VARCHAR(200) NOT NULL,
-   longitud VARCHAR(200) NOT NULL,
-   CONSTRAINT pk_punto_ruta PRIMARY KEY (idpunto_ruta),
-   CONSTRAINT fk_punto_ruta_idruta FOREIGN KEY (idruta) REFERENCES ruta (idruta)
-);
+CREATE TABLE punto_ruta(
+  idpunto_ruta serial NOT NULL,
+  idruta integer NOT NULL,
+  latitud character varying(200) NOT NULL,
+  longitud character varying(200) NOT NULL,
+  nro_secuencia integer,
+  foto_portada character varying(200),
+  resena character varying(1200),
+  CONSTRAINT pk_punto_ruta PRIMARY KEY (idpunto_ruta),
+  CONSTRAINT fk_punto_ruta_idruta FOREIGN KEY (idruta)
+      REFERENCES ruta (idruta) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
 
 create table foto_ruta(
    idfoto_ruta SERIAL,

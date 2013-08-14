@@ -173,6 +173,14 @@ body{
 	margin-bottom:0px;	
 }
 
+.linea_formulario_parrafo{
+	float:left;
+	width:550px;
+	height:300px;
+	margin:10px;
+	margin-bottom:0px;	
+}
+
 .linea_titulo{
 	float:left;
 	width:860px;
@@ -294,6 +302,13 @@ body{
 	height:25px;		
 }
 
+/*Para parrafos*/
+.linea_campo_parrafo{
+	float:left;
+	width:550px;
+	height:300px;		
+}
+
 .campo{
 	float:left;
 	margin:0px;
@@ -331,6 +346,15 @@ body{
 	margin:0px;
 	width:155px;
 	height:25px;	
+}
+
+/*Para dar estilo a campos de muchos caracteres (1000 o mas)*/
+.campo_parrafo{
+	float:left;
+	margin:0px;
+	width:550px;
+	height:300px;		
+	overflow-y:scroll;
 }
 
 .pie{

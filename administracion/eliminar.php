@@ -35,7 +35,7 @@ if($_GET["clave"]==1){
  		 </script><?php
 	}else{
 		 ?><script type="text/javascript" language="javascript">
-			alert("ERROR: La categoría no puede ser eliminada ya que existen subcategorias asociadas a la misma.\n\n(Si realmente desea eliminar esta categoria, primero elimine todas las subcategorias que dependan de ella)");
+			alert("¡¡¡ ERROR !!!\n\n     La categoría no puede ser eliminada ya que existen subcategorias asociadas a la misma.\n\n(Si realmente desea eliminar esta categoria, primero elimine todas las subcategorias que dependan de ella)");
 			location.href="../administracion/listadocategorias.php";
 		 </script><?php		 			 
 	}
@@ -50,12 +50,16 @@ if($_GET["clave"]==2){
 	 $idSub = $_GET["idSub"];
 		 
 	 /*Se verifica que no existan registros en tablas hijas que dependan del registro que se desea eliminar*/
-	 $sql_select = "SELECT count(*) FROM sitio WHERE idsubcategoria='".$idSub."'";
+	 $sql_select = "SELECT * FROM sitio WHERE idsubcategoria='".$idSub."'";
 	 $result_select_sitio = pg_exec($con,$sql_select);
-	 $tieneHijos = pg_fetch_array($result_select_sitio,0);
-	
-     //Si no tiene hijos se procede a eliminar
-	 if($tieneHijos[0]==0){
+	 
+	 if(pg_num_rows($result_select_sitio)>0){
+	 	?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ ERROR !!!\n\n     La subcategoria NO PUEDE SER ELIMINADA ya que existen sitios asociados a ella");
+			location.href="../administracion/listadosubcategorias.php";
+		</script><?php
+	 }
+	 else{
 	 	 //Primero se consulta la cantidad de hijos del padre
 	 	 $sql = "SELECT c.idcategoria, c.hijos FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria='".$idSub."'";
 	 	 $result_select_hijos = pg_exec($con, $sql);
@@ -95,13 +99,7 @@ if($_GET["clave"]==2){
 				location.href = "../administracion/listadosubcategorias.php";
 			 </script><?php
 		 }//else del if(!$result_delete)
-	 }//end if($tieneHijos[0]==0)
-	 else{
-	 	?><script type="text/javascript" language="javascript">
-			alert("ERROR: La subcategoria NO PUEDE SER ELIMINADA ya que existen registros en otras tablas de la base de datos que dependen de ella.\n\n(Si realmente desea eliminarla, primero elimine todos los sitios que estén asociados a ella)");
-			location.href="../administracion/listadosubcategorias.php";
-		</script><?php
-	 }	 		 			 
+	 }	 			 
 }//end $_GET["clave"]==2
 /*------------------------------------------------------------------------------------------------------------------------------
 *
