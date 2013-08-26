@@ -72,7 +72,7 @@
 		
 		/*Si NO existe, se crea*/
 		if($yaExiste==0){
-			$sql_insert = "INSERT INTO medio_pago VALUES(nextval('medio_pago_idmedio_pago_seq'),'".$_POST["nombre"]."',null);";
+			$sql_insert = "INSERT INTO medio_pago VALUES(nextval('medio_pago_idmedio_pago_seq'),'".$_POST["nombre"]."','');";
 			$result_insert = pg_exec($con,$sql_insert);
 		
 			if(!$result_insert){
@@ -89,8 +89,15 @@
 					
 				if($_FILES['icono']['name']!=""){
 					/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
-					$subir = new imgUpldr;	
-					$nombreImagen = $idMedioPago."_".$_POST["nombre"];	
+					
+					//Pero ANTES se procesa el nombre para quitarle las tildes
+					$noPermitidas = array("á","à","â","ã","ä","ª","ç","Ç","è","é","ê","ë","ì","í","î","ï","ñ","ò","ó","ô","õ","ö","ù","ú","û","ü","ý","ÿ","À","Á","Â","Ã","Ä","Ç","È","É","Ê","Ë","Ì","Í","Î","Ï","Ñ","Ò","Ó","Ô","Õ","Ö","º","Ù","Ú","Û","Ü","Ý","^","´","`","¨","~");
+					$permitidas = array("a","a","a","a","a","a","c","C","e","e","e","e","i","i","i","i","n","o","o","o","o","o","u","u","u","u","y","y","A","A","A","A","A","C","E","E","E","E","I","I","I","I","N","O","O","O","O","O","o","U","U","U","U","Y","","","","","");
+		
+					$nombreMp = str_replace($noPermitidas, $permitidas ,$_POST["nombre"]);
+					$nombreImagen = $idMedioPago."_".$nombreMp;	
+					
+					$subir = new imgUpldr;						
 					$subir->configurar($nombreImagen,"../imagenes/mediosdepago/",591,591);
 					$subir->init($_FILES['icono']);
 					$destino = "imagenes/mediosdepago/".$subir->_name;

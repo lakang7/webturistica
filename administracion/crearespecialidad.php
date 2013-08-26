@@ -1,12 +1,11 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
-	  include_once("../recursos/class_imgUpldr.php");
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Crear Categoría</title>
+	<title>Crear Especialidades</title>
 		
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -18,21 +17,24 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" ></script>    
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>    
+	
     <script type="text/javascript">  
 	
 		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
-        	campoNombre = formulario.nombre.value;
+        	miCampoTexto = formulario.nombre.value;
+			
         	//la condición
-        	if (campoNombre.length == 0) {
+        	if (miCampoTexto.length == 0) {
 				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
         	}
-			else if(/^\s+$/.test(campoNombre)){
+			else if(/^\s+$/.test(miCampoTexto)){
 				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
-			}
+			}			
+			
         	return true;
 	    }
 	</script>
@@ -43,50 +45,50 @@
 		
 		$con = conectarse();
 		
-		/*Se consulta la existencia de otra CATEGORIA con el mismo nombre*/
-		$sql = "SELECT * FROM categoria ORDER BY idcategoria";
+		/*Se consulta la existencia de otra ESPECIALIDAD con el mismo nombre*/
+		$sql = "SELECT * FROM especialidad ORDER BY idespecialidad";
 		$res = pg_exec($con, $sql);	
 		$yaExiste = 0;
 					
 		if(pg_num_rows($res)>0){
 			for($i=0; $i<pg_num_rows($res); $i++){				
-				$categoria = pg_fetch_array($res,$i);	
-				$nombreCategoria = $categoria[1];
+				$especialidad = pg_fetch_array($res,$i);	
+				$nombreEspecialidad = $especialidad[1];
 				
-				/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
-				if($nombreCategoria==$_POST["nombre"]){
+				/*Si efectivamente ya existe esa especialidad, no se le permite crearla*/
+				if($nombreEspecialidad==$_POST["nombre"]){
 					$yaExiste = 1;
 					?>
 		        	<script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!! \n\n     Esa categoría ya existe, por favor ingrese otro nombre");
-						location.href = "../administracion/crearcategorias.php";
+						alert("¡¡¡ ERROR !!! \n\n     Esa especialidad ya existe, por favor ingrese otro nombre");
+						location.href = "../administracion/crearespecialidades.php";
 					</script>
        				<?php
 				}
 			}
 		}
 		
-		/*Si la categoria NO existe, se crea*/
+		/*Si NO existe, se crea*/
 		if($yaExiste==0){
-			$sql_insert="INSERT INTO categoria VALUES(nextval('categoria_idcategoria_seq'),'".$_POST["nombre"]."',0);";
-			$result_insert=pg_exec($con,$sql_insert);
+			$sql_insert = "INSERT INTO especialidad VALUES(nextval('especialidad_idespecialidad_seq'),'".$_POST['nombre']."','".$_POST['descripcion']."');";
+			$result_insert = pg_exec($con,$sql_insert);
 		
 			if(!$result_insert){
 				?>
         		<script type="text/javascript" language="javascript">
-					alert("ERROR: No se pudo crear la categoría");
-					location.href="../administracion/listadocategorias.php";
+					alert("ERROR: No se pudo crear la especialidad");
+					location.href="../administracion/listadoespecialidades.php";
 				</script>
-        		<?php	
-			}else{
+    	    	<?php	
+			}else{		
 				?>
-        		<script type="text/javascript" language="javascript">
-					alert("¡¡¡ Categoria agregada satisfactoriamente !!!");
-					location.href="../administracion/listadocategorias.php";
+	        	<script type="text/javascript" language="javascript">
+					alert("¡¡¡ Especialidad Gastronómica agregada satisfactoriamente !!!");
+					location.href="../administracion/listadoespecialidades.php";
 				</script>
-		        <?php	
+	    	    <?php			
 			}
-		}					
+		}		
 	}
 ?>
 
@@ -97,22 +99,26 @@
 		<?php menu_administrativo();  ?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Categoría</div>
+    	<div class="titulo_panel">Crear Especialidades Gastronómicas</div>
         <div class="opcion_panel">
 	        <div class="opcion"> 
-				<a href="listadocategorias.php">Listar Categorías</a>
+				<a href="listadoespecialidades.php">Listar Especialidades</a>
 			</div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearcategorias.php">Registrar Nueva Categoría</a>
+				<a href="crearespecialidad.php">Registrar Nueva Especialidad</a>
 			</div>
         </div>
         <div class="capa_formulario">
-        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
-            	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Categoría (*)</div>
+        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >	           		<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Nombre (*)</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="45"/>
+                    </div>
+                </div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo">Descripción</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45"/>
+                    	<input type="text" class="campo" id="descripcion" name="descripcion" maxlength="600"/>
                     </div>
                 </div>
             	<div class="linea_formulario">
@@ -121,8 +127,7 @@
 					</div>					
 				</div>
             </form>
-        </div>
-        
+        </div>        
     </div>
     <div class="pie"></div>
 </body>

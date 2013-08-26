@@ -43,10 +43,10 @@
         	<div class="opcion"><a href="crearservicio.php">Registrar Nuevo Servicio</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+        	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Código</td><td>Servicio</td><td width="20" align="center">Editar</td><td width="20" align="center">Eliminar</td>
+                    	<td width="100">Código</td><td>Servicio</td><td width="40" align="center">Editar</td><td width="40" align="center">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,27 +56,19 @@
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
-				?>
-					<tr>
-                    	<td colspan=6 align="center">No existen servicios hasta el momento</td>
-                    </tr>
-				<?php
+					?><tr><td colspan=6 align="center">No existen servicios hasta el momento</td></tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $servicio = pg_fetch_array($result_select,$i);	
-					$idServicio = $servicio[0];
+					$idServicio = $servicio["idservicio"];
 				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
-						<td>
-							<?php echo Codigo("SERV",$servicio[0]); ?>
-						</td>
-						<td>
-							<?php echo $servicio[1]; ?>
-						</td>
-						<td title="Editar <?php echo $servicio[1]; ?>" style="cursor:pointer;" align="center">
-							<a href="editarservicio.php?id=<?php echo $servicio[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $servicio[1]; ?>" style="cursor:pointer;" align="center">
+					<tr class="row-<?php echo $i+1; ?>" style="cursor:pointer;" align="center">
+						<td><?php echo Codigo("SERV",$idServicio); ?></td>
+						<td><?php echo $servicio["nombre"]; ?></td>
+						<td title="Editar <?php echo $servicio["nombre"]; ?>" style="cursor:pointer;" align="center">
+							<a href="editarservicio.php?id=<?php echo $idServicio; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $servicio["nombre"]; ?>" style="cursor:pointer;" align="center">
 							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=10&id=<?php echo $idServicio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    

@@ -20,7 +20,11 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -43,10 +47,10 @@
         	<div class="opcion"><a href="creartipohabitacion.php">Registrar Nuevo Tipo de Habitación</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+        	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Código</td><td>Tipo de habitación</td><td>Capacidad (Nro. Personas)</td><td width="20"></td><td width="20"></td>
+                    	<td width="100">Código</td><td>Tipo de habitación</td><td width="150">Capacidad (Nro. Personas)</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,28 +60,20 @@
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
-					?><tr>
-    	                 <td colspan=6 align="center">No existen tipos de habitaciones registradas hasta el momento</td>
-        	        </tr><?php
+					?><tr><td colspan=6 align="center">No existen tipos de habitaciones registradas hasta el momento</td></tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $tipo = pg_fetch_array($result_select,$i);	
-					$idTipo = $tipo[0];
+					$idTipo = $tipo["idtipo_habitacion"];
 				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
-						<td>
-							<?php echo Codigo("TIPHAB",$tipo[0]); ?>
-						</td>
-						<td>
-							<?php echo $tipo[1]; ?>
-						</td>
-						<td>
-							<?php echo $tipo[2]; ?>
-						</td>
-						<td title="Editar <?php echo $tipo[1]; ?>" style="cursor:pointer;">
-							<a href="editartipohabitacion.php?id=<?php echo $tipo[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $tipo[1]; ?>" style="cursor:pointer;">
+					<tr class="row-<?php echo $i+1; ?>" style="cursor:pointer;" align="center">
+						<td><?php echo Codigo("TIPHAB",$idTipo); ?></td>
+						<td><?php echo $tipo["nombre"]; ?></td>
+						<td width="150"><?php echo $tipo["capacidad"]; ?></td>
+						<td title="Editar <?php echo $tipo["nombre"]; ?>" style="cursor:pointer;">
+							<a href="editartipohabitacion.php?id=<?php echo $idTipo; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $tipo["nombre"]; ?>" style="cursor:pointer;">
 							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=8&id=<?php echo $idTipo;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    

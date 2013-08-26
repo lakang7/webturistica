@@ -117,7 +117,7 @@
 				?><script type="text/javascript" language="javascript">
 				alert("¡¡¡ ERROR !!! \n     No se podrá crear la gastronomía, por favor inténtelo de nuevo");
 				location.href="creargastronomia.php?idSitio="+<?php echo $_GET["idSitio"]; ?>;
-			</script><?php	
+				</script><?php	
 			}		
 		}
 		
@@ -135,7 +135,7 @@
 				</script><?php	
 			}
 			
-			/*Se selecciona el id del hospedaje recien creado*/
+			/*Se selecciona el id de gastronomia recien creado*/
 			$sql_select = "SELECT last_value FROM gastronomia_idgastronomia_seq;";
 			$result_select = pg_exec($con, $sql_select);
 			$arreglo = pg_fetch_array($result_select,0);
@@ -144,7 +144,7 @@
 		}	
 		
 		//Si se pudieron insertar en la tabla 'hospedaje' los promedios, se procede a guardar las comodidades de ese hospedaje
-		else{
+		//else{
 			/*---------------------------------------------------------------------------------------------------------------
 			*					 
 			*										PARA CREAR LAS ESPECIALIDADES DEL SITIO
@@ -219,7 +219,7 @@
 				location.href = "../administracion/creargaleriafotos.php?idSitio="+<?php echo $_GET["idSitio"];?>;
 			</script>
 			<?php
-		}//end else		
+		//}//end else		
 	}
 ?>
 

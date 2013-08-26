@@ -143,37 +143,39 @@
 
 <?php
 	if(isset($_POST["Guardar"])){
-		/*Se actualiza el registro*/
 		$con = conectarse();
 		
-		//Se prepara el query de update
+		/*Se actualiza el registro*/		
 		$sql_update = "UPDATE sitio SET idsubcategoria='".$_POST["HidSubCategoria"]."', idruta='".$_POST["HidRuta"]."', nombre='".$_POST["nombre"]."', direccion='".$_POST["direccion"]."', telefono1='".$_POST["tel1"]."', telefono2='".$_POST["tel2"]."', correo='".$_POST["correo"]."', resena='".$_POST["resena"]."', pagfacebook='".$_POST["facebook"]."', pagtwitter='".$_POST["twitter"]."', latitud='".$_POST["latitud"]."', longitud='".$_POST["longitud"]."' WHERE idsitio='".$_GET["id"]."'";
-		
-		//Se ejecuta el update
 		$result_update = pg_exec($con,$sql_update);
 		
 		//Si devuelve FALSE, ocurrió un error que no permitió que se ejecutara el update
 		if(!$result_update){
-			?>
-        	<script type="text/javascript" language="javascript">
+			?><script type="text/javascript" language="javascript">
 				alert("¡¡¡ ERROR !!! \n     No se pudo modificar el sitio");
 				location.href="../administracion/listadositios.php";
-			</script>
-    	    <?php
+			</script><?php
 		}
 		
 		//Si devuelve TRUE, se pudo ejecutar el update del sitio
 		else{
 			/*Si se modificó la imagen de perfil*/
 			if($_FILES['perfil']['name']!=""){
+				//Antes de actualizar, se busca la foto anterior para luego eliminarla
+				$sql = "SELECT * FROM sitio WHERE idsitio=".$_GET["id"];
+				$result_select = pg_exec($con,$sql);
+				$sitio = pg_fetch_array($result_select,0);	
 				
+				//Si ya tenía icono cargado, se borra la imagen de la carpeta respectiva
+				if($sitio["imagen_perfil"]!=""){
+					$borrar = borrarArchivo("../".$sitio["imagen_perfil"]);
+				}
 				/*Se sube la imagen*/
 				$subir_perfil = new imgUpldr;	
 				//Se prepara el nombre con que se guardará la imagen
 				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
 				$subir_perfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",450,300);
 				$subir_perfil->init($_FILES['perfil']);
-				$destino_perfil = $subir_perfil->_dest.$subir_perfil->_name;
 				$destino_perfil = "imagenes/sitios/perfil/".$subir_perfil->_name;
 		
 				/*Se actualiza el registro para incluir la ruta de la imagen que se acaba de subir*/
@@ -182,11 +184,10 @@
 				
 				//Si el query devuelve FALSE, ocurrió un error
 				if(!$result_update){
-					?>
-		        	<script type="text/javascript" language="javascript">
+					?><script type="text/javascript" language="javascript">
 						alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen de perfil");
-					</script>
-		    	    <?php
+						location.href="../administracion/listadositios.php";
+					</script><?php
 				}
 			}//end files perfil name != ""
 			/*--------------------------------------------------------------------------------------------------------------

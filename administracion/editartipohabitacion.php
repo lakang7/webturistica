@@ -87,9 +87,9 @@
     <div class="panel">
     	<div class="titulo_panel">Editar Tipo de Habitación</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadocategorias.php">Listar Tipos</a></div>
+	        <div class="opcion"> <a href="listadotipohabitacion.php">Listar Tipos</a></div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearCategorias.php">Registrar Nuevo Tipo de Habitación</a></div>
+				<a href="creartipohabitacion.php">Registrar Nuevo Tipo de Habitación</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >    

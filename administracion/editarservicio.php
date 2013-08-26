@@ -77,17 +77,18 @@
     	<div class="titulo_panel">Editar Servicio</div>
         <div class="opcion_panel">
 	        <div class="opcion"> <a href="listadoservicios.php">Listar Servicios</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearservicio.php">Registrar Nuevo Servicio</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearservicio.php" style="text-decoration:none; color:#FFF;">Registrar Nuevo Servicio</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-            	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Servicio (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45" value="<? echo $arreglo[1]; ?>" />
+            	<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Nombre del Servicio (*)</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="45" value="<? echo $arreglo[1]; ?>" />
                     </div>
                 </div>
-            	<div class="linea_formulario">
+            	<div class="linea_formulario_compartido">
+					<div class="linea_titulo_rojo"></div>
 					<div class="linea_titulo_rojo">
 						<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
 					</div>					

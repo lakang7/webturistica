@@ -20,7 +20,11 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -40,49 +44,35 @@
     	<div class="titulo_panel">Listado Comodidades</div>
         <div class="opcion_panel">
 	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadocomodidades.php" style="text-decoration:none; color:#FFF;">Listar Comodidades</a></div>
-        	<div class="opcion"><a href="crearcomodidades.php">Registrar Nueva Comodidad</a></div>
+        	<div class="opcion"><a href="crearcomodidad.php">Registrar Nueva Comodidad</a></div>
         </div>
-  		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+		<div class="capa_tabla">
+        	<table border="0" class="estilo_tabla" id="highlight-table">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Código</td><td>Descripción Comodidad</td><td>Posición X imagen</td><td>Posición Y imagen</td><td width="20"></td><td width="20"></td>
+                    	<td width="100">Código</td><td width="600">Descripción Comodidad</td><td width="20">Editar</td><td width="20">Eliminar</td>
                     </tr>
                 </thead>
-                <tbody>
+				<tbody>
                 <?php
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM comodidad ORDER BY idcomodidad";
+			 	$sql_select = "SELECT * FROM comodidad ORDER BY nombre";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
-				?>
-					<tr>
-                    	<td colspan=6 align="center">No existen comodidades hasta el momento</td>
-                    </tr>
-				<?php
+					?><tr><td colspan=6 align="center">No existen comodidades hasta el momento</td></tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $comodidad = pg_fetch_array($result_select,$i);	
-					$idcomodidad = $comodidad[0];
+					$idcomodidad = $comodidad["idcomodidad"];
 				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
-						<td>
-							<?php echo Codigo("COM",$comodidad[0]); ?>
-						</td>
-						<td>
-							<?php echo $comodidad[1]; ?>
-						</td>
-						<td>
-							<?php echo $comodidad[2]; ?>
-						</td>
-						<td>
-							<?php echo $comodidad[3]; ?>
-						</td>
-						<td title="Editar <?php echo $comodidad[1]; ?>" style="cursor:pointer;">
-							<a href="editarcomodidades.php?id=<?php echo $comodidad[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $comodidad[1]; ?>" style="cursor:pointer;">
+					<tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;">
+						<td width="100"><?php echo Codigo("COM",$comodidad["idcomodidad"]); ?></td>
+						<td width="600"><?php echo $comodidad["nombre"]; ?></td>
+						<td title="Editar <?php echo $comodidad["nombre"]; ?>" style="cursor:pointer;">
+							<a href="editarcomodidad.php?id=<?php echo $idcomodidad; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $comodidad["nombre"]; ?>" style="cursor:pointer;">
 							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=3&id=<?php echo $idcomodidad;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    

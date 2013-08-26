@@ -61,29 +61,6 @@
 	    }		
 		/*********************************************************************************************
 		*
-			FUNCION PARA INICIALIZAR EL MAPA, se debe llamar en el onload() de la página
-		*
-		**********************************************************************************************/
-      	function inicializacion() {
-			//Se crea mapa ubicado en La Grita - Táchira - Venezuela, con 17 de Zoom y del tipo HYBRID
-			var mapa = new google.maps.Map(document.getElementById("map_canvas"),{center: new google.maps.LatLng(8.131437081366755,-71.97978583068846),zoom: 17,mapTypeId: google.maps.MapTypeId.HYBRID});
-	
-			//Se crea un marcador allí mismo, con la propiedad "draggable" como "true" para que se pueda arrastrar
-			var marcador = new google.maps.Marker({position: new google.maps.LatLng(8.131437081366755,-71.97978583068846),map: mapa, animation: google.maps.Animation.DROP, draggable: true, title:"Arrastre el marcador hasta la ubicación del punto de la ruta y presione el botón \"Guardar punto\""});				
-			google.maps.event.addListener(marcador, "dragend", function(evento) {
-				//Se obtienen las coordenadas finales del moovimiento
-				var latitud = evento.latLng.lat();
-				var longitud = evento.latLng.lng();
-				//Puedo unirlas en una unica variable si asi lo prefiero
-				//var coordenadas = evento.latLng.lat() + ", " + evento.latLng.lng();
-				document.getElementById("latitud").value = latitud;
-				document.getElementById("longitud").value = longitud;
-			}); //Fin del evento
-			
-		} // Fin inicializacion()
-		
-		/*********************************************************************************************
-		*
 			FUNCION PARA VALIDAR CANTIDAD MAXIMA DE CARACTERES EN RESEÑA (1200)
 		*
 		**********************************************************************************************/
@@ -139,7 +116,7 @@
 				$result_select = pg_exec($con, $sql_select);
 				$arreglo = pg_fetch_array($result_select,0);
 				
-				/*Se buscan datos de la ruta para cargarlos en los txt*/
+				/*Se buscan datos de la ruta*/
 				$sql_select_ruta = "SELECT * FROM ruta WHERE idruta='".$arreglo[0]."';";
 				$result_select_ruta = pg_exec($con, $sql_select_ruta);
 				$ruta = pg_fetch_array($result_select_ruta,0);
@@ -164,7 +141,7 @@
 				}
 				?><script type="text/javascript" language="javascript">
 					alert("¡¡¡ Ruta agregada satisfactoriamente !!!")
-					location.href="../administracion/crearpuntoruta.php?idRuta="+<?php echo $arreglo[0] ?>;
+					location.href="../administracion/crearpuntoruta.php?idRuta="+<?php echo $arreglo[0]; ?>;
 				</script><?php
 			}//end else de if(!$result_insert)
 			
@@ -179,7 +156,7 @@
     	<div class="titulo_panel">Crear Rutas</div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadorutas.php">Listar Rutas</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearutas.php">Registrar Nueva Ruta</a></div>
+        	<div class="opcion" style="background:#F00;  color:#FFF;"><a href="crearuta.php" style="text-decoration:none; color:#FFF;">Registrar Nueva Ruta</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
@@ -200,7 +177,7 @@
 				<div class="linea_formulario_parrafo">
                 	<div class="linea_titulo_tres_cuartos">Reseña Histórica</div>
 					<input type="hidden" name="hid_max_resena" value="0" /> 	
-                    <div class="linea_campo_tres_cuartos"><textarea name="resena" id="resena" rows="12" cols="100" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; max-width:550px; max-height:250px;" onkeypress="return limita(1200);"></textarea></div>
+                    <div class="linea_campo_tres_cuartos"><textarea name="resena" id="resena" rows="17" cols="110" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; max-width:550px; max-height:250px;" onkeypress="return limita(1200);"></textarea></div>
                 </div>
 				<div class="linea_formulario_promedio">
 					<div class="linea_titulo_tres_cuartos"></div>

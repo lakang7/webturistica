@@ -19,10 +19,12 @@
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>    
 	<script src="../js/administracion/funcionesJS.js"></script>   
-	
     <script type="text/javascript">  
-	
-		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		/*********************************************************************************************
+		*
+			Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		*
+		**********************************************************************************************/
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	campoNombre = formulario.nombre.value;
@@ -40,8 +42,11 @@
 			}			
         	return true;
 	    }
-		
-		//Funcion para validar solo nros o solo letras en un campo de texto
+		/*********************************************************************************************
+		*
+			Funcion para validar solo nros o solo letras en un campo de texto
+		*
+		**********************************************************************************************/
 		$(function(){
     		//Para escribir solo letras
     		//$('#miCampo1').validCampoFranz(' abcdefghijklmnñopqrstuvwxyzáéiou');
@@ -114,33 +119,22 @@
     <div class="panel">
     	<div class="titulo_panel">Crear Comodidad</div>
         <div class="opcion_panel">
-	        <div class="opcion"> 
-				<a href="listadocomodidades.php">Listar Comodidades</a>
-			</div>
-        	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearcomodidades.php">Registrar Nueva Comodidad</a>
-			</div>
+	        <div class="opcion"><a href="listadocomodidades.php">Listar Comodidades</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearcomodidad.php" style="text-decoration:none; color:#FFF;">Registrar Nueva Comodidad</a></div>
         </div>
         <div class="capa_formulario">
-        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-  			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
-            	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Comodidad (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45"/>
-                    </div>
+        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data">
+            	<div class="linea_formulario_doble">
+                	<div class="linea_titulo_doble">Nombre Comodidad (*)</div>
+                    <div class="linea_campo_doble"><input type="text" class="campo_doble" id="nombre" name="nombre" maxlength="45"/></div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Posición X imagen (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="posX" name="posX" />
-                    </div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio">Posición X imagen (*)</div>
+                    <div class="linea_campo_promedio"><input type="text" class="campo_promedio" id="posX" name="posX" /></div>
                 </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Posición Y imagen (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="posY" name="posY" />
-                    </div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio">Posición Y imagen (*)</div>
+                    <div class="linea_campo_promedio"><input type="text" class="campo_promedio" id="posY" name="posY" /></div>
                 </div>
 				<div class="linea_formulario">
 					<div class="linea_titulo_rojo">

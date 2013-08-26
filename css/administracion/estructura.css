@@ -92,7 +92,8 @@ body{
 	margin-left:10px;	
 	margin-top:10px;
 	font-family: 'Oswald', sans-serif;
-	overflow-y:scroll;
+	overflow-x:auto;
+	overflow-y:visible;
 }
 
 .capa_tabla_fotos{
@@ -253,6 +254,15 @@ body{
 	font-size:12px;
 	line-height:15px;
 	color:#333;	
+}
+.linea_titulo_promedio_rojo{
+	float:left;
+	width:155px;
+	height:15px;
+	/*border-bottom:1px solid #CCC;*/
+	font-size:12px;
+	line-height:15px;
+	color:#FF0000;	
 }
 
 /*Para titulos dentro del formulario, que separan secciones de información*/

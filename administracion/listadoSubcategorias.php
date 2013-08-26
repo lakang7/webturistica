@@ -20,7 +20,11 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -30,6 +34,31 @@
 				return true; 
 			} 
 		} 
+		/*********************************************************************************************
+		*
+			Funcion para mostrar imagen en un POPUP
+		*
+		**********************************************************************************************/
+		function openPopup(imageURL){
+    		var popupTitle = "Icono";
+    		var newImg = new Image();
+    		newImg.src = "../"+imageURL;
+			var ancho = newImg.width;
+			var alto = newImg.height;
+ 
+ 			pos_x = (screen.width-ancho)/2;
+	 	    pos_y = (screen.height-alto)/2;
+			
+    		popup = window.open(newImg.src,'image','height='+alto+',width='+ancho+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+		    with (popup.document){
+    	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
+	    	    writeln('<\/head><body onClick="window.close()">');
+		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+        		close();
+		    }
+		    popup.focus();
+		}
 	</script>
 </head>
 
@@ -40,54 +69,53 @@
     	<div class="titulo_panel">Listado de SubCategorías</div>
         <div class="opcion_panel">
 	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadosubcategorias.php" style="text-decoration:none; color:#FFF;">Listar SubCategorías</a></div>
-        	<div class="opcion"><a href="crearsubcategorias.php">Registrar Nueva SubCategoría</a></div>
+        	<div class="opcion"><a href="crearsubcategoria.php">Registrar Nueva SubCategoría</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+        	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Categoría</td><td>Código SubCategoría</td><td>Descripción SubCategoría</td><td width="20"></td><td width="20"></td>
+                    	<td width="150" align="left">Categoría</td><td width="100">Código SubCategoría</td><td>Descripción SubCategoría</td><td width="40">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
 				//Consultando las subcategorias
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM subcategoria ORDER BY idcategoria, nombre";
+			 	$sql_select = "SELECT * FROM subcategoria ORDER BY nombre";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
-				?>
-					<tr>
-                    	<td colspan=6 align="center">No existen subcategorías hasta el momento</td>
-                    </tr>
-				<?php
+					?><tr><td colspan=6 align="center">No existen subcategorías hasta el momento</td></tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $subCategoria = pg_fetch_array($result_select,$i);	
-					$idSubcategoria = $subCategoria[0];
+					$idSubcategoria = $subCategoria["idsubcategoria"];
 					
 					//Para consultar la categoria asociada a esta subcategoria
-					$sql_select_categoria = "SELECT * FROM categoria WHERE idcategoria=".$subCategoria[1];
+					$sql_select_categoria = "SELECT * FROM categoria WHERE idcategoria=".$subCategoria["idcategoria"];
 					$result_categoria = pg_exec($con,$sql_select_categoria);
-					$categoria = pg_fetch_array($result_categoria,0);
-					
+					$categoria = pg_fetch_array($result_categoria,0);					
 				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
-						<td>
-							<?php echo $categoria[1]; ?>
+					<tr class="row-<?php echo $i+1; ?>" style="cursor:pointer;">
+						<td width="150"><?php echo $categoria["nombre"]; ?></td>
+						<td width="100" align="center"><?php echo Codigo("SUB",$subCategoria["idsubcategoria"]); ?></td>
+						<td align="center"><?php echo $subCategoria["nombre"]; ?></td>
+						<td title="Ver ícono de <?php echo $subCategoria["nombre"]; ?>" style="cursor:pointer;" align="center">
+						<?php 
+						//Si tiene ícono asociado, lo muestra en un popup
+						if($subCategoria["icono"]!=""){?>
+							<a href="#" onclick="openPopup('<? echo $subCategoria["icono"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
+							<?php 
+						}else{
+							?><a href="#"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php
+						}?>
 						</td>
-						<td>
-							<?php echo Codigo("SUB",$subCategoria[0]); ?>
+						<td title="Editar <?php echo $subCategoria["nombre"]; ?>" style="cursor:pointer;" align="center">
+							<a href="editarsubcategoria.php?id=<?php echo $idSubcategoria;?>&amp;cat=<?php echo $subCategoria["idcategoria"];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
 						</td>
-						<td>
-							<?php echo $subCategoria[2]; ?>
-						</td>
-						<td title="Editar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;">
-							<a href="editarsubcategorias.php?id=<?php echo $subCategoria[0];?>&cat=<?php echo $subCategoria[1];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
-						</td>
-						<td title="Eliminar <?php echo $subCategoria[2]; ?>" style="cursor:pointer;"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&idSub=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td title="Eliminar <?php echo $subCategoria["nombre"]; ?>" style="cursor:pointer;" align="center"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&idSub=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php

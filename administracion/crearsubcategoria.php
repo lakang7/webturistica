@@ -175,15 +175,15 @@
     	<div class="titulo_panel">Crear SubCategoría</div>
         <div class="opcion_panel">
 	        <div class="opcion"> <a href="listadosubcategorias.php">Listar SubCategorías</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsubcategorias.php">Registrar Nueva SubCategoría</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsubcategoria.php" style="text-decoration:none; color:#FFF;">Registrar Nueva SubCategoría</a></div>
         </div>
         <div class="capa_formulario">
 		
         	<form onsubmit="return validarCampoTexto(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   				<input type="hidden" name="MAX_FILE_SIZE" value="200000000" /> 				
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Categoria (*)</div>
-                    <div class="linea_campo">
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Categoría (*)</div>
+                    <div class="linea_campo_compartido">
 						<input type="hidden" name="HidCategoria" value="-1" />
                     	<?php
 						/*Se buscan todas las categorias*/
@@ -212,10 +212,10 @@
 						?>
                     </div>
                 </div>           
-            	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre Subcategoría (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45"/>
+            	<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Nombre Subcategoría (*)</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="45"/>
                     </div>
                 </div>
             	<div class="linea_formulario">
@@ -223,6 +223,10 @@
                     <div class="linea_campo">
                     	<input name="icono" type="file" id="icono" />
                     </div>
+                </div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo"></div>
+                    <div class="linea_campo"></div>
                 </div>
                 <div class="linea_formulario">
 					<div class="linea_titulo_rojo">

@@ -20,7 +20,11 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -30,6 +34,29 @@
 				return true; 
 			} 
 		} 
+		/*********************************************************************************************
+		*
+			Funcion para mostrar imagen en un POPUP
+		*
+		**********************************************************************************************/
+		function openPopup(imageURL){
+    		var popupTitle = "Icono";
+    		var newImg = new Image();
+    		newImg.src = "../"+imageURL;
+ 
+ 			pos_x = (screen.width-newImg.width)/2;
+	 	    pos_y = (screen.height-newImg.height)/2;
+			
+    		popup = window.open(newImg.src,'image','height='+newImg.height+',width='+newImg.width+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+		    with (popup.document){
+    	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
+	    	    writeln('<\/head><body onClick="window.close()">');
+		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+        		close();
+		    }
+		    popup.focus();
+		}
 	</script>
 </head>
 
@@ -43,10 +70,10 @@
         	<div class="opcion"><a href="crearmediopago.php">Registrar Nuevo Medio de Pago</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+        	<table border="0" class="estilo_tabla" id="highlight-table">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Código</td><td>Medio de Pago</td><td>Icono identificador</td><td width="20">Editar</td><td width="20">Eliminar</td>
+                    	<td width="100">Código</td><td>Medio de Pago</td><td width="40">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,22 +90,25 @@
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $medio = pg_fetch_array($result_select,$i);	
-					$idMedio = $medio[0];
+					$idMedio = $medio["idmedio_pago"];
 				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
-						<td>
-							<?php echo Codigo("MP",$medio[0]); ?>
-						</td>
-						<td>
-							<?php echo $medio[1]; ?>
-						</td>
-						<td>
-							<?php echo $medio[2]; ?>
-						</td>
-						<td title="Editar <?php echo $medio[1]; ?>" style="cursor:pointer;" align="center">
-							<a href="editarmediopago.php?id=<?php echo $idMedio[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $medio[1]; ?>" style="cursor:pointer;" align="center">
-							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=9&id=<?php echo $idMedio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+					<tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;">
+						<td width="100"><?php echo Codigo("MP",$medio["idmedio_pago"]); ?></td>
+						<td><?php echo $medio["nombre"]; ?></td>	
+						<td title="Ver ícono de <?php echo $medio["nombre"]; ?>" style="cursor:pointer;" align="center">
+						<?php 
+						//Si tiene ícono asociado, lo muestra en un popup
+						if($medio["icono"]!=""){?>
+							<a href="#" onclick="openPopup('<? echo $medio["icono"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
+							<?php 
+						}else{
+							?><a href="#"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php
+						}?>
+						</td>							
+						<td title="Editar <?php echo $medio["nombre"]; ?>" style="cursor:pointer;" align="center">
+							<a href="editarmediopago.php?id=<?php echo $medio["idmedio_pago"]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $medio["nombre"]; ?>" style="cursor:pointer;" align="center">
+							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=9&id=<?php echo $medio["idmedio_pago"];?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php

@@ -20,7 +20,11 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -30,6 +34,29 @@
 				return true; 
 			} 
 		} 
+		/*********************************************************************************************
+		*
+			Funcion para mostrar imagen en un POPUP
+		*
+		**********************************************************************************************/
+		function openPopup(imageURL,nombre){
+    		var popupTitle = "Portada de "+nombre;
+    		var newImg = new Image();
+    		newImg.src = "../"+imageURL;
+ 
+ 			pos_x = (screen.width-newImg.width)/2;
+	 	    pos_y = (screen.height-newImg.height)/2;
+			
+    		popup = window.open(newImg.src,'image','height='+newImg.height+',width='+newImg.width+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+		    with (popup.document){
+    	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
+	    	    writeln('<\/head><body onClick="window.close()">');
+		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+        		close();
+		    }
+		    popup.focus();
+		}
 	</script>
 </head>
 
@@ -40,46 +67,45 @@
     	<div class="titulo_panel">Listado de Rutas</div>
         <div class="opcion_panel">
 	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadorutas.php" style="text-decoration:none; color:#FFF;">Listar Rutas</a></div>
-        	<div class="opcion"><a href="crearutas.php">Registrar Nueva Ruta</a></div>
+        	<div class="opcion"><a href="crearuta.php">Registrar Nueva Ruta</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+        	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Código</td><td>Nombre</td><td>Reseña Histórica</td><td width="20"></td><td width="20"></td>
+                    	<td>Código</td><td>Nombre</td><td>Reseña Histórica</td><td width="40">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody align="center">
                 <?php
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM ruta ORDER BY idruta";
+			 	$sql_select = "SELECT * FROM ruta ORDER BY nombre";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
-				?>
-					<tr>
-                    	<td colspan=5 align="center">No existen rutas hasta el momento</td>
-                    </tr>
-				<?php
+					?><tr><td colspan=5 align="center">No existen rutas hasta el momento</td></tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
 				    $ruta = pg_fetch_array($result_select,$i);	
-					$idruta = $ruta[0];
-				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
-						<td>
-							<?php echo Codigo("RUT",$ruta[0]); ?>
+					$idruta = $ruta["idruta"];
+				    ?><tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;" >
+						<td width="80"><?php echo Codigo("RUT",$idruta); ?></td>
+						<td width="200"><?php echo $ruta["nombre"]; ?></td>
+						<td width="500" align="left"><?php echo $ruta["resena"]; ?></td>
+						<td title="Ver ícono de <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;" align="center">
+						<?php 
+						//Si tiene ícono asociado, lo muestra en un popup
+						if($ruta["foto_portada"]!=""){?>
+							<a href="#" onclick="openPopup('<? echo $ruta["foto_portada"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
+							<?php 
+						}else{
+							?><a href="#"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php
+						}?>
 						</td>
-						<td>
-							<?php echo $ruta[1]; ?>
-						</td>
-						<td>
-							<?php echo $ruta[2]; ?>
-						</td>
-						<td title="Editar <?php echo $ruta[1]; ?>" style="cursor:pointer;">
-							<a href="editarutas.php?id=<?php echo $ruta[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $ruta[1]; ?>" style="cursor:pointer;">
+						<td title="Editar <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;">
+							<a href="editaruta.php?id=<?php echo $idruta; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;">
 							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=5&id=<?php echo $idruta;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    

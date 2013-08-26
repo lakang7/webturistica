@@ -282,7 +282,7 @@
 									location.href = "../administracion/crearhospedaje.php?idSitio="+<?php echo $sitio[0];?>;
 								</script><?php
 							}
-							else if($nombreCategoria=='Gastronomía'){
+							else if($nombreCategoria=='Gastronomia'){
 								?><script type="text/javascript" language="javascript">
 									location.href = "../administracion/creargastronomia.php?idSitio="+<?php echo $sitio[0];?>;
 								</script><?php
@@ -346,12 +346,8 @@
     <div class="panel">
     	<div class="titulo_panel">Crear Sitios de Interés</div>
         <div class="opcion_panel">
-	        <div class="opcion"> 
-				<a href="listadositios.php">Listar Sitios</a>
-			</div>
-        	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearsitio.php">Registrar Nuevo Sitio</a>
-			</div>
+	        <div class="opcion"><a href="listadositios.php">Listar Sitios</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsitio.php" style="text-decoration:none; color:#FFF;">Registrar Nuevo Sitio</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
@@ -370,8 +366,7 @@
 						
 						/*Si existen, se construye una lista con todas*/						
 						if(pg_num_rows($result_select)!=0){
-						?>
-						<tr>
+						?><tr>
 							<td>
 								<select name="subcategoria" id="subcategoria" onChange="javascript:guardarValorCombo(this.value,1)">
 								<option value="-1">Seleccione</option>
@@ -379,26 +374,21 @@
 								for($i=0; $i<pg_num_rows($result_select); $i++){
 						   			$subcategoria = pg_fetch_array($result_select,$i);
 									echo '<option value="'.$subcategoria[0].'">'.$subcategoria[2].'</option>';
-								}
-								?>
+								}?>
 								</select>							
 							</td>
 						</tr>
 						<?php
-						}
-						else{
+						}else{
 							?><tr>
 								<td>
-									<select name="subcategoria" id="subcategoria">
-										<option value="-1">No hay registros cargados</option>
-									</select>
+									<select name="subcategoria" id="subcategoria"><option value="-1">No hay registros cargados</option></select>
 							  </td>
 							</tr><?php    
 						}
 						?>	
                 	</div>
-                </div>  
-				
+                </div> 
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Ruta (*)</div>
                     <div class="linea_campo_promedio">
@@ -411,8 +401,7 @@
 						
 						/*Si existen, se construye una lista con todas*/						
 						if(pg_num_rows($result_select)!=0){
-							?>
-							<tr>
+							?><tr>
 								<td>
 									<select name="ruta" id="ruta" onChange="javascript:guardarValorCombo(this.value,2)">
 									<option value="-1">Seleccione</option>
@@ -420,19 +409,14 @@
 									for($i=0; $i<pg_num_rows($result_select); $i++){
 						    			$ruta = pg_fetch_array($result_select,$i);
 										echo '<option value="'.$ruta[0].'">'.$ruta[1].'</option>';
-									}
-									?>
+									}?>
 									</select>
 							  </td>
-							</tr>									    
-							<?php            		   		
-						}
-						else{
+							</tr><?php            		   		
+						}else{
 							?><tr>
 								<td>
-									<select name="ruta" id="ruta">
-										<option value="-1">No hay rutas cargadas</option>
-									</select>
+									<select name="ruta" id="ruta"><option value="-1">No hay rutas cargadas</option></select>
 							  </td>
 							</tr><?php    
 						}

@@ -25,8 +25,10 @@
     <script src="http://code.jquery.com/jquery-1.9.1.js" ></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" ></script>    
     <script src="../js/administracion/modernizr.custom.js"></script>
+	<script src="../js/administracion/funcionesJS.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>    
     <script type="text/javascript">  
+		
 		//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
@@ -92,14 +94,7 @@
 			     var marcador = new google.maps.Marker({position: coordenadas,map: mapa, animation: google.maps.Animation.DROP, title:""});
      		}); //Fin del evento click
 		} // Fin inicializacion()	
-	</script>
-	
-	
-	
-	
-	
-	
-	
+	</script>	
 	<script type="text/javascript">
     function imagepopup(ruta){
         // Añade la imagen
@@ -112,21 +107,21 @@
     }
 	</script>
 </head>
-
+												
 <?php
+
+										//OJOOOOOO INCORPORAR AQUI TODAS LAS LETRAS CON CARACTER ESPECIAL POSIBLES
 	if(isset($_POST["Guardar"])){
-		//if(validaEmail("correo@gmail.com")){ 			
-			/*
-			//Probando borrar DOS archivos de una ruta, que estan llamados igual pero con un inicio distinto GRANDE_ y PEQUE_
-			$loBorro = borrarArchivo("../imagenes/sitios/galeria/Grande_1_Aldea Quintanera Grande.jpg");
-			$ruta = str_replace("Grande_", "Peque_", "../imagenes/sitios/galeria/Grande_1_Aldea Quintanera Grande.jpg");
-			$loBorro = borrarArchivo($ruta);*/				
-		/*}
-		else{
-			?><script language="JavaScript" type="text/javascript">
-				alert("EMAIL INVALIDO");
-			</script><?php
-		}*/
+		
+		$noPermitidas = array("á","à","â","ã","ä","ª","ç","Ç","è","é","ê","ë","ì","í","î","ï","ñ","ò","ó","ô","õ","ö","ù","ú","û","ü","ý","ÿ","À","Á","Â","Ã","Ä","Ç","È","É","Ê","Ë","Ì","Í","Î","Ï","Ñ","Ò","Ó","Ô","Õ","Ö","º","Ù","Ú","Û","Ü","Ý","^","´","`","¨","~");
+		$permitidas = array("a","a","a","a","a","a","c","C","e","e","e","e","i","i","i","i","n","o","o","o","o","o","u","u","u","u","y","y","A","A","A","A","A","C","E","E","E","E","I","I","I","I","N","O","O","O","O","O","o","U","U","U","U","Y","","","","","");
+		
+		$onlyconsonants = str_replace($noPermitidas, $permitidas ,"áéíóúñÑÖöüÜÚÖññÑÑÝíñiç^~áéíóú");
+		
+		echo $onlyconsonants;	
+		?><script language="JavaScript" type="text/javascript">
+		</script><?php
+
 	}
 ?>
 <body onload="cargo(),inicializacion()">
@@ -137,10 +132,10 @@
     	<div class="titulo_panel">Crear Categoría</div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadocategorias.php">Listar Categorías</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearcategorias.php">Registrar Nueva Categoría</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearcategoria.php">Registrar Nueva Categoría</a></div>
         </div>
         <div class="capa_formulario">
-        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
+        	<form onsubmit="return quitarAcentos("Suárez úíáÁ Blanco ñÑ")" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario"></div>

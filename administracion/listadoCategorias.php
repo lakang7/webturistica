@@ -20,7 +20,11 @@
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar el registro? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -40,19 +44,19 @@
     	<div class="titulo_panel">Listado Categorías</div>
         <div class="opcion_panel">
 	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadocategorias.php" style="text-decoration:none; color:#FFF;">Listar Categorías</a></div>
-        	<div class="opcion"><a href="crearcategorias.php">Registrar Nueva Categoría</a></div>
+        	<div class="opcion"><a href="crearcategoria.php">Registrar Nueva Categoría</a></div>
         </div>
   		<div class="capa_tabla">
-        	<table border="1" class="estilo_tabla" id="highlight-table">
-            	<thead style="background:#F00; color:#FFF;">
+        	<table border="0" class="estilo_tabla" id="highlight-table">
+            	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td align="center">Código</td><td align="center">Descripción Categoría</td><td width="20" align="center">Editar</td><td width="20" align="center">Eliminar</td>
+                    	<td width="100">Código</td><td>Categoría</td><td width="40" align="center">Editar</td><td width="40" align="center">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM categoria ORDER BY idcategoria";
+			 	$sql_select = "SELECT * FROM categoria ORDER BY nombre";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
@@ -67,7 +71,7 @@
 				    $categoria = pg_fetch_array($result_select,$i);	
 					$idCategoria = $categoria[0];
 				    ?>
-					<tr class="row-<?php echo $i+1; ?>">
+					<tr class="row-<?php echo $i+1; ?>" style="cursor:pointer;" align="center">
 						<td>
 							<?php echo Codigo("CAT",$categoria[0]); ?>
 						</td>
@@ -75,7 +79,7 @@
 							<?php echo $categoria[1]; ?>
 						</td>
 						<td title="Editar <?php echo $categoria[1]; ?>" style="cursor:pointer;" align="center">
-							<a href="editarcategorias.php?id=<?php echo $categoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+							<a href="editarcategoria.php?id=<?php echo $categoria[0]; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
 						<td title="Eliminar <?php echo $categoria[1]; ?>" style="cursor:pointer;" align="center">
 							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=1&id=<?php echo $idCategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>

@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Editar Tipo Habitación</title>
+	<title>Editar Medio de Pago</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -26,10 +26,8 @@
 		*
 		**********************************************************************************************/
 		function validarCampo(formulario) {
-        	//obteniendo el valor que se puso en el campo texto del formulario
         	campoNombre = formulario.nombre.value;
 			
-        	//la condición
         	if (campoNombre.length == 0) {
 				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
@@ -45,10 +43,14 @@
 
 <?php
 	if(isset($_POST["Guardar"])){
-		
-		/*Se actualiza el registro*/
 		$con = conectarse();
-		$sql_update = "UPDATE medio_pago SET nombre='".$_POST["nombre"]."', icono=null WHERE idmedio_pago='".$_GET["id"]."'";
+		//Antes de actualizar, se busca la foto anterior para luego eliminarla
+		$sql = "SELECT * FROM medio_pago WHERE idmedio_pago=".$_GET["id"];
+		$result_select = pg_exec($con,$sql);
+		$medio_pago = pg_fetch_array($result_select,0);		
+		
+		//Se actualiza el registro
+		$sql_update = "UPDATE medio_pago SET nombre='".$_POST["nombre"]."' WHERE idmedio_pago='".$_GET["id"]."'";
 		$result_update = pg_exec($con,$sql_update);
 				
 		if(!$result_update){
@@ -60,7 +62,10 @@
 		else{
 			/*Si se cargó un nuevo icono*/
 			if($_FILES['icono']['name']!=""){
-	
+				if($medio_pago["icono"]!=""){
+					$borrar = borrarArchivo("../".$medio_pago["icono"]);
+				}				
+
 				/*Se sube la imagen a la ruta predefinida*/
 				$subir = new imgUpldr;		
 				$nombreImagen = $_GET["id"]."_".$_POST["nombre"];	
@@ -99,29 +104,69 @@
 		?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Editar Medio de Pago</div>
+    	<div class="titulo_panel">Editar Medio de Pago "<?php echo $medioPago["nombre"]; ?>"</div>
         <div class="opcion_panel">
 	        <div class="opcion"> <a href="listadomediopago.php">Listar Medios de Pago</a></div>
         	<div class="opcion" style="background:#F00; color:#FFF;">
 				<a href="crearmediopago.php">Registrar Nuevo Medio de Pago</a></div>
         </div>
         <div class="capa_formulario">
-        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >    
-            	<div class="linea_formulario_compartido">
-                	<div class="linea_titulo_compartido">Medio de Pago(*)</div>
-                    <div class="linea_campo_compartido">
-                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="45" value="<?php echo $medioPago[1]; ?>"/>
+        	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >  
+				<div class="linea_formulario_doble"><div class="linea_titulo_2">Información Básica</div></div>  
+            	<div class="linea_formulario_doble">
+                	<div class="linea_titulo_doble">Medio de Pago(*)</div>
+                    <div class="linea_campo_doble">
+                    	<input type="text" class="campo_doble" id="nombre" name="nombre" maxlength="45" value="<?php echo $medioPago["nombre"]; ?>"/>
                     </div>
                 </div>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido"></div>
+                    <div class="linea_titulo_rojo">
+                    	(*) Campos obligatorios
+                    </div>
+                </div>
+				
+				<div class="linea_formulario"></div>		
+				<div class="linea_formulario"><div class="linea_titulo_2">Vista Previa del Icono actual</div></div>					
+				<div class="linea_formulario"></div>
+				<table id="highlight-table" align="center" width="70%">
+		            	<thead></thead>
+                		<tbody>
+							<tr align="center">
+								<?php 
+								//Si tenía icono cargado se muestra
+								if($medioPago["icono"]!=""){?>
+									<td align="center"><img src="../<? echo $medioPago["icono"]; ?>" width="100" height="100" /></td>
+								<?php 
+								}
+								else{?>
+									<td align="center">
+										<div class="linea_titulo_rojo">
+											No existe ícono para este medio de pago
+										</div>
+									</td>
+								<?php 
+								}
+								?>								
+							</tr>										               
+        	        	</tbody>
+	            	</table>	
+				<div class="linea_formulario">
+					<div class="linea_titulo_rojo">Si desea cambiar el ícono del medio de pago haga clic en "Seleccionar archivo" y busque la nueva imagen, para finalizar presione "Guardar cambios"</div>
+				</div>
+				<div class="linea_formulario">
+					<div class="linea_titulo"></div>
+				</div>
 				<div class="linea_formulario_doble">
                 	<div class="linea_titulo_doble">Icono Identificador</div>
                     <div class="linea_campo_doble">
-                    	<input name="icono" class="campo_doble" type="file" id="icono"/>
+                    	<input name="icono" type="file" id="icono"/>
                     </div>
-                </div>			
-				<div class="linea_formulario">
+                </div>				
+				<div class="linea_formulario_promedio">
+					<div class="linea_titulo_rojo"></div>	
 					<div class="linea_titulo_rojo">
-						<input type="submit" value="Guardar" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
+						<input type="submit" class="campo_promedio" value="Guardar cambios" name="Guardar" style="font-size:12px;" align="middle"/>
 					</div>					
 				</div>
             </form>

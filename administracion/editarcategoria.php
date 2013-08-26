@@ -1,11 +1,12 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
+	  include_once("../recursos/class_imgUpldr.php");
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Editar Comodidades</title>
+	<title>Editar Categoría</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -21,19 +22,16 @@
     //Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
-        	campoNombre = formulario.nombre.value;
-			campoDesc = formulario.descripcion.value;
-			
+        	miCampoTexto = formulario.nombre.value;
         	//la condición
-        	if (campoNombre.length == 0 || campoDesc.length == 0) {
+        	if (miCampoTexto.length == 0) {
 				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
             	return false;
         	}
-			else if(/^\s+$/.test(campoNombre) || /^\s+$/.test(campoDesc)){
+			else if(/^\s+$/.test(miCampoTexto)){
 				alert("Ningún campo obligatorio (*) puede quedar en blanco, ingrese valores válidos");
             	return false;
-			}			
-			
+			}
         	return true;
 	    }    
 	</script>
@@ -45,13 +43,13 @@
 		
 		/*Se actualiza el registro*/
 		$con = conectarse();
-		$sql_update = "UPDATE especialidad SET nombre='".$_POST["nombre"]."', descripcion='".$_POST["descripcion"]."' WHERE idespecialidad='".$_GET["id"]."'";
+		$sql_update = "UPDATE categoria SET nombre = '".$_POST["nombre"]."' WHERE idcategoria='".$_GET["id"]."'";
 		$result_update = pg_exec($con,$sql_update);
 				
 		?>
         	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Especialidad gastronómica modificada satisfactoriamente !!!");
-				location.href="../administracion/listadoespecialidades.php";
+				alert("¡¡¡ Categoria modificada satisfactoriamente !!!");
+				location.href="../administracion/listadocategorias.php";
 			</script>
         <?php	
 	}
@@ -64,30 +62,24 @@
 		
 		/*Se consultan los datos del id que llega por GET*/
 		$con = conectarse();
-		$sql_select = "SELECT * FROM especialidad WHERE idespecialidad='".$_GET["id"]."';";
+		$sql_select = "SELECT * FROM categoria WHERE idcategoria='".$_GET["id"]."';";
 		$result_select = pg_exec($con, $sql_select);
 		$arreglo = pg_fetch_array($result_select,0);	
 		?>		                       
     </div>
     <div class="panel">
-    	<div class="titulo_panel">Editar Especialidad Gastronómica</div>
+    	<div class="titulo_panel">Editar Categoría</div>
         <div class="opcion_panel">
-	        <div class="opcion"> <a href="listadocategorias.php">Listar Especialidades</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearCategorias.php">Registrar Nueva Especialidad</a></div>
+	        <div class="opcion"> <a href="listadocategorias.php">Listar Categorías</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearcategoria.php">Registrar Nueva Categoría</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
   			<input type="hidden" name="MAX_FILE_SIZE" value="200000000" />            
             	<div class="linea_formulario">
-                	<div class="linea_titulo">Nombre (*)</div>
+                	<div class="linea_titulo">Nombre Categoría (*)</div>
                     <div class="linea_campo">
                     	<input type="text" class="campo" id="nombre" name="nombre" maxlength="45" value="<? echo $arreglo[1]; ?>" />
-                    </div>
-                </div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Descripción (*)</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="descripcion" name="descripcion" maxlength="600" value="<? echo $arreglo[2]; ?>" />
                     </div>
                 </div>
             	<div class="linea_formulario">

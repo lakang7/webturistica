@@ -17,6 +17,7 @@
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 	
+	<script src="../js/administracion/funcionesJS.js"></script>
 	<script src="../js/mootools.1.2.3.js"></script>
 	<script src="../js/administracion/sombrear_fila_tabla.js"></script>
 	<link rel="stylesheet" type="text/css" href="../css/administracion/sombrear_fila_tabla.css" />
@@ -33,7 +34,11 @@
 	<script src="../js/administracion/funcionesJS.js"></script> 
 	
 	<script type="text/javascript" language="javascript">
-		//Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		/*********************************************************************************************
+		*
+			Funcion para preguntar si esta seguro de eliminar un registro ANTES de proceder a eliminarlo realmente
+		*
+		**********************************************************************************************/
 		function confirmar(url){ 
 			if (!confirm("¿Está seguro de que desea eliminar la fotografía de la galería? Presione ACEPTAR para eliminarlo o CANCELAR para volver al listado")) { 
 				return false; 
@@ -43,6 +48,31 @@
 				return true; 
 			} 
 		} 
+		/*********************************************************************************************
+		*
+			Funcion para mostrar imagen en un POPUP
+		*
+		**********************************************************************************************/
+		function openPopup(imageURL){
+    		var popupTitle = "Foto";
+    		var newImg = new Image();
+    		newImg.src = "../"+imageURL;
+			var ancho = newImg.width;
+			var alto = newImg.height;
+ 
+ 			pos_x = (screen.width-ancho)/2;
+	 	    pos_y = (screen.height-alto)/2;
+			
+    		popup = window.open(newImg.src,'image','height='+alto+',width='+ancho+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+		    with (popup.document){
+    	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
+	    	    writeln('<\/head><body onClick="window.close()">');
+		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+        		close();
+		    }
+		    popup.focus();
+		}
 	</script>  
 </head>
 
@@ -54,11 +84,11 @@
 			
 			$con = conectarse();
 			
-			/*---------------------------------------------------------------------------------------------------------------------
+            /*-----------------------------------------------------------------------------------------------------------
 			*								Solo se pueden subir máximo 20 fotografías por sitio
 			*								por lo tanto ANTES de insertar la foto, se consulta
 			*								la cant de fotos que hay cargadas hasta el momento
-			---------------------------------------------------------------------------------------------------------------------*/
+            -----------------------------------------------------------------------------------------------------------*/
 			$sql_select = "SELECT * FROM foto_sitio WHERE idsitio=".$_GET["idSitio"].";";
 			$result_select = pg_exec($con,$sql_select);
 			
@@ -85,30 +115,27 @@
 					$sql_select = "SELECT last_value FROM foto_sitio_idfoto_sitio_seq";
 					$result_select = pg_exec($con, $sql_select);
 					$arreglo = pg_fetch_array($result_select,0);
+                    
+					/*-----------------------------------------------------------------------------------------------
+					*  					   	        SE GUARDA EN LA CARPETA LA FOTO EN TAMAÑO PEQUEÑO
+					 -----------------------------------------------------------------------------------------------*/
 					
-					/*------------------------------------------------------------------------------------------------------------
-					*  					   	        SE GUARDA EN LA CARPETA LA FOTO EN TAMAÑO GRANDE
-					------------------------------------------------------------------------------------------------------------*/
-					/*Se prepara la fotografía en tamaño GRANDE*/
-					/*$subir = new imgUpldr;
-					$nombreImagenGrande = "Grande_".$arreglo[0]."_".$nombreSitio;
-					$subir->configurar($nombreImagenGrande, "../imagenes/sitios/galeria/",1024,768);
-					$subir->init($_FILES['foto']);			
-					$destino = "imagenes/sitios/galeria/".$subir->_name;*/
+					//Se procesa el nombre para quitarle las tildes
+					$noPermitidas = array("á","à","â","ã","ä","ª","ç","Ç","è","é","ê","ë","ì","í","î","ï","ñ","ò","ó","ô","õ","ö","ù","ú","û","ü","ý","ÿ","À","Á","Â","Ã","Ä","Ç","È","É","Ê","Ë","Ì","Í","Î","Ï","Ñ","Ò","Ó","Ô","Õ","Ö","º","Ù","Ú","Û","Ü","Ý","^","´","`","¨","~");
+					$permitidas = array("a","a","a","a","a","a","c","C","e","e","e","e","i","i","i","i","n","o","o","o","o","o","u","u","u","u","y","y","A","A","A","A","A","C","E","E","E","E","I","I","I","I","N","O","O","O","O","O","o","U","U","U","U","Y","","","","","");
+		
+					$nombreSitio = str_replace($noPermitidas, $permitidas ,$sitio["nombre"]);
+					
 					$subir = new imgUpldr;		
-					$subir->configurar("fotogaleria_".$arreglo[0]."_peq_".$sitio["nombre"],"../imagenes/sitios/galeria/",250,250);
+					$subir->configurar($arreglo[0]."_peq_".$nombreSitio,"../imagenes/sitios/galeria/",250,250);
 					$subir->init($_FILES['foto']);
 					$destino = "imagenes/sitios/galeria/".$subir->_name;
 				
-					/*------------------------------------------------------------------------------------------------------------
-					*  					   	        SE GUARDA EN LA CARPETA LA FOTO EN TAMAÑO PEQUEÑO
-					------------------------------------------------------------------------------------------------------------*/
-					/*$subirP = new imgUpldr;
-					$nombreImagenPeque = "Peque_".$arreglo[0]."_".$nombreSitio;
-					$subirP->configurar($nombreImagenPeque, "../imagenes/sitios/galeria/",200,150);
-					$subirP->init($_FILES['foto']);	*/
+					/*-----------------------------------------------------------------------------------------------
+					*  					   	        SE GUARDA EN LA CARPETA LA FOTO EN TAMAÑO GRANDE
+					------------------------------------------------------------------------------------------------*/
 					$subir2 = new imgUpldr;		
-					$subir2->configurar("fotogaleria_".$arreglo[0]."_gra_".$sitio["nombre"],"../imagenes/sitios/galeria/",1024,768);
+					$subir2->configurar($arreglo[0]."_gra_".$nombreSitio,"../imagenes/sitios/galeria/",1024,768);
 					$subir2->init($_FILES['foto']);					
 																		
 					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
@@ -229,16 +256,13 @@
 							$result_select = pg_exec($con,$sql_select);
 				
 							if(pg_num_rows($result_select)==0){
-								?>
-								<tr>
-            			        	<td align="center" width="50%" bordercolor="">No hay fotografías cargadas hasta el momento</td>
-			                    </tr>
-								<?php
+								?><tr><td align="center" width="50%" bordercolor="">No hay fotografías cargadas hasta el momento</td>
+			                    </tr><?php
 							}
 				
 							else{?>
 								<tr style="background:#F00; color:#FFF;" align="center">
-	                    			<td width="20">No.</td><td width="100">Fecha</td><td>Fotografía</td><td width="20">Ver</td><td width="20" >Eliminar</td>
+	                    			<td width="20">No.</td><td width="100">Fecha</td><td>Fotografía</td><td width="40">Ver</td><td width="40">Eliminar</td>
     	                		</tr>
 								<?php
 								for($i=0;$i<pg_num_rows($result_select);$i++){
@@ -249,8 +273,9 @@
 										<td style="cursor:pointer;"><?php echo $i+1; ?></td>
 										<td style="cursor:pointer;"><?php echo $foto_sitio["fecha"]; ?></td>
 										<td style="cursor:pointer;"><?php echo $foto_sitio["foto"]; ?></td>
-										<td title="Ver foto <?php echo $i+1; ?>" style="cursor:pointer;" width="20">
-											<a href="" ><img src="../imagenes/ver.png" width="16" height="16" /></a></td>
+										<td title="Ver foto <?php echo $i+1; ?>" style="cursor:pointer;" align="center">
+											<a href="#" onclick="openPopup('<? echo $foto_sitio["foto"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
+										</td>
 										<td title="Eliminar foto <?php echo $i+1; ?>" style="cursor:pointer;" width="20">
 											<a href="javascript:;" onClick="confirmar('eliminar.php?clave=7&id=<?php echo $idFotoSitio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a></td>
 									</tr>					    
