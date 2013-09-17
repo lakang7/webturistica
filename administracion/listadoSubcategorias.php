@@ -43,8 +43,8 @@
     		var popupTitle = "Icono";
     		var newImg = new Image();
     		newImg.src = "../"+imageURL;
-			var ancho = newImg.width;
-			var alto = newImg.height;
+			var ancho = 200; /*newImg.width;*/
+			var alto = 200; /*newImg.height;*/
  
  			pos_x = (screen.width-ancho)/2;
 	 	    pos_y = (screen.height-alto)/2;
@@ -54,7 +54,7 @@
 		    with (popup.document){
     	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
 	    	    writeln('<\/head><body onClick="window.close()">');
-		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+		        writeln('<img src='+newImg.src+' width="200" height="200" style="display:block"><\/body><\/html>');
         		close();
 		    }
 		    popup.focus();
@@ -113,7 +113,7 @@
 						}?>
 						</td>
 						<td title="Editar <?php echo $subCategoria["nombre"]; ?>" style="cursor:pointer;" align="center">
-							<a href="editarsubcategoria.php?id=<?php echo $idSubcategoria;?>&amp;cat=<?php echo $subCategoria["idcategoria"];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
+							<a href="editarsubcategoria.php?id=<?php echo $idSubcategoria;?>&cat=<?php echo $subCategoria["idcategoria"];?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
 						</td>
 						<td title="Eliminar <?php echo $subCategoria["nombre"]; ?>" style="cursor:pointer;" align="center"><a href="javascript:;" onClick="confirmar('eliminar.php?clave=2&idSub=<?php echo $idSubcategoria;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>

@@ -55,7 +55,7 @@
 		if(pg_num_rows($res)>0){
 			for($i=0; $i<pg_num_rows($res); $i++){				
 				$categoria = pg_fetch_array($res,$i);	
-				$nombreCategoria = $categoria[1];
+				$nombreCategoria = $categoria["nombre"];
 				
 				/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
 				if($nombreCategoria==$_POST["nombre"]){

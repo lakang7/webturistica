@@ -104,6 +104,29 @@
     		$('#latitud').funcionesJS('0123456789.');
 			$('#longitud').funcionesJS('0123456789.');
     	});
+		/*********************************************************************************************
+		*
+			Funcion para mostrar imagen en un POPUP
+		*
+		**********************************************************************************************/
+		function openPopup(imageURL){
+    		var popupTitle = "Icono";
+    		var newImg = new Image();
+    		newImg.src = "../"+imageURL;
+ 
+ 			pos_x = (screen.width-newImg.width)/2;
+	 	    pos_y = (screen.height-newImg.height)/2;
+			
+    		popup = window.open(newImg.src,'image','height='+newImg.height+',width='+newImg.width+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+		    with (popup.document){
+    	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
+	    	    writeln('<\/head><body onClick="window.close()">');
+		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+        		close();
+		    }
+		    popup.focus();
+		}
 	</script>
 </head>
 
@@ -211,7 +234,7 @@
     	<div class="titulo_panel">Puntos para "<?php echo $ruta["nombre"]; ?>"</div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadorutas.php">Listar Rutas</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearuta.php">Registrar Nueva Ruta</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearuta.php" style="text-decoration:none; color:#FFF;">Registrar Nueva Ruta</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
@@ -238,13 +261,13 @@
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Latitud (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="200" value="8.131437081366"/>
+                    	<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="20" value="8.131437081366"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Longitud (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="200" value="-71.9797858306"/>
+                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="20" value="-71.9797858306"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
@@ -254,7 +277,7 @@
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Reseña</div>
                     <div class="linea_campo">
-                    	<input type="text" class="campo" id="resena" name="resena" maxlength="200"/>
+                    	<input type="text" class="campo" id="resena" name="resena" maxlength="1200"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
@@ -282,10 +305,10 @@
 				<div class="linea_formulario"></div>		
 				<div class="linea_formulario"><div class="linea_titulo_2">Puntos de la ruta</div></div>				
 				<div class="capa_tabla_fotos">
-        			<table border="1" class="estilo_tabla" id="highlight-table" align="center">
+        			<table border="0" class="estilo_tabla" id="highlight-table" align="center">
 		            	<thead style="background:#F00; color:#FFF;" align="center">
 							<tr>
-                		    	<td width="20">Nro.</td><td>Nombre</td><td>Latitud</td><td>Longitud</td><td>Foto</td><td width="20">Editar</td><td width="20">Eliminar</td>
+                		    	<td width="20">Nro.</td><td>Nombre</td><td width="100">Latitud</td><td width="100">Longitud</td><td width="300">Reseña del punto</td><td colspan="3"></td>
 		                    </tr>
         		        </thead>
                 		<tbody>
@@ -302,15 +325,24 @@
 							for($i=0;$i<pg_num_rows($result_select);$i++){
 							    $punto_ruta = pg_fetch_array($result_select,$i);	
 								//$idruta = $foto_ruta[0];
-							    ?><tr class="row-<?php echo $i+1; ?>" align="center">
-									<td style="cursor:pointer;"><?php echo $i+1; ?></td>
-									<td style="cursor:pointer;"><?php echo $punto_ruta["nombre"]; ?></td>
-									<td style="cursor:pointer;"><?php echo $punto_ruta["latitud"]; ?></td>
-									<td style="cursor:pointer;"><?php echo $punto_ruta["longitud"]; ?></td>
-									<td style="cursor:pointer;"><?php echo $punto_ruta["idpunto_ruta"]; ?></td>
-									<td title="Ver <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;"><a href="verpuntoruta.php?id=<?php echo $punto_ruta["idpunto_ruta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-									<td title="Editar <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;"><a href="editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"]; ?>&idpunto_ruta=<?php echo $punto_ruta["idpunto_ruta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-									<td title="Eliminar <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;">
+							    ?><tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;">
+									<td><?php echo $i+1; ?></td>
+									<td><?php echo $punto_ruta["nombre"]; ?></td>
+									<td><?php echo $punto_ruta["latitud"]; ?></td>
+									<td><?php echo $punto_ruta["longitud"]; ?></td>
+									<td><?php echo $punto_ruta["resena"]; ?></td>
+									<td title="Ver foto del punto <?php echo $punto_ruta["nombre"]; ?>" align="center" width="25">
+										<?php 
+										//Si tiene foto el punto, se muestra en un popup
+										if($punto_ruta["foto_portada"]!=""){?>
+											<a href="#" onclick="openPopup('<? echo $punto_ruta["nombre"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php 
+										}else{?>
+											<a href="#"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php
+										}?>
+									</td>
+									<td title="Editar <?php echo $punto_ruta["nombre"]; ?>" width="25">
+										<a href="editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"]; ?>&idpunto_ruta=<?php echo $punto_ruta["idpunto_ruta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+									<td title="Eliminar <?php echo $punto_ruta["nombre"]; ?>" width="25">
 										<a href="javascript:;" onClick="confirmar('eliminar.php?clave=11&id=<?php echo $punto_ruta["idpunto_ruta"];?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a></td>
 								</tr><?php
 	    		            }				

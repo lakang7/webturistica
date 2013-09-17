@@ -1,7 +1,6 @@
 create table categoria(
    idcategoria SERIAL,
    nombre VARCHAR(45) NOT NULL,
-   hijos INTEGER NOT NULL,  
    CONSTRAINT pk_categoria PRIMARY KEY (idcategoria)   
 );
 

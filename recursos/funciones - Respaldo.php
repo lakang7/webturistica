@@ -61,10 +61,22 @@
 	}
 	
 	function menu_administrativo(){
+		$con = conectarse();
+		$sql_select = "SELECT * FROM subcategoria where idsubcategoria=1;";
+		$result_select = pg_exec($con, $sql_select);
+		$arreglo = pg_fetch_array($result_select,0);		
+		
 		echo "<div class='container demo-0'>";
 			echo "<div id='dl-menu' class='dl-menuwrapper'>";
 				echo "<button class='dl-trigger' id='dl-trigger'>Open Menu</button>";
 				echo "<ul class='dl-menu'>";
+					echo "<li>";
+						echo "<a href='#'>".$arreglo["nombre"]."</a>";
+						echo "<ul class='dl-submenu'>";
+							echo "<li><a href='listadocategorias.php'>Categoría</a></li>";
+							echo "<li><a href='listadosubcategorias.php'>Sub Categoría</a></li>";
+						echo "</ul>";
+					echo "</li>";
 					echo "<li>";
 						echo "<a href='#'>Clasificación</a>";
 						echo "<ul class='dl-submenu'>";

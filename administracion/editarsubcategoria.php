@@ -19,7 +19,11 @@
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>    
 	<script type="text/javascript">  
-    	//Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+    	/*********************************************************************************************
+		*
+			Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		*
+		**********************************************************************************************/
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	campoNombre = formulario.nombre.value;
@@ -34,8 +38,11 @@
 			}
         	return true;
 	    }
-		
-		//Funcion para guardar en una variable oculta la CATEGORIA a la cual pertenecerá esta subcategoria
+		/*********************************************************************************************
+		*
+			Funcion para guardar en una variable oculta la NUEVA CATEGORIA a la cual pertenecerá esta subcategoria
+		*
+		**********************************************************************************************/		
 		function guardarCategoria(valor)
 		{
 			if(valor != -1){
@@ -61,14 +68,14 @@
 		//Si la consulta devuelve FALSE, es porque ocurrió un error
 		if(!$result_update){
 			?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la subcategoria");
+				alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la subcategoria. Intente de nuevo.");
 				location.href="../administracion/listadosubcategorias.php";
 			</script><?php
 		}
 		
 		//Si pudo hacer la actualización de subcategoria, se actualiza el icono
 		else{
-			//Antes de actualizar, se busca la foto anterior para eliminarla
+			//Antes de actualizar, se busca la foto anterior para eliminarla en caso de que exista
 			$sql = "SELECT * FROM subcategoria WHERE idsubcategoria=".$_GET["id"];
 			$result_select = pg_exec($con,$sql);
 			$subcategoria = pg_fetch_array($result_select,0);
@@ -89,7 +96,7 @@
 				$subir->init($_FILES['icono']);
 				$destino = "imagenes/subcategorias/".$subir->_name;
 				
-				//Se actualiza el registro para incluir la nueva ruta
+				//Se actualiza el registro de la BD para incluir la nueva ruta
 				$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$_GET["id"]."'";
 				$result_update = pg_exec($con, $sql_update);
 		
@@ -102,48 +109,20 @@
 				}
 			}
 			
-			/*Se actualiza el Nro. de Hijos del padre ANTERIOR ----------------------------------------------------------*/
-			$con = conectarse();
-					
-			//Primero se consulta la cantidad de hijos del padre ANTERIOR
-			$sql_select_hijos_padre_anterior = "SELECT * FROM categoria WHERE idcategoria=".$_GET['cat'].";";
-			$result_select_hijos_padre_anterior = pg_exec($con, $sql_select_hijos_padre_anterior);
-			$hijos_padre_anterior = pg_fetch_array($result_select_hijos_padre_anterior,0);
-		
-			//Luego se actualiza el padre ANTERIOR disminuyendole un hijo
-			$menosHijos = $hijos_padre_anterior[2] - 1;
-			$sql_update_padre_anterior = "UPDATE categoria SET hijos=".$menosHijos." WHERE idcategoria=".$_GET['cat'].";";
-			$result_update_padre_anterior = pg_exec($con, $sql_update_padre_anterior);	
-					
-			if(!$result_update_padre_anterior){
-				?><script type="text/javascript" language="javascript">
-					var txt = "¡¡¡ ERROR !!!\n\n     No se pudo actualizar el número de hijos de la categoría "+<?php echo $hijos_padre_anterior["nombre"]; ?>;
-					alert(txt);
-					location.href="../administracion/listadosubcategorias.php";
-				</script><?php	
-			}//end if
+			//Si se cambió la categoría padre, se cambia el IDCATEGORIA para esa subcategoria
+			if($_GET['cat'] != $_POST['HidCategoria']){			
+				$update_cat = "UPDATE subcategoria SET idcategoria=".$_POST['HidCategoria']." WHERE idsubcategoria=".$_GET['id'].";";
+				$result_update = pg_exec($con, $update_cat);
 				
-			/*Se actualiza el Nro. de Hijos del padre NUEVO ----------------------------------------------------------*/
-			$con = conectarse();
-					
-			//Primero se consulta la cantidad de hijos del padre NUEVO
-			$sql_select_hijos_padre_nuevo = "SELECT * FROM categoria WHERE idcategoria=".$_POST['HidCategoria'].";";
-			$result_select_hijos_padre_nuevo = pg_exec($con, $sql_select_hijos_padre_nuevo);
-			$hijos_padre_nuevo = pg_fetch_array($result_select_hijos_padre_nuevo,0);
-				
-			//Luego se actualiza el padre NUEVO disminuyendole un hijo
-			$masHijos = $hijos_padre_nuevo[2] + 1;
-			$sql_update_padre_nuevo = "UPDATE categoria SET hijos=".$masHijos." WHERE idcategoria=".$_POST['HidCategoria'].";";
-			$result_update_padre_nuevo = pg_exec($con, $sql_update_padre_nuevo);	
-					
-			if(!$result_update_padre_nuevo){
-				?><script type="text/javascript" language="javascript">
-					var txt = "¡¡¡ ERROR !!!!\n\n     No se pudo actualizar el número de hijos de la categoría "+<?php echo $hijos_padre_nuevo[1]; ?>;
-					alert(txt);
-					location.href="../administracion/listadosubcategorias.php";
-				</script><?php	
-		    }
-		
+				if(!$result_update){
+					?><script type="text/javascript" language="javascript">
+						var txt = "¡¡¡ ERROR !!!!\n\n     No se pudo actualizar la categoría padre de esta subcategoría";
+						alert(txt);
+						location.href="../administracion/listadosubcategorias.php";
+					</script><?php
+				}
+			}//end si cambió la categoría padre
+			
 			/*Finaliza el UPDATE satisfactoriamente*/
 			?><script type="text/javascript" language="javascript">
 				alert("¡¡¡ Subcategoría editada satisfactoriamente !!!");
@@ -168,12 +147,9 @@
     <div class="panel">
     	<div class="titulo_panel">Editar Sub Categoría "<?php echo $arreglo["nombre"]; ?>"</div>
         <div class="opcion_panel">
-	        <div class="opcion"> 
-				<a href="listadosubcategorias.php">Listar Sub Categorías</a>
-			</div>
-        	<div class="opcion" style="background:#F00; color:#FFF;">
-				<a href="crearsubcategoria.php">Registrar Nueva SubCategoría</a></div>
-	        </div>
+	        <div class="opcion"><a href="listadosubcategorias.php">Listar Sub Categorías</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearsubcategoria.php">Registrar Nueva SubCategoría</a></div>
+	    </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
             	<div class="linea_formulario"><div class="linea_titulo_2">Información Básica</div></div>	
@@ -186,9 +162,8 @@
 						$result_select_sitio = pg_exec($con,$sql_select_sitio);
 						
 						// Se busca el ID y NOMBRE de la categoria padre para cargarlo en la lista
-						$con2 = conectarse();		
 						$sql_select = "SELECT * FROM categoria WHERE idcategoria=".$_GET["cat"].";";
-						$result_select = pg_exec($con2, $sql_select);						
+						$result_select = pg_exec($con, $sql_select);						
 						$categoria_padre_sel = pg_fetch_array($result_select,0);
 						$nombreCatPadre = $categoria_padre_sel["nombre"];
 												
@@ -207,7 +182,7 @@
 						else{
 							// Se consultan TODAS las categorias
 							$sql_select_categorias = "SELECT * FROM categoria;";
-							$result_select_categorias = pg_exec($con2, $sql_select_categorias);
+							$result_select_categorias = pg_exec($con, $sql_select_categorias);
 			
 							//Si existen, se construye una lista con todas						
 							if(pg_num_rows($result_select_categorias)!=0){
@@ -220,8 +195,8 @@
 							   			$categoria = pg_fetch_array($result_select_categorias,$i);
 									
 										//Se agregan a la lista todas las demas categorias
-										if($categoria[0] != $_GET["cat"]){
-											echo '<option value="'.$categoria[0].'">'.$categoria[1].'</option>';
+										if($categoria["idcategoria"] != $_GET["cat"]){
+											echo '<option value="'.$categoria["idcategoria"].'">'.$categoria["nombre"].'</option>';
 										}								
 									}?>
 									</select>							
@@ -238,28 +213,36 @@
                     </div>
                 </div>
             	<div class="linea_formulario"></div>		
-				<div class="linea_formulario"><div class="linea_titulo_2">Vista Previa del Icono actual</div></div>	
-				<div class="linea_formulario">
-					<div class="linea_titulo">Si desea cambiar el ícono de la subcategoría haga clic en "Seleccionar archivo" y busque la nueva imagen, para finalizar presione "Guardar cambios"</div>
-				</div>
+				<div class="linea_formulario"><div class="linea_titulo_2">Vista previa del ícono actual</div></div>	
 				<table id="highlight-table" align="center" width="70%">
 		            	<thead></thead>
                 		<tbody>
-							<tr align="center">
-								<td align="center"><img src="../<? echo $arreglo["icono"]; ?>" width="200" height="200" /></td>
-							</tr>										               
+							<?php 
+							if($arreglo["icono"] != ""){?>
+								<tr align="center">
+									<td align="center"><img src="../<? echo $arreglo["icono"]; ?>" width="200" height="200" /></td>
+								</tr>
+								<?php 
+							}else{?>
+								<tr align="center">
+									<td align="center">No hay ícono cargado para esta subcategoría</td>
+								</tr>
+								<?php 
+							}
+							?>
+																	               
         	        	</tbody>
-	            	</table>	
+	            </table>	
+				<div class="linea_formulario"></div>						
+				<div class="linea_formulario"><div class="linea_titulo_2">Nuevo ícono</div></div>
+				<div class="linea_formulario">
+					<div class="linea_titulo">Si desea cambiar el icono haga clic en "Seleccionar archivo" y busque la nueva imagen, para finalizar presione "Guardar cambios"</div>
+				</div>	
 				<div class="linea_formulario"></div>
 				<div class="linea_formulario_doble">
-                	<div class="linea_titulo_doble">Icono Identificador</div>
-                    <div class="linea_campo_doble">
-                    	<input name="icono" type="file" id="icono"/>
-                    </div>
+                    <div class="linea_campo_doble"><input name="icono" type="file" id="icono"/></div>
                 </div>
 				<div class="linea_formulario_compartido">
-					<div class="linea_titulo_rojo">						
-					</div>
 					<div class="linea_titulo_rojo">
 						<input type="submit" value="Guardar cambios" name="Guardar" style="font-size:12px;" />(*) Campos obligatorios
 					</div>

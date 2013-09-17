@@ -19,7 +19,11 @@
     <script src="../js/administracion/modernizr.custom.js"></script>
     <script src="../js/administracion/jquery.dlmenu.js"></script>      
     <script type="text/javascript">  
-    //Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		/*********************************************************************************************
+		*
+			Funcion para validar campo de texto, que NO permita ni campo vacío ni introducir solo espacios en blanco
+		*
+		**********************************************************************************************/
 		function validarCampo(formulario) {
         	//obteniendo el valor que se puso en el campo texto del formulario
         	miCampoTexto = formulario.nombre.value;
@@ -46,12 +50,10 @@
 		$sql_update = "UPDATE categoria SET nombre = '".$_POST["nombre"]."' WHERE idcategoria='".$_GET["id"]."'";
 		$result_update = pg_exec($con,$sql_update);
 				
-		?>
-        	<script type="text/javascript" language="javascript">
-				alert("¡¡¡ Categoria modificada satisfactoriamente !!!");
-				location.href="../administracion/listadocategorias.php";
-			</script>
-        <?php	
+		?><script type="text/javascript" language="javascript">
+			alert("¡¡¡ Categoria modificada satisfactoriamente !!!");
+			location.href="../administracion/listadocategorias.php";
+		</script><?php	
 	}
 ?>
 

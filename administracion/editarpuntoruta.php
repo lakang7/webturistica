@@ -200,49 +200,55 @@
 		?>
 	</div>
     <div class="panel">
-    	<div class="titulo_panel">Editar Puntos para "<?php echo $ruta["nombre"]; ?>"</div>
+    	<div class="titulo_panel">Editar Punto de "<?php echo $ruta["nombre"]; ?>"</div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadorutas.php">Listar Rutas</a></div>
-        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearuta.php">Registrar Nueva Ruta</a></div>
+        	<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearuta.php" style="text-decoration:none; color:#FFF;">Registrar Nueva Ruta</a></div>
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
-            	<div class="linea_formulario"><div class="linea_titulo_2">Selección de punto de ruta</div></div>
-				<div class="linea_formulario">
-        	       	<div class="linea_titulo_rojo">Para crear los puntos de la ruta realice los siguientes pasos:</div>
+            	<div class="linea_formulario">
+        	       	<div class="linea_titulo_rojo">Para editar los puntos de la ruta realice los siguientes pasos:</div>
 				</div>
 				<div class="linea_formulario">
-					<div class="linea_titulo">- PASO 1: Arrastre el marcador que se muestra en el mapa hasta la ubicación del punto de la ruta, ingrese una reseña(opcional) y presione "Guardar punto"</div>
+					<div class="linea_titulo">- PASO 1: Para modificar latitud y longitud, arrastre el marcador en el mapa hasta la nueva ubicación e ingrese los campos que desee modificar (nombre, reseña)</div>
 				</div>
 				<div class="linea_formulario">
-					<div class="linea_titulo">- PASO 2: Al finalizar la carga de los puntos, indique el orden secuencial de los puntos ingresando los números en los campos de texto de la tabla de los puntos</div>
-				</div>
-				<div class="linea_formulario">
-					<div class="linea_titulo">- PASO 3: Por último, haga clic en "Finalizar Ruta"</div>
+					<div class="linea_titulo">- PASO 2: Si ya terminó de hacer las modificaciones, haga clic en "Guardar punto"</div>
 				</div>	
 				<div class="linea_formulario"></div>
 				<div id="map_canvas" style="width:70%; height:250px; margin-left:auto; margin-right:auto" align="center"></div>
-				<div class="linea_formulario">
-                	<div class="linea_titulo">Reseña del punto</div>
-                    <div class="linea_campo">
-                    	<input type="text" class="campo" id="resena" name="resena" maxlength="200" value="<?php echo $puntoruta["resena"]; ?>"/>
+				<div class="linea_formulario_compartido">
+                	<div class="linea_titulo_compartido">Nombre (*)</div>
+                    <div class="linea_campo_compartido">
+                    	<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="100" value="<?php echo $puntoruta["nombre"]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Latitud (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="200" value="<?php echo $puntoruta["latitud"]; ?>"/>
+                    	<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="20" value="<?php echo $puntoruta["latitud"]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Longitud (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="200" value="<?php echo $puntoruta["longitud"]; ?>"/>
+                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="20" value="<?php echo $puntoruta["longitud"]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
-					<div class="linea_titulo_tres_cuartos">Foto de portada</div>
-                	<div class="linea_titulo_tres_cuartos"><input name="foto" type="file" id="icono"/></div>	
+                	<div class="linea_titulo_promedio_rojo"></div>
+                    <div class="linea_titulo_promedio_rojo">(*) Campos obligatorios</div>
+                </div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo">Reseña</div>
+                    <div class="linea_campo">
+                    	<input type="text" class="campo" id="resena" name="resena" maxlength="1200" value="<?php echo $puntoruta["resena"]; ?>"/>
+                    </div>
+                </div>
+				<div class="linea_formulario"></div>
+				<div class="linea_formulario">
+                	<div class="linea_titulo_2">Vista Previa de Foto de Portada</div>                    
                 </div>
 				<div class="capa_tabla_fotos">
 		        	<table class="estilo_tabla">
@@ -265,9 +271,13 @@
         	        	</tbody>
             		</table>
 	       		</div> 
-				<div class="linea_formulario">
-                	<div class="linea_titulo"></div>
-                    <div class="linea_campo">
+				<div class="linea_formulario_tres_cuartos">
+					<div class="linea_titulo_tres_cuartos">Cambiar Foto de portada</div>
+                	<div class="linea_titulo_tres_cuartos"><input name="foto" type="file" id="icono"/></div>	
+                </div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio"></div>
+                    <div class="linea_campo_promedio">
                     	<input type="submit" value="Guardar punto" name="GuardarPuntoRuta" style="font-size:12px;" align="left"/>
                     </div>
                 </div>
