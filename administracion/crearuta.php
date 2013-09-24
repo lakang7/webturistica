@@ -124,7 +124,7 @@
 				if($_FILES['foto']['name']!=""){					
 					/*Si SI se pudo, se sube la foto a la carpeta respectiva*/
 					$subir = new imgUpldr;	
-					$subir->configurar($arreglo[0]."_".$ruta["nombre"],"../imagenes/rutas/portadas/",591,591);
+					$subir->configurar($arreglo[0]."_".quitarAcentos($ruta["nombre"]),"../imagenes/rutas/portadas/",591,591);
 					$subir->init($_FILES['foto']);
 					$destino = "imagenes/rutas/portadas/".$subir->_name;
 

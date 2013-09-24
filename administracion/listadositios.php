@@ -54,7 +54,9 @@
 		    with (popup.document){
     	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
 	    	    writeln('<\/head><body onClick="window.close()">');
-		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+				writeln('<table align="center" width="95%"><thead></thead><tbody>');
+				writeln('<tr align="center"><td align="center"><img src='+newImg.src+' style="display:block" align="middle"></td></tr>');
+				writeln('</tbody></table><\/body><\/html>');
         		close();
 		    }
 		    popup.focus();
@@ -106,7 +108,7 @@
 						$categoria = pg_fetch_array($result_categoria,0);
 					
 						//Para consultar la ruta
-						$sql_select_ruta = "SELECT nombre FROM ruta WHERE idruta=".$sitio["idruta"];
+						$sql_select_ruta = "SELECT * FROM ruta WHERE idruta=".$sitio["idruta"];
 						$result_ruta = pg_exec($con,$sql_select_ruta);
 						$ruta = pg_fetch_array($result_ruta,0);
 						
@@ -114,14 +116,14 @@
 						<tr class="row-<?php echo $i+1; ?>" style="cursor:pointer;">
 							<td align="center"><?php echo $categoria[0];?></td>
 							<td align="center"><?php echo $subCategoria["nombre"];?></td>
-							<td align="center"><?php echo $ruta[0];?></td>
+							<td align="center"><?php echo $ruta["nombre"];?></td>
 							<td align="center"><?php echo $sitio["nombre"];?></td>
 							<td align="center"><?php echo $sitio["direccion"];?></td>
 							<td title="Ver imagen de perfil de <?php echo $sitio["nombre"]; ?>" style="cursor:pointer;" align="center">
 								<a href="#" onclick="openPopup('<? echo $sitio["imagen_perfil"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
 							</td>
 							<td align="center" title="Editar <?php echo $sitio["nombre"]; ?>" style="cursor:pointer;">
-								<a href="editarsitio.php?id=<?php echo $idSitio;?>&amp;sub=<?php echo $idSubcategoria;?>&amp;ruta=<?php echo $idRuta;?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a>
+								<a href="editarsitio.php?id=<?php echo $idSitio;?>&sub=<?php echo $idSubcategoria;?>&ruta=<?php echo $ruta["idruta"];?>" ><img src="../imagenes/edit.png" width="16" height="16"/></a>
 							</td>
 							<td title="Eliminar <?php echo $sitio["nombre"]; ?>" style="cursor:pointer;" align="center">
 								<a href="javascript:;" onClick="confirmar('eliminar.php?clave=6&id=<?php echo $idSitio;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>

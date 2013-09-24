@@ -57,113 +57,75 @@
 		
 			$con = conectarse();
 			
-			/*Se consulta la existencia de otra subcategoria con el mismo nombre*/
-			$sql = "SELECT * FROM subcategoria ORDER BY idsubcategoria";
+			/*Se consulta la existencia de otra subcategoria con el mismo nombre dentro de la misma categoria*/
+			$sql = "SELECT * FROM subcategoria WHERE idcategoria=".$_POST["HidCategoria"];
 			$res = pg_exec($con, $sql);	
-			$yaExiste = 0;
+			$yaExiste = 0;	
 					
-			if(pg_num_rows($res)>0){
-				for($i=0; $i<pg_num_rows($res); $i++){				
-					$subCategoria = pg_fetch_array($res,$i);	
-					$nombreSubcategoria = $subCategoria[2];
-					$categoriaPadre = $subCategoria[1];
+			for($j=0; $j<pg_num_rows($res); $j++){				
+				$subCategoria = pg_fetch_array($res,$j);	
 					
-					/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
-					if($nombreSubcategoria==$_POST["nombre"]){
-						$yaExiste = 1;
-						?>
-			        	<script type="text/javascript" language="javascript">
-							alert("¡¡¡ ERROR !!! \n\n     Esa subcategoría ya existe, por favor ingrese otro nombre");
-							location.href = "../administracion/crearsubcategorias.php";
-						</script>
-        				<?php
-					}
+				/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
+				if($subCategoria["nombre"]==$_POST["nombre"]){
+					$yaExiste = 1;
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!! \n\n     Ese nombre de subcategoría ya existe para la categoría seleccionada, por favor ingrese otro nombre");
+						location.href = "../administracion/crearsubcategoria.php";
+					</script><?php
 				}
-			}
+			}//end de recorrido de subcategorias
 			
-			/*Si la subcategoria NO existe, se crea*/
+			/*Si al terminar de recorrer las subcat, la subcategoria NO existe para esa categoria, se crea*/
 			if($yaExiste==0){
-					/*Se inserta el nuevo registro*/			
-					$sql_insert = "INSERT INTO subcategoria VALUES(nextval('subcategoria_idsubcategoria_seq'),".$_POST["HidCategoria"].",'".$_POST["nombre"]."',null);";
-					$result_insert = pg_exec($con,$sql_insert);
-		
-					//Si NO se pudo insertar en la tabla el nuevo registro
-					if(!$result_insert){
-						?>
-        					<script type="text/javascript" language="javascript">
-								alert("¡¡¡ ERROR !!!\n\n     No se pudo crear la subcategoria");
-								location.href="../administracion/listadosubcategorias.php";
-							</script>
-				       	<?php	
-					}else{	
-						$con = conectarse();
-						
-						//Si hay cargada alguna imagen de icono
-						if($_FILES['icono']['name']!=""){
-							/*Se consulta el id de la ultima subcategoria recien creada*/
-							$sql_select = "SELECT last_value FROM subcategoria_idsubcategoria_seq;";
-							$result_select = pg_exec($con, $sql_select);
-							$arreglo = pg_fetch_array($result_select,0);
-							$idSubcategoria = $arreglo[0];
-					
-							/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
-							$subir = new imgUpldr;	
-							$nombreImagen = $idSubcategoria."_".$_POST["nombre"];	
-							$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
-							$subir->init($_FILES['icono']);
-							$destino = "imagenes/subcategorias/".$subir->_name;
-		
-							/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-							$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";
-							$result_update = pg_exec($con, $sql_update);	
-						
-							if(!$result_update){
-								?><script type="text/javascript" language="javascript">
-									alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar el icono asociado a esta subcategoría");
-									location.href="../administracion/listadosubcategorias.php";
-								</script><?php	
-					    	}
-						}
-									
-						/*Se actualiza el Nro. de Hijos de la CATEGORIA padre*/
+				/*Se inserta el nuevo registro*/			
+				$sql_insert = "INSERT INTO subcategoria VALUES(nextval('subcategoria_idsubcategoria_seq'),".$_POST["HidCategoria"].",'".$_POST["nombre"]."');";
+				$result_insert = pg_exec($con,$sql_insert);
 
-						//Primero se consulta la cantidad de hijos del padre
-						$sql_select_hijos = "SELECT hijos FROM categoria WHERE idcategoria=".$_POST['HidCategoria'].";";
-						$result_select_hijos = pg_exec($con, $sql_select_hijos);
-						$hijos = pg_fetch_array($result_select_hijos,0);
-				
-						//Luego Se actualiza el padre agregandole un hijo más
-						$masHijos = $hijos[0] + 1;
-						$sql_update_padre = "UPDATE categoria SET hijos=".$masHijos." WHERE idcategoria=".$_POST['HidCategoria'].";";
-						$result_update = pg_exec($con, $sql_update_padre);	
-						
-						if(!$result_update){
-						?>
-        					<script type="text/javascript" language="javascript">
-								alert("¡¡¡ ERROR !!!\n\n     No se pudo actualizar el número de hijos de la categoría padre");
-								location.href="../administracion/listadosubcategorias.php";
-							</script>
-				       	<?php	
-					    }
+				//Si NO se pudo insertar en la tabla el nuevo registro
+				if(!$result_insert){
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!!\n\n     No se pudo crear la subcategoria");
+						location.href="../administracion/listadosubcategorias.php";
+					</script><?php	
+				}else{									
+					//Si hay cargada alguna imagen de icono
+					if($_FILES['icono']['name']!=""){
+						/*Se consulta el id de la ultima subcategoria recien creada*/
+						$sql_select = "SELECT last_value FROM subcategoria_idsubcategoria_seq;";
+						$result_select = pg_exec($con, $sql_select);
+						$arreglo = pg_fetch_array($result_select,0);
+						$idSubcategoria = $arreglo[0];
+		
+						//Se procesa el nombre para quitarle las tildes
+						$nombreSub = quitarAcentos($_POST["nombre"]);
+						/*Si SI se pudo, se sube el icono de la subcategoria a la carpeta respectiva*/
+						$subir = new imgUpldr;	
+						$subir->configurar($idSubcategoria."_".$nombreSub,"../imagenes/subcategorias/",591,591);
+						$subir->init($_FILES['icono']);
+						$destino = "imagenes/subcategorias/".$subir->_name;
+
+						/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+						$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$arreglo[0]."'";		
+						$result_update = pg_exec($con, $sql_update);	
 					
-						//$i = pg_num_rows($res);
-							
-						?>
-		        		<script type="text/javascript" language="javascript">
-							alert("¡¡¡ Subcategoria agregada satisfactoriamente !!!");
-							location.href = "../administracion/listadosubcategorias.php";
-						</script>
-	    	    		<?php
-					}						
-				}				
-						
-		}
+						if(!$result_update){
+							?><script type="text/javascript" language="javascript">
+								alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar el icono asociado a esta subcategoría");
+								location.href="../administracion/listadosubcategorias.php";
+							</script><?php	
+		    			}
+					}
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ Subcategoria agregada satisfactoriamente !!!");
+						location.href = "../administracion/listadosubcategorias.php";
+					</script><?php
+				}//end de se pudo insertar el registro
+			}//end yaExiste==0
+		}//end de seleccionada una categoria
 		else{
-		?>
-			<script type="text/javascript" language="javascript">
+			?><script type="text/javascript" language="javascript">
 				alert("¡¡¡ ALERTA !!!\n\n     Debe seleccionar una categoria");
-			</script>
-		<?php
+			</script><?php
 		}			
 	}
 ?>

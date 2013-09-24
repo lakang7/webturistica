@@ -1,6 +1,6 @@
 <?php session_start();
 	  require("../recursos/funciones.php");
-	  include_once("../recursos/class_imgUpldr.php");
+	  include_once("../recursos/class_imgUpldr.php"); 
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -61,74 +61,98 @@
 	if(isset($_POST["Guardar"])){
 		$con = conectarse();
 		
-		//Se actualiza el registro
-		$sql_update = "UPDATE subcategoria SET nombre='".$_POST["nombre"]."' WHERE idsubcategoria='".$_GET["id"]."'";
-		$result_update = pg_exec($con,$sql_update);
-		
-		//Si la consulta devuelve FALSE, es porque ocurrió un error
-		if(!$result_update){
-			?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la subcategoria. Intente de nuevo.");
-				location.href="../administracion/listadosubcategorias.php";
-			</script><?php
-		}
-		
-		//Si pudo hacer la actualización de subcategoria, se actualiza el icono
-		else{
-			//Antes de actualizar, se busca la foto anterior para eliminarla en caso de que exista
-			$sql = "SELECT * FROM subcategoria WHERE idsubcategoria=".$_GET["id"];
-			$result_select = pg_exec($con,$sql);
-			$subcategoria = pg_fetch_array($result_select,0);
-		
-			//Si se cargó un nuevo icono
-			if($_FILES['icono']['name']!=""){
-							
-				//Si ya tenía icono asignado en la BD
-				if($subcategoria["icono"]!=""){
-					//Se borra la imagen de la carpeta respectiva, para actualizarla
-					$borrar = borrarArchivo("../".$subcategoria["icono"]);
-				}			
+		/*Se consulta la existencia de otra subcategoria con el mismo nombre dentro de la misma categoria*/
+		$sql = "SELECT * FROM subcategoria WHERE idcategoria=".$_POST['HidCategoria'];
+		$res = pg_exec($con, $sql);	
+		$subCategoria = pg_fetch_array($res,0);
+		$yaExiste = 0;	
+					
+		for($j=0; $j<pg_num_rows($res); $j++){				
+			$subCategoria = pg_fetch_array($res,$j);	
 				
-				//Se sube la nueva imagen a la ruta predefinida
-				$subir = new imgUpldr;		
-				$nombreImagen = $_GET["id"]."_".$_POST["nombre"];	
-				$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
-				$subir->init($_FILES['icono']);
-				$destino = "imagenes/subcategorias/".$subir->_name;
-				
-				//Se actualiza el registro de la BD para incluir la nueva ruta
-				$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$_GET["id"]."'";
-				$result_update = pg_exec($con, $sql_update);
-		
-				//Si NO se pudo actualizar el registro
-				if(!$result_update){
-					?><script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono de la subcategoria");
-						location.href="../administracion/listadosubcategorias.php";
-					</script><?php
-				}
+			/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
+			if($subCategoria["nombre"]==$_POST["nombre"]){
+				$yaExiste = 1;
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ERROR !!! \n\n     Ese nombre de subcategoría ya existe para la categoría seleccionada, por favor ingrese otro nombre");
+					location.href = "../administracion/listadosubcategorias.php";
+				</script><?php
 			}
+		}//end de recorrido de subcategorias
+		
+		/*Si el nombre de la subcategoria NO existe, se le coloca ese nombre*/
+		if($yaExiste==0){
+			//Se actualiza el registro
+			$sql_update = "UPDATE subcategoria SET nombre='".$_POST["nombre"]."' WHERE idsubcategoria='".$_GET["id"]."'";
+			$result_update = pg_exec($con,$sql_update);
+		
+			//Si la consulta devuelve FALSE, es porque ocurrió un error
+			if(!$result_update){
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la subcategoria. Intente de nuevo.");
+					location.href="../administracion/listadosubcategorias.php";
+				</script><?php
+			}
+		
+			//Si pudo hacer la actualización de subcategoria, se actualiza el icono
+			else{
+				//Antes de actualizar, se busca la foto anterior para eliminarla en caso de que exista
+				$sql = "SELECT * FROM subcategoria WHERE idsubcategoria=".$_GET["id"];
+				$result_select = pg_exec($con,$sql);
+				$subcategoria = pg_fetch_array($result_select,0);
 			
-			//Si se cambió la categoría padre, se cambia el IDCATEGORIA para esa subcategoria
-			if($_GET['cat'] != $_POST['HidCategoria']){			
-				$update_cat = "UPDATE subcategoria SET idcategoria=".$_POST['HidCategoria']." WHERE idsubcategoria=".$_GET['id'].";";
-				$result_update = pg_exec($con, $update_cat);
+				//Si cargó un nuevo ícono O si no cargó nuevo icono pero cambio el nombre
+				if($_FILES['icono']['name']!=""){
+					//Si ya tenía icono asignado en la BD
+					if($subcategoria["icono"]!=""){
+						//Se borra la imagen de la carpeta respectiva, para actualizarla
+						$borrar = borrarArchivo("../".$subcategoria["icono"]);
+					}
+					//Finalmente, se sube la nueva imagen a la ruta predefinida
+					$subir = new imgUpldr;		
+					$nombreImagen = $_GET["id"]."_".quitarAcentos($_POST["nombre"]);	
+					$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
+					$subir->init($_FILES['icono']);
+					$destino = "imagenes/subcategorias/".$subir->_name;
 				
-				if(!$result_update){
-					?><script type="text/javascript" language="javascript">
-						var txt = "¡¡¡ ERROR !!!!\n\n     No se pudo actualizar la categoría padre de esta subcategoría";
-						alert(txt);
-						location.href="../administracion/listadosubcategorias.php";
-					</script><?php
+					//Se actualiza el registro de la BD para incluir la nueva ruta
+					$sql_update = "UPDATE subcategoria SET icono='".$destino."' WHERE idsubcategoria='".$_GET["id"]."'";
+					$result_update = pg_exec($con, $sql_update);
+		
+					//Si NO se pudo actualizar el registro
+					if(!$result_update){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la imagen del icono de la subcategoria");
+							location.href="../administracion/listadosubcategorias.php";
+						</script><?php
+					}
 				}
-			}//end si cambió la categoría padre
 			
-			/*Finaliza el UPDATE satisfactoriamente*/
-			?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ Subcategoría editada satisfactoriamente !!!");
-				location.href="../administracion/listadosubcategorias.php";
-			</script><?php	
-		}//end else: SI se pudo hacer la modificacion
+				//Si se cambió la categoría padre, se cambia el IDCATEGORIA para esa subcategoria
+				if($_GET['cat'] != $_POST['HidCategoria']){			
+					$update_cat = "UPDATE subcategoria SET idcategoria=".$_POST['HidCategoria']." WHERE idsubcategoria=".$_GET['id'].";";	
+					$result_update = pg_exec($con, $update_cat);
+				
+					if(!$result_update){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!!\n\n     No se pudo actualizar la categoría padre de esta subcategoría");
+							location.href="../administracion/listadosubcategorias.php";
+						</script><?php
+					}
+				}//end si cambió la categoría padre
+			
+				/*Finaliza el UPDATE satisfactoriamente*/
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ Subcategoría editada satisfactoriamente !!!");
+					location.href="../administracion/listadosubcategorias.php";
+				</script><?php	
+			}//end else: SI se pudo hacer la modificacion
+		}//end if yaExiste
+		else{
+		
+		}
+	
+		
 	}//end boton guardar
 ?>
 

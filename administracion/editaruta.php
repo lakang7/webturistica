@@ -87,7 +87,7 @@
 								
 				//Se sube la foto nueva a la carpeta respectiva
 				$subir = new imgUpldr;	
-				$subir->configurar($ruta["idruta"]."_".$ruta["nombre"],"../imagenes/rutas/portadas/",450,300);
+				$subir->configurar($ruta["idruta"]."_".quitarAcentos($ruta["nombre"]),"../imagenes/rutas/portadas/",450,300);
 				$subir->init($_FILES['foto']);
 				$destino = "imagenes/rutas/portadas/".$subir->_name;
 

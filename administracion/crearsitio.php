@@ -43,7 +43,7 @@
 			campoLong = formulario.longitud.value;
 			
         	//la condición
-        	if (campoNombre.length == 0 || campoDir.length == 0 || campoTel1.length == 0 || campoLat.length == 0 || campoLong.length == 0) {
+        	if (campoNombre.length==0 || campoDir.length==0 || campoTel1.length==0 || campoLat.length==0 || campoLong.length==0) {
 				alert("Es necesario completar todos los campos marcados como obligatorios (*)");
 				return false;
         	}
@@ -161,7 +161,7 @@
 			if(pg_num_rows($res)>0){
 				for($i=0; $i<pg_num_rows($res); $i++){				
 					$sitio = pg_fetch_array($res,$i);	
-					$nombreSitio = $sitio[3];
+					$nombreSitio = $sitio["nombre"];
 					
 					/*Si efectivamente ya existe ese sitio, no se le permite crearlo*/
 					if($nombreSitio==$_POST["nombre"]){
@@ -181,8 +181,8 @@
 				
 				/*----------------------------------------------------------------------------------------------
 				* 								SE VALIDA LA DIRECCION DE CORREO
-				* Se permite la creación del sitio si: Escribió en el campo correo y es correo VALIDO
-				*									   NO escribió en el campo correo
+				* Se permite la creación del sitio si: Opcion 1=Escribió en el campo correo y es correo VALIDO
+				*									   Opcion 2=NO escribió en el campo correo (porque es un campo NO obligatorio)
 				----------------------------------------------------------------------------------------------*/
 				if( ($_POST["correo"]!="" && validaEmail($_POST["correo"])) || $_POST["correo"]==""){ 
 					/*Se inserta el nuevo registro*/			
@@ -203,10 +203,12 @@
 						$result_select = pg_exec($con, $sql_select);
 						$arreglo = pg_fetch_array($result_select,0);
 						
-						/*Se sube la imagen de perfil de la empresa a la carpeta respectiva*/
+						/*Se guarda la imagen de perfil de la empresa en la carpeta respectiva*/
+						
+						$nombreSitio = quitarAcentos($_POST["nombre"]);
+						
 						$subirPerfil = new imgUpldr;
-						$nombreImagen = $arreglo[0]."_".$_POST["nombre"];
-						$subirPerfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",450,300);
+						$subirPerfil->configurar($arreglo[0]."_".$nombreSitio,"../imagenes/sitios/perfil/",450,300);
 						$subirPerfil->init($_FILES['perfil']);
 						$destinoPerfil = "imagenes/sitios/perfil/".$subirPerfil->_name;
 			
@@ -272,7 +274,7 @@
 						if(pg_num_rows($res_sql_categoria)!=0){
 						
 							$categoria = pg_fetch_array($res_sql_categoria,0);
-							$nombreCategoria = $categoria[1];
+							$nombreCategoria = quitarAcentos($categoria["nombre"]);
 						
 							?><script type="text/javascript" language="javascript">
 								alert("¡¡¡ Sitio agregado satisfactoriamente !!!\n\n    A continuación complete más información relacionada con el sitio que acaba de crear");</script><?php
@@ -368,7 +370,7 @@
 						if(pg_num_rows($result_select)!=0){
 						?><tr>
 							<td>
-								<select name="subcategoria" id="subcategoria" onChange="javascript:guardarValorCombo(this.value,1)">
+								<select name="subcategoria" id="subcategoria" onChange="javascript:guardarValorCombo(this.value,1)" style="font-size:12px">
 								<option value="-1">Seleccione</option>
 								<?php
 								for($i=0; $i<pg_num_rows($result_select); $i++){
@@ -403,7 +405,7 @@
 						if(pg_num_rows($result_select)!=0){
 							?><tr>
 								<td>
-									<select name="ruta" id="ruta" onChange="javascript:guardarValorCombo(this.value,2)">
+									<select name="ruta" id="ruta" onChange="javascript:guardarValorCombo(this.value,2)" style="font-size:12px">
 									<option value="-1">Seleccione</option>
 									<?php
 									for($i=0; $i<pg_num_rows($result_select); $i++){
@@ -427,9 +429,6 @@
 					<div class="linea_titulo_promedio">Imagen de Perfil (*): </div>
 					<div class="linea_campo_promedio"><input name="perfil" type="file" id="perfil"/></div>
 				</div>
-				<div class="linea_formulario_doble">
-                	<div class="linea_titulo_doble"></div>
-                </div>
 				<div class="linea_formulario_tres_cuartos">
                 	<div class="linea_titulo_tres_cuartos">Nombre del Sitio (*)</div>
                     <div class="linea_campo_tres_cuartos">

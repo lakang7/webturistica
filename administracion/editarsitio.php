@@ -173,7 +173,8 @@
 				/*Se sube la imagen*/
 				$subir_perfil = new imgUpldr;	
 				//Se prepara el nombre con que se guardará la imagen
-				$nombreImagen = $_GET["id"]."-".$_POST["nombre"];	
+				$nombreSitio = quitarAcentos($_POST["nombre"]);
+				$nombreImagen = $_GET["id"]."_".$nombreSitio;	
 				$subir_perfil->configurar($nombreImagen,"../imagenes/sitios/perfil/",450,300);
 				$subir_perfil->init($_FILES['perfil']);
 				$destino_perfil = "imagenes/sitios/perfil/".$subir_perfil->_name;
@@ -247,7 +248,7 @@
 			if(pg_num_rows($res_sql_categoria)!=0){
 				
 				$categoria = pg_fetch_array($res_sql_categoria,0);
-				$nombreCategoria = $categoria[1];				
+				$nombreCategoria = quitarAcentos($categoria["nombre"]);				
 				?>
         		<script type="text/javascript" language="javascript">
 					alert("¡¡¡ Sitio editado satisfactoriamente !!!\n\n    A continuación complete la información del mismo");
@@ -272,7 +273,7 @@
 					?><script type="text/javascript" language="javascript">
 						location.href = "../administracion/editarhospedaje.php?idSitio="+<?php echo $idSitio;?>+"&idHospe="+<?php echo $idHospedaje;?>;</script><?php
 				}//end categoria HOSPEDAJE
-				else if($nombreCategoria=='Gastronomía'){
+				else if($nombreCategoria=='Gastronomia'){
 					$sql_select = "SELECT * FROM gastronomia WHERE idsitio='".$_GET["id"]."';";
 					$result_select = pg_exec($con, $sql_select);
 					
@@ -337,7 +338,7 @@
 						$sql_select_subcategoria = "SELECT * FROM subcategoria WHERE idsubcategoria ='".$_GET["sub"]."';";
 						$result_select_subcategoria = pg_exec($con, $sql_select_subcategoria);
 						$subcategoria_sel = pg_fetch_array($result_select_subcategoria,0);
-						$nombreSeleccionado = $subcategoria_sel[2];
+						$nombreSeleccionado = $subcategoria_sel["nombre"];
 					    
 						?>
 						<input type="hidden" name="HidSubCategoria" value="<?php echo $_GET["sub"]; ?>" />
@@ -374,9 +375,8 @@
 						
                     	<?php
 						/*Se buscan todas las rutas*/
-						$con3 = conectarse();		
 						$sql_select = "SELECT * FROM ruta ORDER BY nombre;";
-						$result_select = pg_exec($con3, $sql_select);
+						$result_select = pg_exec($con, $sql_select);
 						
 						//Se consulta el id y nombre de la ruta asociada a este sitio
 						$sql_select_ruta = "SELECT * FROM ruta WHERE idruta ='".$_GET["ruta"]."';";

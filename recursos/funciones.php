@@ -1,5 +1,6 @@
 <?php
 
+	/*      Función para conectarse a la BD     */
 	function conectarse(){
 	  if (!($conexion = pg_connect("dbname=turismoenlagrita port=5432 user=postgres password=123456")))
 	   {
@@ -9,6 +10,7 @@
 	    return $conexion;		
 	}
 
+	/*      Función para ser usada en los LISTADOS para mostrar el cód de los registros con un PREFIJO asociado. Ej: CAT00015    */
 	function Codigo($prefijo,$numero){
 		$codigo=$prefijo;																
 		if($numero>9999){
@@ -58,6 +60,14 @@
 		else{
 			return false;
 		}
+	}
+	
+	function quitarAcentos($palabra){
+		$noPermitidas = array("á","à","â","ã","ä","ª","ç","Ç","è","é","ê","ë","ì","í","î","ï","ñ","ò","ó","ô","õ","ö","ù","ú","û","ü","ý","ÿ","À","Á","Â","Ã","Ä","Ç","È","É","Ê","Ë","Ì","Í","Î","Ï","Ñ","Ò","Ó","Ô","Õ","Ö","°","Ù","Ú","Û","Ü","Ý","^","´","`","¨","~");
+		$permitidas = array("a","a","a","a","a","a","c","C","e","e","e","e","i","i","i","i","n","o","o","o","o","o","u","u","u","u","y","y","A","A","A","A","A","C","E","E","E","E","I","I","I","I","N","O","O","O","O","O","O","U","U","U","U","Y","","","","","");
+		
+		$palabraDepurada = str_replace($noPermitidas, $permitidas , $palabra);
+		return $palabraDepurada;
 	}
 	
 	function menu_administrativo(){

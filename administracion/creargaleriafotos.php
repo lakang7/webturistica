@@ -57,8 +57,8 @@
     		var popupTitle = "Foto";
     		var newImg = new Image();
     		newImg.src = "../"+imageURL;
-			var ancho = newImg.width;
-			var alto = newImg.height;
+			var ancho = 300;/*newImg.width;*/
+			var alto = 300;/*newImg.height;*/
  
  			pos_x = (screen.width-ancho)/2;
 	 	    pos_y = (screen.height-alto)/2;
@@ -121,11 +121,8 @@
 					 -----------------------------------------------------------------------------------------------*/
 					
 					//Se procesa el nombre para quitarle las tildes
-					$noPermitidas = array("á","à","â","ã","ä","ª","ç","Ç","è","é","ê","ë","ì","í","î","ï","ñ","ò","ó","ô","õ","ö","ù","ú","û","ü","ý","ÿ","À","Á","Â","Ã","Ä","Ç","È","É","Ê","Ë","Ì","Í","Î","Ï","Ñ","Ò","Ó","Ô","Õ","Ö","º","Ù","Ú","Û","Ü","Ý","^","´","`","¨","~");
-					$permitidas = array("a","a","a","a","a","a","c","C","e","e","e","e","i","i","i","i","n","o","o","o","o","o","u","u","u","u","y","y","A","A","A","A","A","C","E","E","E","E","I","I","I","I","N","O","O","O","O","O","o","U","U","U","U","Y","","","","","");
-		
-					$nombreSitio = str_replace($noPermitidas, $permitidas ,$sitio["nombre"]);
-					
+					$nombreSitio = quitarAcentos($sitio["nombre"]);
+					//Se guarda la imagen
 					$subir = new imgUpldr;		
 					$subir->configurar($arreglo[0]."_peq_".$nombreSitio,"../imagenes/sitios/galeria/",250,250);
 					$subir->init($_FILES['foto']);

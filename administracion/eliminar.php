@@ -58,51 +58,33 @@ if($_GET["clave"]==2){
 		</script><?php
 	 }
 	 else{
-	 	 /*Primero se consulta la cantidad de hijos del padre*/
-	 	 $sql = "SELECT c.idcategoria, c.hijos FROM categoria c JOIN subcategoria sc ON c.idcategoria=sc.idcategoria AND sc.idsubcategoria='".$_GET["idSub"]."'";
-	 	 $result_select_hijos = pg_exec($con, $sql);
-		 $categoria = pg_fetch_array($result_select_hijos);
-			
-	 	 //Luego se actualiza la categoria padre restandole un hijo
-		 $menosHijos = $categoria[1]-1;
-	 	 $sql_update_padre = "UPDATE categoria SET hijos=".$menosHijos." WHERE idcategoria=".$categoria[0].";";
-		 $result_update = pg_exec($con, $sql_update_padre);
-		 	 
-		 if(!$result_update){
-		 	?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ ERROR !!! \n     No se pudo actualizar el campo 'hijos' de la tabla categoria");
-			 </script><?php
-		 }else{
-		 	 /*Antes de eliminar la subcategoria, se elimina su ICONO de la carpeta respectiva*/
-			 $sql_sel_subcategoria = "SELECT * FROM subcategoria WHERE idsubcategoria=".$_GET["idSub"];
-			 $res_sel_subcategoria = pg_exec($con,$sql_sel_subcategoria);
-			 $subcategoria = pg_fetch_array($res_sel_subcategoria,0);
-			 $borrarFoto = borrarArchivo("../".$subcategoria["icono"]);
+	 	 /*Tomo los datos de la ruta donde está la imagen para luego eliminarla*/
+		 $sql_sel_subcategoria = "SELECT * FROM subcategoria WHERE idsubcategoria=".$_GET["idSub"];
+	 	 $res_sel_subcategoria = pg_exec($con,$sql_sel_subcategoria);
+		 $subcategoria = pg_fetch_array($res_sel_subcategoria,0);
+		 $rutaImagen = $subcategoria["icono"];
 			 
-		 	 /*Finalmente, se elimina la subcategoria*/
-		 	 $sql_delete = "DELETE FROM subcategoria WHERE idsubcategoria='".$_GET["idSub"]."'";
-			 $result_delete = pg_exec($con,$sql_delete);
+		 /*Finalmente, se elimina la subcategoria*/
+		 $sql_delete = "DELETE FROM subcategoria WHERE idsubcategoria='".$_GET["idSub"]."'";
+		 $result_delete = pg_exec($con,$sql_delete);
 			 
-			 //Si la variable devuelve FALSE es porque no se pudo ejecutar el Query de eliminación
-			 if(!$result_delete){			 
-			 	 //Entonces se le vuelven a colocar los hijos al padre
-				 $masHijos = $categoria[1]+1;
-			 	 $sql_update_padre = "UPDATE categoria SET hijos=".$masHijos." WHERE idcategoria=".$categoria[0].";";
-				 $result_update = pg_exec($con, $sql_update_padre);
-		 		 //Y se informa al usuario
-				 ?><script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!! \n     La subcategoria no pudo ser eliminada");
-						location.href = "../administracion/listadosubcategorias.php";
-				 </script><?php
-			 }else{
-		 		 ?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ Subcategoria eliminada satisfactoriamente !!!");
-				 </script><?php
-			 }?>
-   		     <script type="text/javascript" language="javascript">
+		 //Si la variable devuelve FALSE es porque no se pudo ejecutar el Query de eliminación
+		 if(!$result_delete){			 
+			 //Se informa al usuario
+			 ?><script type="text/javascript" language="javascript">
+				alert("¡¡¡ ERROR !!! \n     La subcategoria no pudo ser eliminada");
 				location.href = "../administracion/listadosubcategorias.php";
 			 </script><?php
-		 }//else del if(!$result_delete)
+		 }else{
+		 	 /*Finalmente, se elimina su ICONO de la carpeta respectiva*/
+			 $borrarFoto = borrarArchivo("../".$rutaImagen);
+			 ?><script type="text/javascript" language="javascript">
+				alert("¡¡¡ Subcategoria eliminada satisfactoriamente !!!");
+				</script><?php
+		 }?>
+   		 <script type="text/javascript" language="javascript">
+			location.href = "../administracion/listadosubcategorias.php";
+		 </script><?php
 	 }	 			 
 }//end $_GET["clave"]==2
 /*------------------------------------------------------------------------------------------------------------------------------

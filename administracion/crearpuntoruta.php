@@ -179,7 +179,7 @@
 				if($_FILES['foto']['name']!=""){					
 					/*Si SI se pudo, se sube la foto a la carpeta respectiva*/
 					$subir = new imgUpldr;	
-					$subir->configurar($ruta["idruta"]."_".$ruta["nombre"]."_Punto_".$arreglo[0],"../imagenes/rutas/puntos/",450,300);
+					$subir->configurar($ruta["idruta"]."_".quitarAcentos($ruta["nombre"])."_Punto_".$arreglo[0],"../imagenes/rutas/puntos/",450,300);
 					$subir->init($_FILES['foto']);
 					$destino = "imagenes/rutas/puntos/".$subir->_name;
 
@@ -341,7 +341,7 @@
 										}?>
 									</td>
 									<td title="Editar <?php echo $punto_ruta["nombre"]; ?>" width="25">
-										<a href="editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"]; ?>&idpunto_ruta=<?php echo $punto_ruta["idpunto_ruta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+										<a href="crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"]; ?>&idpunto_ruta=<?php echo $punto_ruta["idpunto_ruta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
 									<td title="Eliminar <?php echo $punto_ruta["nombre"]; ?>" width="25">
 										<a href="javascript:;" onClick="confirmar('eliminar.php?clave=11&id=<?php echo $punto_ruta["idpunto_ruta"];?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a></td>
 								</tr><?php
