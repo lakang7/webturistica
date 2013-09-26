@@ -375,7 +375,7 @@
 								<?php
 								for($i=0; $i<pg_num_rows($result_select); $i++){
 						   			$subcategoria = pg_fetch_array($result_select,$i);
-									echo '<option value="'.$subcategoria[0].'">'.$subcategoria[2].'</option>';
+									echo '<option value="'.$subcategoria["idsubcategoria"].'">'.$subcategoria["nombre"].'</option>';
 								}?>
 								</select>							
 							</td>
@@ -410,7 +410,7 @@
 									<?php
 									for($i=0; $i<pg_num_rows($result_select); $i++){
 						    			$ruta = pg_fetch_array($result_select,$i);
-										echo '<option value="'.$ruta[0].'">'.$ruta[1].'</option>';
+										echo '<option value="'.$ruta["idruta"].'">'.$ruta["nombre"].'</option>';
 									}?>
 									</select>
 							  </td>
@@ -518,8 +518,8 @@
 						<?php
 						for($i=0; $i<pg_num_rows($result_select_mp); $i++){
 							$mediopago = pg_fetch_array($result_select_mp,$i);
-							$idMedioPago = $mediopago[0];
-							$nombre = $mediopago[1];
+							$idMedioPago = $mediopago["idmedio_pago"];
+							$nombre = $mediopago["nombre"];
 							
 							/*Se crean los checkbox de c/comodidad y en el onclick se llama a la funcion que guarda el valor en la 
 							  variable oculta Hid*/

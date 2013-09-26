@@ -43,16 +43,18 @@
     		var popupTitle = "Portada de "+nombre;
     		var newImg = new Image();
     		newImg.src = "../"+imageURL;
- 
+ 			var ancho = 591; /*newImg.width;*/
+			var alto = 591; /*newImg.height;*/
+			
  			pos_x = (screen.width-newImg.width)/2;
 	 	    pos_y = (screen.height-newImg.height)/2;
 			
-    		popup = window.open(newImg.src,'image','height='+newImg.height+',width='+newImg.width+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+			popup = window.open(newImg.src,'image','height='+newImg.height+',width='+newImg.width+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
 		    with (popup.document){
     	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
 	    	    writeln('<\/head><body onClick="window.close()">');
-		        writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+				writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
         		close();
 		    }
 		    popup.focus();
@@ -73,7 +75,7 @@
         	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
             	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Código</td><td>Nombre</td><td>Reseña Histórica</td><td width="40">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
+                    	<td align="left">Código</td><td>Nombre</td><td>Reseña Histórica</td><td>Tipo de ruta</td><td width="30">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody align="center">
@@ -90,10 +92,14 @@
 				    $ruta = pg_fetch_array($result_select,$i);	
 					$idruta = $ruta["idruta"];
 				    ?><tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;" >
-						<td width="80"><?php echo Codigo("RUT",$idruta); ?></td>
+						<td width="80" align="left"><?php echo Codigo("RUT",$idruta); ?></td>
 						<td width="200"><?php echo $ruta["nombre"]; ?></td>
 						<td width="500" align="left"><?php echo $ruta["resena"]; ?></td>
-						<td title="Ver ícono de <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;" align="center">
+						<td width="80" align="center">
+							<?php if($ruta["tipo_ruta"]==1){ echo "Turística";} 
+								  if($ruta["tipo_ruta"]==2){ echo "Ecomuseos";}?>
+						</td>
+						<td title="Ver foto de portada de <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;" align="center">
 						<?php 
 						//Si tiene ícono asociado, lo muestra en un popup
 						if($ruta["foto_portada"]!=""){?>

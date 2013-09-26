@@ -54,7 +54,23 @@
 			}else {
 				return true;
 			}
-		} 	</script>
+		} 	
+		/*********************************************************************************************
+		*
+			Funcion para guardar los valores de radio button TIPO DE RUTA
+		*
+		**********************************************************************************************/
+		function guardarValorRadio(valor)
+		{
+			if(valor != -1){
+				document.all('HidTipoRuta').value = valor;
+			}
+			else if(valor == -1){
+				document.all('HidTipoRuta').value = -1;
+			}
+			//alert(document.all('HidTipoRuta').value);			
+		}	
+	</script>
 
 </head>
 
@@ -63,7 +79,7 @@
 		$con = conectarse();
 		
 		//Se actualiza el registro
-		$sql_update = "UPDATE ruta SET nombre='".$_POST["nombre"]."', resena='".$_POST["resena"]."' WHERE idruta='".$_GET["id"]."'";
+		$sql_update = "UPDATE ruta SET nombre='".$_POST["nombre"]."', resena='".$_POST["resena"]."', tipo_ruta='".$_POST["HidTipoRuta"]."' WHERE idruta='".$_GET["id"]."'";
 		$result_update = pg_exec($con,$sql_update);
 		
 		//Si NO se pudo actualizar el registro
@@ -150,6 +166,35 @@
 					<input type="hidden" name="hid_max_resena" value="0" /> 	
                     <div class="linea_campo_tres_cuartos"><textarea name="resena" id="resena" rows="17" cols="110" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; max-width:550px; max-height:250px;" onkeypress="return limita(1200);"><?php echo $arreglo["resena"]; ?></textarea></div>
                 </div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio_rojo">Tipo de Ruta</div> 	
+					<div class="linea_titulo_tres_cuartos"></div> 	
+                    <div class="linea_titulo_tres_cuartos">
+						<input type="hidden" name="HidTipoRuta" value="1" />
+						<?php 
+						/*----------------------------------------------------------------------
+									              Si es RUTA TURISTICA 
+						----------------------------------------------------------------------*/
+						if($arreglo["tipo_ruta"]==1){?>
+							<input name="tipo_ruta" type="radio" value="1" checked="checked" onchange="javascript:guardarValorRadio(this.value)"/> Turística
+							<input name="tipo_ruta" type="radio" value="2" onchange="javascript:guardarValorRadio(this.value)"/> Ecomuseos
+						<?php
+						}
+						/*----------------------------------------------------------------------
+									              Si es RUTA ECOMUSEOS 
+						----------------------------------------------------------------------*/
+						if($arreglo["tipo_ruta"]==2){?>
+							<input name="tipo_ruta" type="radio" value="1" onchange="javascript:guardarValorRadio(this.value)"/> Turística
+							<input name="tipo_ruta" type="radio" value="2" checked="checked" onchange="javascript:guardarValorRadio(this.value)"/> Ecomuseos
+						<?php
+						}?>
+					</div>
+                </div>
+				<div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div>
 				<div class="linea_formulario_promedio">
 					<div class="linea_titulo_tres_cuartos"></div>
                 	<div class="linea_titulo_tres_cuartos">

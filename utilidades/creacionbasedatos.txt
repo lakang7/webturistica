@@ -26,6 +26,7 @@ create table ruta(
    nombre VARCHAR(100) NOT NULL,
    resena VARCHAR(1200),
    foto_portada VARCHAR(200),
+   tipo_ruta INTEGER NOT NULL,
    CONSTRAINT pk_ruta PRIMARY KEY (idruta)   
 );
 
@@ -100,7 +101,7 @@ create table gastronomia_especialidad(
    CONSTRAINT fk_gastronomia_especialidad_idespecialidad FOREIGN KEY (idespecialidad) REFERENCES especialidad (idespecialidad)
 );
 
-CREATE TABLE punto_ruta(
+create table punto_ruta(
   idpunto_ruta serial NOT NULL,
   idruta integer NOT NULL,
   nombre character varying(100) NOT NULL,
@@ -190,6 +191,57 @@ create table sitio_medio_pago(
    CONSTRAINT fk_sitio_idsitio FOREIGN KEY (idsitio) REFERENCES sitio (idsitio),
    CONSTRAINT fk_medio_pago FOREIGN KEY (idmedio_pago) REFERENCES medio_pago (idmedio_pago)
 );
+
+create table sitio_general(
+   idsitio_general SERIAL,
+   idsitio INTEGER NOT NULL,
+   pagweb VARCHAR(200),
+   CONSTRAINT fk_sitio_idsitio FOREIGN KEY (idsitio) REFERENCES sitio (idsitio)
+);
+
+create table servicio_general(
+   idservicio_general SERIAL,
+   nombre VARCHAR(45) NOT NULL,
+   CONSTRAINT pk_serviciogeneral PRIMARY KEY (idservicio_general)
+);
+
+create table sitio_servicio_general(
+   idsitio_servicio_general SERIAL,
+   idsitio_general INTEGER NOT NULL,
+   idservicio_general INTEGER NOT NULL,
+   CONSTRAINT pk_sitio_servicio_general PRIMARY KEY (idsitio_servicio_general),
+   CONSTRAINT fk_sitio_general FOREIGN KEY (idsitio_general) REFERENCES sitio_general (idsitio_general),
+   CONSTRAINT fk_serviciogeneral FOREIGN KEY (idservicio_general) REFERENCES servicio_general (idservicio_general)   
+);
+
+create table categoria_nosotros(
+   idcategoria_nosotros SERIAL,
+   nombre VARCHAR(45) NOT NULL,
+   icono VARCHAR(200), 
+   CONSTRAINT pk_categoria_nosotros PRIMARY KEY (idcategoria_nosotros)   
+);
+
+create table subcategoria_nosotros(
+   idsubcategoria_nosotros SERIAL,
+   idcategoria_nosotros INTEGER NOT NULL,
+   nombre VARCHAR(45) NOT NULL,     
+   CONSTRAINT pk_subcategoria_nosotros PRIMARY KEY (idsubcategoria_nosotros),
+   CONSTRAINT fk_idcategoria_nosotros FOREIGN KEY (idcategoria_nosotros) REFERENCES categoria_nosotros (idcategoria_nosotros)   
+);
+
+-------------------------------------------------------------CATEGORIA_NOSOTROS-------------------------------------------------------------
+INSERT INTO categoria_nosotros values(nextval('categoria_nosotros_idcategoria_nosotros_seq'),'Festividades','imagenes/sitios/categoria_nosotros/festividades.png');
+INSERT INTO categoria_nosotros values(nextval('categoria_nosotros_idcategoria_nosotros_seq'),'Pintores','imagenes/sitios/categoria_nosotros/pintores.png');
+INSERT INTO categoria_nosotros values(nextval('categoria_nosotros_idcategoria_nosotros_seq'),'Platos Típicos','imagenes/sitios/categoria_nosotros/platostipicos.png');
+
+-------------------------------------------------------------SUBCATEGORIA_NOSOTROS-------------------------------------------------------------
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),1,'Religiosas');
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),1,'Patrióticas');
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),2,'Dulces');
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),2,'De Panadería');
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),3,'Históricos');
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),3,'Pintores');
+INSERT INTO subcategoria_nosotros values(nextval('subcategoria_nosotros_idsubcategoria_nosotros_seq'),3,'Escultores');
 
 -------------------------------------------------------------CATEGORIAS-------------------------------------------------------------
 INSERT INTO categoria values(nextval('categoria_idcategoria_seq'),'Hospedaje',2);
