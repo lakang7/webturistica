@@ -101,6 +101,21 @@ create table gastronomia_especialidad(
    CONSTRAINT fk_gastronomia_especialidad_idespecialidad FOREIGN KEY (idespecialidad) REFERENCES especialidad (idespecialidad)
 );
 
+create table recomendado(
+   idrecomendado SERIAL,
+   nombre VARCHAR(45) NOT NULL,
+   CONSTRAINT pk_recomendado PRIMARY KEY (idrecomendado)
+);
+
+create table gastronomia_recomendado(
+   idgastronomia_recomendado SERIAL,
+   idgastronomia INTEGER NOT NULL,
+   idrecomendado INTEGER NOT NULL,   
+   CONSTRAINT pk_gastronomia_recomendado PRIMARY KEY (idgastronomia_recomendado),
+   CONSTRAINT fk_gastronomia_recomendado_idgastronomia FOREIGN KEY (idgastronomia) REFERENCES gastronomia (idgastronomia),
+   CONSTRAINT fk_gastronomia_recomendado_idrecomendado FOREIGN KEY (idrecomendado) REFERENCES recomendado (idrecomendado)
+);
+
 create table punto_ruta(
   idpunto_ruta serial NOT NULL,
   idruta integer NOT NULL,
@@ -110,6 +125,7 @@ create table punto_ruta(
   nro_secuencia integer,
   foto_portada character varying(200),
   resena character varying(1200),
+  nro_secuencia integer NOT NULL,
   CONSTRAINT pk_punto_ruta PRIMARY KEY (idpunto_ruta),
   CONSTRAINT fk_punto_ruta_idruta FOREIGN KEY (idruta)
       REFERENCES ruta (idruta) MATCH SIMPLE

@@ -176,7 +176,10 @@ if($_GET["clave"]==5){
 	 	 $sql_sel_ruta = "SELECT * FROM ruta WHERE idruta='".$_GET["id"]."'";
 		 $res_sel_ruta = pg_exec($con,$sql_sel_ruta);
 		 $ruta = pg_fetch_array($res_sel_ruta,0);
-		 $borrarFoto = borrarArchivo("../".$ruta["foto_portada"]);
+		 
+		 if($ruta["foto_portada"]!=""){
+			$borrarFoto = borrarArchivo("../".$ruta["foto_portada"]);
+		 }		 
 		 
 		 //Finalmente, se elimina LA RUTA
 	 	 $sql_delete = "DELETE FROM ruta WHERE idruta='".$_GET["id"]."'";
@@ -184,7 +187,7 @@ if($_GET["clave"]==5){
 		 
 		 if(!$result_delete){
 		 	?><script type="text/javascript" language="javascript">
-		 		alert("¡¡¡ ERROR !!! \n     La ruta no pudo ser eliminada");
+		 		alert("¡¡¡ ERROR !!! \n     La ruta no pudo ser eliminada. Inténtelo nuevamente.");
 				location.href="../administracion/listadorutas.php";					
 			</script><?php	
 		 }else{
@@ -330,7 +333,13 @@ if($_GET["clave"]==7){
 	$result_select = pg_exec($con,$sql_select);
 	$foto_sitio = pg_fetch_array($result_select,0);
 	$idSitio = $foto_sitio["idsitio"];
-
+	
+	/*
+			OOOOOOOOOJOOOOOO AQUI PRIMERO REVISAR SI EXISTE LA FOTO AL MENOS EN LA BASE DE DATOS (LA RUTA)
+			
+	*/
+	
+	
 	//Primero se elimina la imagen de la ruta especificada por parametro
 	$imagenPeque = $foto_sitio["foto"];
 	$borrarFoto = borrarArchivo("../".$imagenPeque);	
@@ -479,7 +488,7 @@ if($_GET["clave"]==11){
 		$borrarFoto = borrarArchivo("../".$punto_ruta["foto_portada"]);	
 	}
 		
-	//Luego si se elimina el registro en punto_ruta de la BD
+	//Luego SI se elimina el registro en punto_ruta de la BD
 	$sql_delete = "DELETE FROM punto_ruta WHERE idpunto_ruta='".$_GET["id"]."'";
 	$result_delete = pg_exec($con,$sql_delete);
 			 
@@ -490,7 +499,7 @@ if($_GET["clave"]==11){
 	}else{
 	 	?><script type="text/javascript" language="javascript">
 	 		alert("¡¡¡ Punto de ruta eliminado satisfactoriamente !!! ");	
-			location.href = "../administracion/crearpuntoruta.php?idRuta="+<?php echo $punto_ruta["idruta"]; ?>;
+			location.href = "../administracion/listadopuntosruta.php?idRuta="+<?php echo $punto_ruta["idruta"]; ?>;
 		</script><?php
 	}
 }//END CLAVE 11

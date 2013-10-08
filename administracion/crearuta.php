@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Crear Rutas</title>
+	<title>Crear Ruta</title>
 		
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -102,10 +102,9 @@
 		if(pg_num_rows($res)>0){
 			for($i=0; $i<pg_num_rows($res); $i++){				
 				$ruta = pg_fetch_array($res,$i);	
-				$nombreRuta = $ruta[1];
 				
 				/*Si efectivamente ya existe esa ruta, no se le permite crearla*/
-				if($nombreRuta==$_POST["nombre"]){
+				if($ruta["nombre"]==$_POST["nombre"]){
 					$yaExiste = 1;
 					?><script type="text/javascript" language="javascript">
 						alert("¡¡¡ ERROR !!! \n\n     Esa ruta ya existe, no se pudo crear la ruta");
@@ -156,7 +155,7 @@
 				}
 				?><script type="text/javascript" language="javascript">
 					alert("¡¡¡ Ruta agregada satisfactoriamente !!!")
-					location.href="../administracion/crearpuntoruta.php?idRuta="+<?php echo $arreglo[0]; ?>;
+					location.href="../administracion/crearpuntoruta.php?idRuta=<?php echo $arreglo[0]; ?>";
 				</script><?php
 			}//end else de if(!$result_insert)
 			
@@ -168,7 +167,7 @@
 	<div class="banner"></div>
     <div class="menu"><?php menu_administrativo(); ?></div>
     <div class="panel">
-    	<div class="titulo_panel">Crear Rutas</div>
+    	<div class="titulo_panel">Crear Ruta</div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadorutas.php">Listar Rutas</a></div>
         	<div class="opcion" style="background:#F00;  color:#FFF;"><a href="crearuta.php" style="text-decoration:none; color:#FFF;">Registrar Nueva Ruta</a></div>
@@ -198,7 +197,7 @@
                 	<div class="linea_titulo_promedio_rojo">Tipo de Ruta</div> 	
 					<div class="linea_titulo_tres_cuartos"></div> 	
                     <div class="linea_titulo_tres_cuartos">
-						<input type="hidden" name="HidTipoRuta" value="1" />  
+						<input type="hidden" name="HidTipoRuta" value="1" /> 
 						<input name="tipo_ruta" type="radio" value="1" checked="checked" onchange="javascript:guardarValorRadio(this.value)"/> Turística
 						<input name="tipo_ruta" type="radio" value="2" onchange="javascript:guardarValorRadio(this.value)"/> Ecomuseos
 					</div>

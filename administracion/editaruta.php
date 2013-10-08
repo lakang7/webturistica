@@ -78,52 +78,74 @@
 	if(isset($_POST["GuardarRuta"])){
 		$con = conectarse();
 		
-		//Se actualiza el registro
-		$sql_update = "UPDATE ruta SET nombre='".$_POST["nombre"]."', resena='".$_POST["resena"]."', tipo_ruta='".$_POST["HidTipoRuta"]."' WHERE idruta='".$_GET["id"]."'";
-		$result_update = pg_exec($con,$sql_update);
-		
-		//Si NO se pudo actualizar el registro
-		if(!$result_update){
-			?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ ERROR !!! \n     No se pudo modificar la ruta");
-				location.href="../administracion/listadorutas.php";
-			</script><?php	
-		}
-		//Si SI se pudo actualizar 
-		else{
-			/*Se buscan los datos de la ruta*/
-			$sql_select_ruta = "SELECT * FROM ruta WHERE idruta='".$_GET["id"]."';";
-			$result_select_ruta = pg_exec($con, $sql_select_ruta);
-			$ruta = pg_fetch_array($result_select_ruta,0);
-			
-			//Si se cargó una nueva fotografía
-			if($_FILES['foto']['name']!=""){	
-				//Si ya tenía icono cargado, se borra la imagen de la carpeta respectiva
-				if($ruta["foto_portada"]!=""){ $borrar = borrarArchivo("../".$ruta["foto_portada"]); }
-								
-				//Se sube la foto nueva a la carpeta respectiva
-				$subir = new imgUpldr;	
-				$subir->configurar($ruta["idruta"]."_".quitarAcentos($ruta["nombre"]),"../imagenes/rutas/portadas/",450,300);
-				$subir->init($_FILES['foto']);
-				$destino = "imagenes/rutas/portadas/".$subir->_name;
-
-				/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
-				$sql_update = "UPDATE ruta SET foto_portada='".$destino."' WHERE idruta='".$ruta["idruta"]."'";
-				$result_update = pg_exec($con, $sql_update);	
+		/*Se consulta la existencia de otra RUTA con el mismo nombre para no crear rutas repetidas*/
+		$sql = "SELECT * FROM ruta ORDER BY idruta";
+		$res = pg_exec($con, $sql);	
+		$yaExiste = 0;		
+							
+		if(pg_num_rows($res)>0){
+			for($i=0; $i<pg_num_rows($res); $i++){				
+				$ruta = pg_fetch_array($res,$i);	
 				
-				if(!$result_update){
+				/*Si efectivamente ya existe esa ruta, no se le permite crearla*/
+				if($ruta["nombre"]==$_POST["nombre"] && $ruta["idruta"]!=$_GET["id"]){
+					$yaExiste = 1;
 					?><script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar la foto de la ruta");
-						location.href="../administracion/listadorutas.php";
-					</script><?php	
-		    	}
+						alert("¡¡¡ ERROR !!! \n\n     Esa ruta ya existe, no se pudo crear la ruta");
+						location.href = "../administracion/listadorutas.php";
+					</script><?php
+				}
 			}
+		}
+				
+		/*Si NO existe ese nombre de ruta, se actualiza el registro*/
+		if($yaExiste==0){
+			$sql_update = "UPDATE ruta SET nombre='".$_POST["nombre"]."', resena='".$_POST["resena"]."', tipo_ruta='".$_POST["HidTipoRuta"]."' WHERE idruta='".$_GET["id"]."'";
+			$result_update = pg_exec($con,$sql_update);
+		
+			//Si NO se pudo actualizar el registro
+			if(!$result_update){
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ ERROR !!! \n     No se pudo modificar la ruta");
+					location.href="../administracion/listadorutas.php";
+				</script><?php	
+			}
+			//Si SI se pudo actualizar 
+			else{
+				/*Se buscan los datos de la ruta*/
+				$sql_select_ruta = "SELECT * FROM ruta WHERE idruta='".$_GET["id"]."';";
+				$result_select_ruta = pg_exec($con, $sql_select_ruta);
+				$ruta = pg_fetch_array($result_select_ruta,0);
 			
-			?><script type="text/javascript" language="javascript">
-				alert("¡¡¡ Ruta modificada satisfactoriamente !!\n\n     A continuación complete la información de los puntos del sitio");
-				location.href="../administracion/crearpuntoruta.php?idRuta="+<?php echo $_GET["id"]; ?>;
+				//Si se cargó una nueva fotografía
+				if($_FILES['foto']['name']!=""){	
+					//Si ya tenía icono cargado, se borra la imagen de la carpeta respectiva
+					if($ruta["foto_portada"]!=""){ $borrar = borrarArchivo("../".$ruta["foto_portada"]); }
+								
+					//Se sube la foto nueva a la carpeta respectiva
+					$subir = new imgUpldr;	
+					$subir->configurar($ruta["idruta"]."_".quitarAcentos($ruta["nombre"]),"../imagenes/rutas/portadas/",450,300);
+					$subir->init($_FILES['foto']);
+					$destino = "imagenes/rutas/portadas/".$subir->_name;
+
+					/*Se actualiza el registro para incluir la ruta del icono que se acaba de subir*/
+					$sql_update = "UPDATE ruta SET foto_portada='".$destino."' WHERE idruta='".$ruta["idruta"]."'";
+					$result_update = pg_exec($con, $sql_update);	
+					
+					if(!$result_update){
+						?><script type="text/javascript" language="javascript">
+							alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar la foto de la ruta");
+							location.href="../administracion/listadorutas.php";
+						</script><?php	
+		    		}
+				}
+			
+				?><script type="text/javascript" language="javascript">
+					alert("¡¡¡ Ruta modificada satisfactoriamente !!\n\n     A continuación complete la información de los puntos del sitio");	
+					location.href = "../administracion/listadopuntosruta.php?idRuta=<?php echo $_GET["id"];?>";
 			</script><?php
-		}			
+			}//end de que si se pudo actualizar	
+		}
 	}
 ?>
 
@@ -198,9 +220,26 @@
 				<div class="linea_formulario_promedio">
 					<div class="linea_titulo_tres_cuartos"></div>
                 	<div class="linea_titulo_tres_cuartos">
-						<input type="submit" value="Guardar ruta" name="GuardarRuta" style="font-size:12px;" align="left"/>(*) Campos obligatorios
+						<input type="submit" value="Guardar ruta" name="GuardarRuta" style="font-size:12px;" align="left" title="Haga clic para guardar los cambios de la ruta"/>(*) Campos obligatorios
 					</div>	
-                </div>
+                </div>	
+				<div class="linea_formulario"><div class="linea_titulo_2">Vista previa del ícono actual</div></div>	
+				<table id="highlight-table" align="center" width="70%">
+	            	<thead></thead>
+               		<tbody>
+						<?php 
+						if($arreglo["foto_portada"] != ""){?>
+							<tr align="center">
+								<td align="center"><img src="../<? echo $arreglo["foto_portada"]; ?>" width="200" height="200" /></td>
+							</tr><?php 
+						}else{?>
+							<tr align="center">
+								<td align="center">No hay foto portada cargada para esta ruta</td>
+							</tr><?php 
+						}?>																	               
+        	        	</tbody>
+	            </table>	
+				<div class="linea_formulario"></div>	
             </form>
         </div>        
     </div>

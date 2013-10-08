@@ -120,7 +120,15 @@
 							<td align="center"><?php echo $sitio["nombre"];?></td>
 							<td align="center"><?php echo $sitio["direccion"];?></td>
 							<td title="Ver imagen de perfil de <?php echo $sitio["nombre"]; ?>" style="cursor:pointer;" align="center">
-								<a href="#" onclick="openPopup('<? echo $sitio["imagen_perfil"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
+								<?php 
+								//Si tiene ícono asociado, lo muestra en un popup
+								if($sitio["imagen_perfil"]!=""){?>
+									<a href="#" onclick="openPopup('<? echo $sitio["imagen_perfil"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
+									<?php 
+								}else{
+									?><img src="../imagenes/ver.png" width="16" height="16" title="No existe imagen de perfil para este sitio"/><?php
+								}?>								
+								
 							</td>
 							<td align="center" title="Editar <?php echo $sitio["nombre"]; ?>" style="cursor:pointer;">
 								<a href="editarsitio.php?id=<?php echo $idSitio;?>&sub=<?php echo $idSubcategoria;?>&ruta=<?php echo $ruta["idruta"];?>" ><img src="../imagenes/edit.png" width="16" height="16"/></a>

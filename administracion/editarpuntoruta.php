@@ -109,7 +109,7 @@
 			$res = pg_exec($con, $sql);
 			
 			if(pg_num_rows($res)>0){
-				//$ruta = pg_fetch_array($res,$i);	
+				$ruta = pg_fetch_array($res,$i);	
 								
 				for($i=0;$i<pg_num_rows($res);$i++){
 					$punto_ruta = pg_fetch_array($res,$i);
@@ -150,7 +150,6 @@
 <?php
 	if(isset($_POST["GuardarPuntoRuta"])){
 		$con = conectarse();
-		
 		//Primero se verifica que no exista ya este punto_ruta para esta ruta, para no repetir puntos
 		$sql_pr = "SELECT * FROM punto_ruta WHERE idruta=".$_GET["idRuta"]." AND nombre='".$_POST["nombre"]."';";
 		$res_pr = pg_exec($con, $sql_pr);	
@@ -159,52 +158,56 @@
 		if(pg_num_rows($res_pr)>0){
 			?><script type="text/javascript" language="javascript">
 				alert("¡¡¡ ERROR !!! \n\n     Ese punto ya existe para esta ruta, por favor ingrese otro nombre");
-				location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>"; 
+				location.href = "../administracion/editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=<?php echo $_GET["idpunto_ruta"];?>"; 
 			</script><?php
 		}
-		//Si no existe, se crea
+		//Sino, se edita
 		else{
-			$sql_insert = "INSERT INTO punto_ruta VALUES(nextval('punto_ruta_idpunto_ruta_seq'),'".$_GET["idRuta"]."','".$_POST["nombre"]."','".$_POST["latitud"]."','".$_POST["longitud"]."','','".$_POST["resena"]."',0);";
-			$result_insert = pg_exec($con,$sql_insert);	
+			$sql_update = "UPDATE punto_ruta SET nombre='".$_POST["nombre"]."', latitud='".$_POST["latitud"]."', longitud='".$_POST["longitud"]."', resena='".$_POST["resena"]."' WHERE idpunto_ruta='".$_GET["id"]."'";
+			$result_update = pg_exec($con,$sql_update);	
 			
-			//Si NO se pudo insertar en la tabla el nuevo registro
-			if(!$result_insert){
+			//Si NO se pudo editar en la tabla el registro
+			if(!$result_update){
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar el punto de la ruta, inténtelo de nuevo.");
-					location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
+					alert("¡¡¡ ERROR !!!\n\n     No se pudo editar el punto de la ruta, inténtelo de nuevo.");
+					location.href = "../administracion/editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=<?php echo $_GET["idpunto_ruta"];?>";
 				</script><?php	
 			}
-			//Si se pudo crear el punto_ruta, se agrega la foto			
+			//Si se pudo editar el punto_ruta, se agrega la foto			
 			else{
-				$sql_select = "SELECT last_value FROM punto_ruta_idpunto_ruta_seq;";
-				$result_select = pg_exec($con, $sql_select);
-				$idpuntoruta = pg_fetch_array($result_select,0);
-					
-				$sql_select_ruta = "SELECT * FROM ruta WHERE idruta='".$_GET["idRuta"]."';";
-				$result_select_ruta = pg_exec($con, $sql_select_ruta);
-				$ruta = pg_fetch_array($result_select_ruta,0);
+				//Si seleccionó foto para el punto de ruta, se borra la imagen anterior y se sube la imagen nueva a la carpeta respectiva
+				if($_FILES['foto']['name']!=""){
+					$sql_select_pr = "SELECT * FROM punto_ruta WHERE idpunto_ruta='".$_GET["idpunto_ruta"]."';";
+					$result_select_pr = pg_exec($con, $sql_select_pr);
+					$pr = pg_fetch_array($result_select_pr,0);
 				
-				//Si seleccionó foto para el punto de ruta
-				if($_FILES['foto']['name']!=""){					
-					//Se sube a la carpeta respectiva
+					$sql_select_ruta = "SELECT * FROM ruta WHERE idruta='".$_GET["idRuta"]."';";
+					$result_select_ruta = pg_exec($con, $sql_select_ruta);
+					$ruta = pg_fetch_array($result_select_ruta,0);
+					
+					if($pr["foto_portada"]!=""){
+						$borrarFoto = borrarArchivo("../".$pr["foto_portada"]);
+					}	
+					
 					$subir = new imgUpldr;	
-					$subir->configurar("Ruta".$ruta["idruta"]."_Punto".$idpuntoruta[0],"../imagenes/rutas/puntos/",500,500);
+					$subir->configurar($ruta["idruta"]."_".quitarAcentos($ruta["nombre"])."_Punto_".$pr["nro_secuencia"],"../imagenes/rutas/puntos/",500,500);
 					$subir->init($_FILES['foto']);
 					$destino = "imagenes/rutas/puntos/".$subir->_name;
 
 					//Se actualiza el registro para incluir la ruta del icono que se acaba de subir
-					$sql_update = "UPDATE punto_ruta SET foto_portada='".$destino."' WHERE idpunto_ruta='".$idpuntoruta[0]."'";
-					$result_update = pg_exec($con, $sql_update);		
+					$sql_update = "UPDATE punto_ruta SET foto_portada='".$destino."' WHERE idpunto_ruta='".$_GET["idpunto_ruta"]."'";
+					$result_update = pg_exec($con, $sql_update);	
+			
 					if(!$result_update){
 						?><script type="text/javascript" language="javascript">
 							alert("¡¡¡ ERROR !!!\n\n     No se pudo guardar la foto del punto");
-							location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
+							location.href = "../administracion/editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=<?php echo $_GET["idpunto_ruta"];?>";
 						</script><?php	
 		    		}
 				}//fin de carga de la foto
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ Punto de Ruta agregado satisfactoriamente !!!")
-					location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
+					alert("¡¡¡ Punto de Ruta editado satisfactoriamente !!!")
+					location.href = "../administracion/editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=<?php echo $_GET["idpunto_ruta"];?>";
 				</script><?php
 			}//end del else de que SI pudo crear el punto_ruta
 		}
@@ -219,85 +222,63 @@
 		$con = conectarse();		
 		
 		/*Para guardar los nro_secuencia de los puntos de ruta*/
-		$sql_pr = "SELECT * FROM punto_ruta WHERE idruta=".$_GET["idRuta"]." ORDER BY idpunto_ruta;";		
+		$sql_pr = "SELECT * FROM punto_ruta WHERE idruta=".$_GET["idRuta"]." ORDER BY idpunto_ruta";		
 		$res_pr = pg_exec($con, $sql_pr);
-		
 		if(pg_num_rows($res_pr)>0){
+			//Se busca el mayor y el menor nro para validar la secuencia--------------------------------
+			for($i=0;$i<pg_num_rows($res_pr);$i++){
+				$mayor = -1;
+				$menor = 999999999;
+				if(is_numeric($_POST["sec-".$i]) && $_POST["sec-".$i] > $mayor){
+					$mayor = $_POST["sec-".$i];
+				}
+				if(is_numeric($_POST["sec-".$i]) && $_POST["sec-".$i] < $menor){
+					$menor = $_POST["sec-".$i];
+				}
+				else if(!is_numeric($_POST["sec-".$i])){
+					?><script type="text/javascript" language="javascript">
+						alert("¡¡¡ ERROR !!!\n\n     Los valores de secuencia de los puntos de ruta deben ser NUMÉRICOS. Inténtelo de nuevo.");
+						location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=-1";
+					</script><?php
+				}
+			}
 			//Se valida que los nros NO se repitan------------------------------------------------------
 			$alguno_repite=0;
 			for($i=0;$i<pg_num_rows($res_pr);$i++){
-				$punto_ruta_i = pg_fetch_array($res_pr,$i);
 				for($j=0;$j<pg_num_rows($res_pr);$j++){
 					//El nro se repite
-					$punto_ruta_j = pg_fetch_array($res_pr,$j);
-					if($_POST["sec-".$punto_ruta_i["idpunto_ruta"]]!="" && $_POST["sec-".$punto_ruta_j["idpunto_ruta"]]!=""){
-						if($i!=$j && $_POST["sec-".$punto_ruta_i["idpunto_ruta"]]==$_POST["sec-".$punto_ruta_j["idpunto_ruta"]]){
-							$alguno_repite=1;
-							$i=pg_num_rows($res_pr);
-							$j=pg_num_rows($res_pr);
-						}						
-					}
-					else if($_POST["sec-".$punto_ruta_i["idpunto_ruta"]]=="" || $_POST["sec-".$punto_ruta_j["idpunto_ruta"]]==""){
-						?><script type="text/javascript" language="javascript">
-							alert("¡¡¡ ALERTA !!! \n\n     Ninguno de los campos de número de secuencia pueden estar vacíos");
-							location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
-						</script><?php
+					if($i!=$j && $_POST["sec-".$i]==$_POST["sec-".$j]){
+						$alguno_repite=1;
+						$i=pg_num_rows($res_pr);
+						$j=pg_num_rows($res_pr);
 					}
 				}
 			}
 			if($alguno_repite==1){
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ Alguno(s) de los números secuenciales de puntos de ruta está(n) repetido(s) !!!");
-					location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
+					alert("¡¡¡ Alguno(s) de los números de puntos de ruta está(n) repetido(s) !!!")
+					location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=-1";
 				</script><?php
 			}
-			else{                 
-				//Finalmente se valida si los nros siguen una SECUENCIA
-				$es_secuencia = 0;			
+			else{
+				//Si coincide el nro mayor con la cant de registros punto_ruta para esta ruta Y el nro menor es 1
+				if(pg_num_rows($res_pr)==$mayor && $menor==1){
 				
-				//Se busca la secuencia de numeros desde 1 hasta pg_num_rows para garantizar la secuencia
-				for($j=0; $j<pg_num_rows($res_pr); $j++){
-				
-					for($i=0; $i<pg_num_rows($res_pr); $i++){
-						$punto_ruta = pg_fetch_array($res_pr,$i);
-						
-						if($_POST["sec-".$punto_ruta["idpunto_ruta"]] == $j+1){
-							$es_secuencia++;
-							$i=pg_num_rows($res_pr);
-						}
-						if($i==pg_num_rows($res_pr)-1){
-							//Si ya está en la última iteración y nunca encontro el nro, ya NO es secuencia con UN nro que no encuentre
-							?><script type="text/javascript" language="javascript">
-								alert("¡¡¡ ERROR !!!\n\n     Los números no son secuenciales, debe establecer una secuencia válida");
-								location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
-							</script><?php
-						}
-					}//end if i
-				}//end if j
-				
-				//Si es secuencia, finalmente LE ASIGNA nro_secuencia a cada punto_ruta
-				if($es_secuencia==pg_num_rows($res_pr)){
 					for($i=0;$i<pg_num_rows($res_pr);$i++){
+	
 						$punto_ruta = pg_fetch_array($res_pr,$i);
-						$sql_update = "UPDATE punto_ruta SET nro_secuencia='".$_POST["sec-".$punto_ruta["idpunto_ruta"]]."' WHERE idpunto_ruta='".$punto_ruta["idpunto_ruta"]."';";
+						$sql_update = "UPDATE punto_ruta SET nro_secuencia='".$_POST["sec-".$i]."' WHERE idpunto_ruta='".$punto_ruta["idpunto_ruta"]."';";
 						$result_update = pg_exec($con,$sql_update);
 			
 						if(!$result_update){
 							?><script type="text/javascript" language="javascript">
 								alert("¡¡¡ ERROR !!!\n\n     No se pudieron modificar los puntos de ruta. Inténtelo de nuevo.");
-								location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
+								location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>&idpunto_ruta=-1	";
 							</script><?php
 						}
 					}//end for
 				}
-				else{
-					//No es secuencia
-					?><script type="text/javascript" language="javascript">
-						alert("¡¡¡ ERROR !!!\n\n     Los números no son secuenciales, debe establecer una secuencia válida");
-						location.href = "../administracion/crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>";
-					</script><?php
-				}		
-			}//end else	$alguno_repite		
+			}//end else			
 		}//end del if(pg_num_rows($res_pr)>0)
 		
 		$sql = "SELECT * FROM ruta WHERE idruta=".$_GET["idRuta"];		
@@ -324,15 +305,16 @@
 		if(pg_num_rows($res)>0){
 			$ruta = pg_fetch_array($res,0);					
 		}
+		
+		$sql_pr = "SELECT * FROM punto_ruta WHERE idpunto_ruta=".$_GET["idpunto_ruta"];
+		$res_pr = pg_exec($con, $sql_pr);	
+		$punto_ruta = pg_fetch_array($res_pr,0);		
 		?>
 	</div>
     <div class="panel">
-    	<div class="titulo_panel">Puntos para "<?php echo $ruta["nombre"]; ?>"</div>
+    	<div class="titulo_panel">Editar "<?php echo $punto_ruta["nombre"]; ?>"</div>
         <div class="opcion_panel">
-	        <div class="opcion"><a href="listadorutas.php">Listar Rutas</a></div>
-        	<div class="opcion"><a href="crearuta.php">Registrar Nueva Ruta</a></div>
-			<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>"  style="text-decoration:none; color:#FFF;">Crear nuevo punto de ruta</a></div>
-			
+	        <div class="opcion"><a href="listadopuntosruta.php?idRuta=<?php echo $_GET["idRuta"]; ?>">Listar Puntos de Ruta</a></div>        			
         </div>
         <div class="capa_formulario">
         	<form onsubmit="return validarCampo(this)" name="formulario" id="formulario" method="post" enctype="multipart/form-data" >
@@ -350,19 +332,20 @@
 				<div class="linea_formulario_compartido">
                 	<div class="linea_titulo_compartido">Nombre (*)</div>
                     <div class="linea_campo_compartido">
-						<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="100"/>
+						<input type="text" class="campo_compartido" id="nombre" name="nombre" maxlength="100" value="<?php echo $punto_ruta["nombre"]; ?>"/>
                     </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Latitud (*)</div>
                     <div class="linea_campo_promedio">
-						<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="20" value="8.131437081366"/>
+						<input type="text" class="campo_promedio" id="latitud" name="latitud" maxlength="20" value="<?php echo $punto_ruta["latitud"]; ?>"/>
 					</div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio">Longitud (*)</div>
                     <div class="linea_campo_promedio">
-                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="20" value="-71.9797858306"/>                    </div>
+                    	<input type="text" class="campo_promedio" id="longitud" name="longitud" maxlength="20" value="<?php echo $punto_ruta["latitud"]; ?>"/>
+                    </div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio_rojo">(*) Campos obligatorios</div>
@@ -371,9 +354,33 @@
 				<div class="linea_formulario">
                 	<div class="linea_titulo">Reseña</div>
                     <div class="linea_campo">
-						<input type="text" class="campo" id="resena" name="resena" maxlength="1200"/>						
+						<input type="text" class="campo" id="resena" name="resena" maxlength="1200" value="<?php echo $punto_ruta["resena"]; ?>"/>
                     </div>
                 </div>
+				<div class="linea_formulario"></div>		
+				<div class="linea_formulario"><div class="linea_titulo_2">Vista previa de la foto portada actual</div></div>				
+				<table align="center" width="50%">
+		           	<thead></thead>
+                	<tbody>
+						<?php 
+						if($punto_ruta["foto_portada"] != ""){?>
+							<tr align="center">
+								<td align="center"><img src="../<? echo $punto_ruta["foto_portada"]; ?>" width="200" height="200" /></td>
+							</tr>
+							<?php 
+						}else{?>
+							<tr align="center">
+								<td align="center">No hay foto de portada para este punto de ruta</td>
+							</tr><?php 
+						}
+						?>																	               
+        	        	</tbody>
+	            </table>
+				<div class="linea_formulario"><div class="linea_titulo_2">Nueva foto portada</div></div>
+				<div class="linea_formulario">
+					<div class="linea_titulo">Si desea cambiar el icono haga clic en "Seleccionar archivo" y busque la nueva imagen, para finalizar presione "Guardar cambios"</div>
+				</div>
+				<div class="linea_formulario"></div>
 				<div class="linea_formulario_promedio">
 					<div class="linea_titulo_tres_cuartos">Foto de portada</div>
                 	<div class="linea_titulo_tres_cuartos"><input name="foto" type="file" id="icono"/></div>	
@@ -389,71 +396,13 @@
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio"></div>
                     <div class="linea_titulo_promedio">
-						<input type="submit" class="campo_promedio" value="Guardar punto" name="GuardarPuntoRuta" style="font-size:12px;" align="left"/>
+						<input type="submit" class="campo_promedio" value="Guardar cambios" name="GuardarPuntoRuta" style="font-size:12px;" align="left"/>
 					</div>
                 </div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio"></div>
                     <div class="linea_campo_promedio"></div>
-                </div>
-				<div class="linea_formulario"></div>		
-				<div class="linea_formulario"><div class="linea_titulo_2">Puntos de la ruta</div></div>	
-				<div class="linea_formulario">
-					<div class="linea_titulo">Antes de hacer clic en "Finalizar ruta" indique en los campos de texto el orden secuencial de los puntos de la ruta</div>
-				</div>			
-				<div class="capa_tabla_fotos">
-        			<table border="0" class="estilo_tabla" id="highlight-table" align="center">
-		            	<thead style="background:#F00; color:#FFF;" align="center">
-							<tr>
-                		    	<td width="40">Nro.</td><td>Nombre</td><td width="100">Latitud</td><td width="100">Longitud</td><td width="300">Reseña del punto</td><td width="40">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
-		                    </tr>
-        		        </thead>
-                		<tbody>
-							<input type="hidden" name="HidRuta" value="-1" />
-			                <?php
-							$con = conectarse();
-						 	$sql_select = "SELECT * FROM punto_ruta WHERE idruta=".$_GET["idRuta"]." ORDER BY idpunto_ruta";
-							$result_select = pg_exec($con,$sql_select);
-							$cant_puntos = pg_num_rows($result_select);
-				
-							if(pg_num_rows($result_select)==0){
-								?><tr><td colspan=8 align="center" style="cursor:pointer;">No existen puntos para esta ruta hasta el momento</td></tr><?php
-							}
-				
-							for($i=0;$i<pg_num_rows($result_select);$i++){
-							    $punto_ruta = pg_fetch_array($result_select,$i);	
-							    ?><tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;">
-									<td width="40">
-										<input name="sec-<?php echo $punto_ruta["idpunto_ruta"]; ?>" type="text" size="2" maxlength="2" style="font-size:11px" title="sec-<?php echo $punto_ruta["idpunto_ruta"]; ?>" value=""/>
-									</td>
-									<td><?php echo $punto_ruta["nombre"]; ?></td>
-									<td><?php echo $punto_ruta["latitud"]; ?></td>
-									<td><?php echo $punto_ruta["longitud"]; ?></td>
-									<td width="50" height="5"><?php echo $punto_ruta["resena"]; ?></td>
-									<td title="Ver foto del punto <?php echo $punto_ruta["nombre"]; ?>" align="center" width="25">
-										<?php 
-										//Si tiene foto el punto, se muestra en un popup
-										if($punto_ruta["foto_portada"]!=""){?>
-											<a href="#" onclick="openPopup('<? echo $punto_ruta["foto_portada"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php 
-										}else{?>
-											<img src="../imagenes/ver.png" width="16" height="16" title="No existe imagen para este punto de ruta"/><?php
-										}?>
-									</td>
-									<td title="Editar <?php echo $punto_ruta["nombre"]; ?>" width="25">
-										<a href="editarpuntoruta.php?idpunto_ruta=<?php echo $punto_ruta["idpunto_ruta"]; ?>&idruta=<?php echo $_GET["idRuta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-									<td title="Eliminar <?php echo $punto_ruta["nombre"]; ?>" width="25">
-										<a href="javascript:;" onClick="confirmar('eliminar.php?clave=11&id=<?php echo $punto_ruta["idpunto_ruta"];?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a></td>
-								</tr><?php
-	    		            }?>					               
-        	        	</tbody>
-	            	</table>	
-				</div>
-				<div class="linea_formulario_promedio">
-                	<div class="linea_titulo_promedio"></div>
-                    <div class="linea_campo_promedio">
-                    	<input type="submit" value="Finalizar ruta" name="Finalizar" style="font-size:12px;" align="left"/>
-                    </div>
-                </div>		
+                </div>					
    	        </form>
        	</div>
     </div>

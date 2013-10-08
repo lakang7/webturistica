@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Listado de Rutas</title>
+	<title>Listado de Puntos de Ruta</title>
 	
     <link rel="stylesheet" href="../css/administracion/estructura.css" type="text/css"  />
 	<link rel="stylesheet" type="text/css" href="../css/administracion/component.css" />
@@ -64,9 +64,18 @@
 
 <body onload="cargo()">
 	<div class="banner"></div>
-    <div class="menu"><?php menu_administrativo();?></div>
+    <div class="menu"><?php menu_administrativo();
+	$con = conectarse();
+	$sql_select = "SELECT * FROM ruta WHERE idruta=".$_GET["idRuta"];
+	$result_select = pg_exec($con,$sql_select);
+				
+	if(pg_num_rows($result_select)>0){
+		$ruta = pg_fetch_array($result_select,0);
+	}
+	
+	?></div>
     <div class="panel">
-    	<div class="titulo_panel">Listado de Rutas</div>
+    	<div class="titulo_panel">Puntos de Ruta para "<?php echo $ruta["nombre"]; ?>"</div>
         <div class="opcion_panel">
 	        <div class="opcion" style="background:#F00; color:#FFF;"><a href="listadorutas.php" style="text-decoration:none; color:#FFF;">Listar Rutas</a></div>
         	<div class="opcion"><a href="crearuta.php">Registrar Nueva Ruta</a></div>
@@ -75,44 +84,39 @@
         	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
             	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td align="left">Código</td><td>Nombre</td><td>Reseña Histórica</td><td>Tipo de ruta</td><td width="30">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
+                    	<td>Nro. Secuencia</td><td>Nombre</td><td>Latitud</td><td>Longitud</td><td width="30">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody align="center">
                 <?php
 				$con = conectarse();
-			 	$sql_select = "SELECT * FROM ruta ORDER BY nombre";
+			 	$sql_select = "SELECT * FROM punto_ruta WHERE idruta=".$_GET["idRuta"]." ORDER BY nro_secuencia";
 				$result_select = pg_exec($con,$sql_select);
 				
 				if(pg_num_rows($result_select)==0){
-					?><tr><td colspan=5 align="center">No existen rutas hasta el momento</td></tr><?php
+					?><tr><td colspan=7 align="center">No existen puntos de ruta hasta el momento</td></tr><?php
 				}
 				
 				for($i=0;$i<pg_num_rows($result_select);$i++){
-				    $ruta = pg_fetch_array($result_select,$i);	
-					$idruta = $ruta["idruta"];
+				    $punto_ruta = pg_fetch_array($result_select,$i);	
 				    ?><tr class="row-<?php echo $i+1; ?>" align="center" style="cursor:pointer;" >
-						<td width="80" align="left"><?php echo Codigo("RUT",$idruta); ?></td>
-						<td width="200"><?php echo $ruta["nombre"]; ?></td>
-						<td width="500" align="left"><?php echo $ruta["resena"]; ?></td>
-						<td width="80" align="center">
-							<?php if($ruta["tipo_ruta"]==1){ echo "Turística";} 
-								  if($ruta["tipo_ruta"]==2){ echo "Ecomuseos";}?>
-						</td>
-						<td title="Ver foto de portada de <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;" align="center">
+						<td width="50"><?php echo $punto_ruta["nro_secuencia"]; ?></td>
+						<td><?php echo $punto_ruta["nombre"]; ?></td>
+						<td><?php echo $punto_ruta["latitud"]; ?></td>
+						<td><?php echo $punto_ruta["longitud"]; ?></td>
+						<td title="Ver foto de portada de <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;" align="center">
 							<?php 
-							//Si tiene ícono asociado, lo muestra en un popup
-							if($ruta["foto_portada"]!=""){?>
-								<a href="#" onclick="openPopup('<? echo $ruta["foto_portada"]; ?>','<? echo $ruta["nombre"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a>
-								<?php 
+							//Si tiene foto asociada, la muestra en un popup
+							if($punto_ruta["foto_portada"]!=""){?>
+								<a href="#" onclick="openPopup('<? echo $punto_ruta["foto_portada"]; ?>','<? echo $punto_ruta["nombre"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" /></a><?php 
 							}else{
-								?><img src="../imagenes/ver.png" width="16" height="16" title="No existe imagen para esta ruta"/><?php
+								?><img src="../imagenes/ver.png" width="16" height="16" title="No existe imagen para este punto de ruta"/><?php
 							}?>
 						</td>
-						<td title="Editar <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;">
-							<a href="editaruta.php?id=<?php echo $idruta; ?>" ><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
-						<td title="Eliminar <?php echo $ruta["nombre"]; ?>" style="cursor:pointer;">
-							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=5&id=<?php echo $idruta;?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
+						<td title="Editar <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;">
+							<a href="editarpuntoruta.php?idRuta=<?php echo $_GET["idRuta"]; ?>&idpunto_ruta=<?php echo $punto_ruta["idpunto_ruta"]; ?>"><img src="../imagenes/edit.png" width="16" height="16" /></a></td>
+						<td title="Eliminar <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;">
+							<a href="javascript:;" onClick="confirmar('eliminar.php?clave=11&id=<?php echo $punto_ruta["idpunto_ruta"];?>'); return false;"><img src="../imagenes/delete.png" width="16" height="16" /></a>
 						</td>
 					</tr>					    
 					<?php

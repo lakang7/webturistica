@@ -64,17 +64,17 @@
 		/*Se consulta la existencia de otra subcategoria con el mismo nombre dentro de la misma categoria*/
 		$sql = "SELECT * FROM subcategoria WHERE idcategoria=".$_POST['HidCategoria'];
 		$res = pg_exec($con, $sql);	
-		$subCategoria = pg_fetch_array($res,0);
+		//$subCategoria = pg_fetch_array($res,0);
 		$yaExiste = 0;	
 					
 		for($j=0; $j<pg_num_rows($res); $j++){				
 			$subCategoria = pg_fetch_array($res,$j);	
 				
 			/*Si efectivamente ya existe esa subcategoria, no se le permite crearla*/
-			if($subCategoria["nombre"]==$_POST["nombre"]){
+			if($subCategoria["nombre"]==$_POST["nombre"] && $subCategoria["idcategoria"]!=$_POST['HidCategoria']){
 				$yaExiste = 1;
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ ERROR !!! \n\n     Ese nombre de subcategoría ya existe para la categoría seleccionada, por favor ingrese otro nombre");
+					alert("¡¡¡ ERROR !!! \n\n     Ese nombre de subcategoría ya existe para la categoría seleccionada, por favor inténtelo de nuevo");
 					location.href = "../administracion/listadosubcategorias.php";
 				</script><?php
 			}
@@ -89,7 +89,7 @@
 			//Si la consulta devuelve FALSE, es porque ocurrió un error
 			if(!$result_update){
 				?><script type="text/javascript" language="javascript">
-					alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la subcategoria. Intente de nuevo.");
+					alert("¡¡¡ ERROR !!!\n\n     No se pudo modificar la subcategoría. Inténtelo de nuevo.");
 					location.href="../administracion/listadosubcategorias.php";
 				</script><?php
 			}
@@ -101,7 +101,7 @@
 				$result_select = pg_exec($con,$sql);
 				$subcategoria = pg_fetch_array($result_select,0);
 			
-				//Si cargó un nuevo ícono O si no cargó nuevo icono pero cambio el nombre
+				//Si cargó un nuevo ícono
 				if($_FILES['icono']['name']!=""){
 					//Si ya tenía icono asignado en la BD
 					if($subcategoria["icono"]!=""){
@@ -110,8 +110,7 @@
 					}
 					//Finalmente, se sube la nueva imagen a la ruta predefinida
 					$subir = new imgUpldr;		
-					$nombreImagen = $_GET["id"]."_".quitarAcentos($_POST["nombre"]);	
-					$subir->configurar($nombreImagen,"../imagenes/subcategorias/",591,591);
+					$subir->configurar($_GET["id"]."_".quitarAcentos($_POST["nombre"]),"../imagenes/subcategorias/",591,591);
 					$subir->init($_FILES['icono']);
 					$destino = "imagenes/subcategorias/".$subir->_name;
 				
@@ -147,12 +146,7 @@
 					location.href="../administracion/listadosubcategorias.php";
 				</script><?php	
 			}//end else: SI se pudo hacer la modificacion
-		}//end if yaExiste
-		else{
-		
-		}
-	
-		
+		}//end if yaExiste		
 	}//end boton guardar
 ?>
 
