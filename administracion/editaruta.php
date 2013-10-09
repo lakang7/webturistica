@@ -70,6 +70,31 @@
 			}
 			//alert(document.all('HidTipoRuta').value);			
 		}	
+		/*********************************************************************************************
+		*
+			Funcion para mostrar imagen en un POPUP
+		*
+		**********************************************************************************************/
+		function openPopup(imageURL,nombre){
+    		var popupTitle = "Portada de "+nombre;
+    		var newImg = new Image();
+    		newImg.src = "../"+imageURL;
+ 			var ancho = 591; /*newImg.width;*/
+			var alto = 591; /*newImg.height;*/
+			
+ 			pos_x = (screen.width-newImg.width)/2;
+	 	    pos_y = (screen.height-newImg.height)/2;
+			
+			popup = window.open(newImg.src,'image','height='+newImg.height+',width='+newImg.width+',left='+pos_x+',top='+pos_y+',toolbar=no, directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+		    with (popup.document){
+    	    	writeln('<html><head><title>'+popupTitle+'<\/title><style>body{margin:0px;}<\/style>');
+	    	    writeln('<\/head><body onClick="window.close()">');
+				writeln('<img src='+newImg.src+' style="display:block"><\/body><\/html>');
+        		close();
+		    }
+		    popup.focus();
+		}
 	</script>
 
 </head>
@@ -188,6 +213,23 @@
 					<input type="hidden" name="hid_max_resena" value="0" /> 	
                     <div class="linea_campo_tres_cuartos"><textarea name="resena" id="resena" rows="17" cols="110" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; max-width:550px; max-height:250px;" onkeypress="return limita(1200);"><?php echo $arreglo["resena"]; ?></textarea></div>
                 </div>
+				<div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio">
+                	<div class="linea_titulo_promedio_rojo">Vista Previa Portada Actual</div> 	
+					<div class="linea_titulo_tres_cuartos"></div> 	
+                    <div class="linea_titulo_tres_cuartos">
+						<?php 
+							//Si tiene ícono asociado, lo muestra en un popup
+							if($arreglo["foto_portada"]!=""){?>
+								<a href="#" onclick="openPopup('<? echo $arreglo["foto_portada"]; ?>','<? echo $arreglo["nombre"]; ?>');return false;"><img src="../imagenes/ver.png" width="16" height="16" title="Vista Previa Foto actual" align="middle"/></a>
+								<?php 
+							}else{
+								?><img src="../imagenes/ver.png" width="16" height="16" title="No existe imagen para esta ruta"/><?php
+							}?>
+					</div>
+                </div>
+				<div class="linea_formulario_promedio"></div><div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div><div class="linea_formulario_promedio"></div>
 				<div class="linea_formulario_promedio">
                 	<div class="linea_titulo_promedio_rojo">Tipo de Ruta</div> 	
 					<div class="linea_titulo_tres_cuartos"></div> 	
@@ -212,34 +254,16 @@
 						}?>
 					</div>
                 </div>
-				<div class="linea_formulario_promedio"></div>
-				<div class="linea_formulario_promedio"></div>
-				<div class="linea_formulario_promedio"></div>
-				<div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div><div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div><div class="linea_formulario_promedio"></div>
+				<div class="linea_formulario_promedio"></div><div class="linea_formulario_promedio"></div>
 				<div class="linea_formulario_promedio"></div>
 				<div class="linea_formulario_promedio">
 					<div class="linea_titulo_tres_cuartos"></div>
                 	<div class="linea_titulo_tres_cuartos">
 						<input type="submit" value="Guardar ruta" name="GuardarRuta" style="font-size:12px;" align="left" title="Haga clic para guardar los cambios de la ruta"/>(*) Campos obligatorios
 					</div>	
-                </div>	
-				<div class="linea_formulario"><div class="linea_titulo_2">Vista previa del ícono actual</div></div>	
-				<table id="highlight-table" align="center" width="70%">
-	            	<thead></thead>
-               		<tbody>
-						<?php 
-						if($arreglo["foto_portada"] != ""){?>
-							<tr align="center">
-								<td align="center"><img src="../<? echo $arreglo["foto_portada"]; ?>" width="200" height="200" /></td>
-							</tr><?php 
-						}else{?>
-							<tr align="center">
-								<td align="center">No hay foto portada cargada para esta ruta</td>
-							</tr><?php 
-						}?>																	               
-        	        	</tbody>
-	            </table>	
-				<div class="linea_formulario"></div>	
+                </div>						
             </form>
         </div>        
     </div>

@@ -135,6 +135,16 @@ body{
 }
 
 /*Para las lineas de formulario que contemplan hasta 3 columnas en una misma línea*/
+.linea_formulario_peque{
+	float:left;
+	width:50px;
+	height:auto;
+	/*border:1px solid #CCC;*/
+	margin:10px;
+	margin-bottom:0px;	
+}
+
+/*Para las lineas de formulario que contemplan hasta 3 columnas en una misma línea*/
 .linea_formulario_compartido{
 	float:left;
 	width:266px;
@@ -200,6 +210,16 @@ body{
 	font-size:12px;
 	line-height:15px;
 	color:#FF0000;	
+}
+
+.linea_titulo_peque{
+	float:left;
+	width:50px;
+	height:15px;
+	/*border-bottom:1px solid #CCC;*/
+	font-size:12px;
+	line-height:15px;
+	color:#333;	
 }
 
 /*Para las lineas de titulo que contemplan hasta 3 columnas en una misma línea*/
@@ -284,6 +304,12 @@ body{
 	height:25px;		
 }
 
+.linea_campo_peque{
+	float:left;
+	width:50px;
+	height:25px;		
+}
+
 /*Para las lineas de titulo que contemplan hasta 3 columnas en una misma línea*/
 .linea_campo_compartido{
 	float:left;
@@ -323,6 +349,13 @@ body{
 	float:left;
 	margin:0px;
 	width:858px;
+	height:25px;	
+}
+
+.campo_peque{
+	float:left;
+	margin:0px;
+	width:50px;
 	height:25px;	
 }
 

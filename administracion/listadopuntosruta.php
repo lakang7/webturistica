@@ -84,7 +84,7 @@
         	<table border="0" class="estilo_tabla" id="highlight-table" align="center">
             	<thead style="background:#F00; color:#FFF;" align="center">
 					<tr>
-                    	<td>Nro. Secuencia</td><td>Nombre</td><td>Latitud</td><td>Longitud</td><td width="30">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
+                    	<td>Nro. Secuencia</td><td>Nombre</td><td>Latitud</td><td>Longitud</td><td>Reseña</td><td width="30">Ver</td><td width="40">Editar</td><td width="40">Eliminar</td>
                     </tr>
                 </thead>
                 <tbody align="center">
@@ -104,6 +104,7 @@
 						<td><?php echo $punto_ruta["nombre"]; ?></td>
 						<td><?php echo $punto_ruta["latitud"]; ?></td>
 						<td><?php echo $punto_ruta["longitud"]; ?></td>
+						<td><?php echo $punto_ruta["resena"]; ?></td>
 						<td title="Ver foto de portada de <?php echo $punto_ruta["nombre"]; ?>" style="cursor:pointer;" align="center">
 							<?php 
 							//Si tiene foto asociada, la muestra en un popup

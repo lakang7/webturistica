@@ -478,20 +478,12 @@ if($_GET["clave"]==10){
 *
 ------------------------------------------------------------------------------------------------------------------------------*/
 if($_GET["clave"]==11){
-
-	//Se guardan datos necesarios del PR a eliminar, para usar más adelante 
-	$sql_select = "SELECT * FROM punto_ruta WHERE idpunto_ruta='".$_GET["id"]."'";
-	$result_select = pg_exec($con,$sql_select);	
-	$punto_ruta = pg_fetch_array($result_select,0);
-	$nro_secuencia_pto_borrado = $punto_ruta["nro_secuencia"];
-	$ruta_pto_borrado = $punto_ruta["idruta"];
 	
-	//Antes de borrarlo, se consulta la cantidad de puntos de ruta para esa ruta
-	$sql_select_cant = "SELECT * FROM punto_ruta WHERE idruta='".$punto_ruta["idruta"]."'";
-	$result_select_cant = pg_exec($con,$sql_select_cant);
-	$puntos_totales_antes	= pg_num_rows($result_select_cant);
+	$sql_select = "SELECT * FROM punto_ruta WHERE idpunto_ruta='".$_GET["id"]."'";
+	$result_select = pg_exec($con,$sql_select);
+	$punto_ruta = pg_fetch_array($result_select,0);
 
-	//Se elimina la FOTO_PORTADA del punto_ruta especificado por parametro
+	//Primero se elimina la FOTO_PORTADA del punto_ruta especificado por parametro
 	if($punto_ruta["foto_portada"]!=""){
 		$borrarFoto = borrarArchivo("../".$punto_ruta["foto_portada"]);	
 	}
@@ -503,78 +495,11 @@ if($_GET["clave"]==11){
 	if(!$result_delete){
 		?><script type="text/javascript" language="javascript">
 	 		alert("¡¡¡ ERROR !!! \n     No se pudo eliminar el punto de la ruta");
-			location.href = "../administracion/listadopuntosruta.php?idRuta=<?php echo $punto_ruta["idruta"]; ?>";
 		</script><?php
 	}else{
-		//Si se borra satisfactoriamente el punto, se deben actualizar los nro_secuencia de los demás puntos
-		$sql_sel = "SELECT * FROM punto_ruta WHERE idruta='".$ruta_pto_borrado."'";
-		$result_sel = pg_exec($con,$sql_sel);
-		
-		if(pg_num_rows($result_sel)>0){
-			
-			//Si el punto a eliminar es el PRIMERO, a los demás nro_secuencia se les resta 1
-			if($nro_secuencia_pto_borrado==1){
-				//Se buscan todos los PR de esa ruta
-				for($i=0; $i<pg_num_rows($result_sel); $i++){
-					$punto_ruta = pg_fetch_array($result_sel,$i);
-					$nro_sec_nuevo = $punto_ruta["nro_secuencia"]-1;
-					
-					//Se actualizan los nro_secuencia de todos
-					$sql_update = "UPDATE punto_ruta SET nro_secuencia='".$nro_sec_nuevo."' WHERE idpunto_ruta='".$punto_ruta["idpunto_ruta"]."'";
-					$result_update = pg_exec($con,$sql_update);
-		
-					//Si NO se pudo actualizar el registro
-					if(!$result_update){
-						?><script type="text/javascript" language="javascript">
-							alert("¡¡¡ ERROR !!! \n     No se pudo actualizar el número de secuencia de los puntos");
-							location.href="../administracion/listadopuntosruta.php?idRuta=<?php echo $punto_ruta["idruta"]; ?>";
-						</script><?php	
-					}			
-				}
-			}
-			//Si no es el primero, puede ser el ultimo   
-			else{
-				$es_ultimo_nro = 0;
-			
-				for($i=0; $i<pg_num_rows($result_sel); $i++){
-					$punto_ruta = pg_fetch_array($result_sel,$i);
-					
-					//Si el punto a eliminar ya es el último de la secuencia, no hay que hacer nada
-					if($punto_ruta["nro_secuencia"]==$puntos_totales_antes-1){
-						$es_ultimo_nro = 1;
-						$i = pg_num_rows($result_sel); 
-					}				
-				}	
-				//Si NO es ni el PRIMERO ni el ULTIMO
-				if($es_ultimo_nro == 0){
-				
-					//Se buscan los nro_secuencia mayores a $nro_secuencia_pto_borrado   
-					for($i=0; $i<pg_num_rows($result_sel); $i++){
-						$punto_ruta = pg_fetch_array($result_sel,$i);					
-						
-						if($punto_ruta["nro_secuencia"] > $nro_secuencia_pto_borrado){
-							$nro_sec_nuevo = $punto_ruta["nro_secuencia"]-1;
-					
-							//Se actualizan los nro_secuencia restandole 1 a los mayores
-							$sql_update = "UPDATE punto_ruta SET nro_secuencia='".$nro_sec_nuevo."' WHERE idpunto_ruta='".$punto_ruta["idpunto_ruta"]."'";
-							$result_update = pg_exec($con,$sql_update);
-		
-							//Si NO se pudo actualizar el registro
-							if(!$result_update){
-								?><script type="text/javascript" language="javascript">
-									alert("¡¡¡ ERROR !!! \n     No se pudo actualizar el número de secuencia de los puntos");
-									location.href="../administracion/listadopuntosruta.php?idRuta=<?php echo $punto_ruta["idruta"]; ?>";
-								</script><?php	
-							}
-						}//end if mayor			
-					}//end for de recorrido por los puntos de ruta
-				}//end if($es_ultimo_nro == 0)
-			}			
-		}//end if(pg_num_rows($result_sel)>0)
-		
 	 	?><script type="text/javascript" language="javascript">
 	 		alert("¡¡¡ Punto de ruta eliminado satisfactoriamente !!! ");	
-			location.href = "../administracion/listadopuntosruta.php?idRuta=<?php echo $ruta_pto_borrado; ?>";
+			location.href = "../administracion/listadopuntosruta.php?idRuta="+<?php echo $punto_ruta["idruta"]; ?>;
 		</script><?php
 	}
 }//END CLAVE 11

@@ -81,13 +81,8 @@
 			var mapa = new google.maps.Map(document.getElementById("map_canvas"),{center: new google.maps.LatLng(8.131437081366755,-71.97978583068846),zoom: 17,mapTypeId: google.maps.MapTypeId.HYBRID});
 	
 			//Se crea un marcador allí mismo, con la propiedad "draggable" como "true" para que se pueda arrastrar
-			//var marcador = new google.maps.Marker({position: new google.maps.LatLng(8.131437081366755,-71.97978583068846),map: mapa, animation: google.maps.Animation.DROP, draggable: true, title:"Arrastre el marcador hasta la ubicación del punto de la ruta y presione el botón \"Guardar punto\""});				
-			
-			//Se crea un evento asociado a mapa para cuando arrastra el marcador
-			//google.maps.event.addListener(marcador, "dragend", function(evento) {
-			
-			//Se crea un evento asociado a "mapa" cuando se hace "click" sobre el
-			google.maps.event.addListener(mapa, "click", function(evento) {
+			var marcador = new google.maps.Marker({position: new google.maps.LatLng(8.131437081366755,-71.97978583068846),map: mapa, animation: google.maps.Animation.DROP, draggable: true, title:"Arrastre el marcador hasta la ubicación del punto de la ruta y presione el botón \"Guardar punto\""});				
+			google.maps.event.addListener(marcador, "dragend", function(evento) {
 				//Se obtienen las coordenadas finales del moovimiento
 				var latitud = evento.latLng.lat();
 				var longitud = evento.latLng.lng();
@@ -97,7 +92,7 @@
 				document.getElementById("longitud").value = longitud;
 			}); //Fin del evento
 			
-		} // Fin inicializacion()		
+		} // Fin inicializacion()
 		/*********************************************************************************************
 		*
 			Funcion para validar SOLO NUMEROS en un campo determinado
@@ -332,11 +327,11 @@
 		?>
 	</div>
     <div class="panel">
-    	<div class="titulo_panel">Crear punto de ruta para "<?php echo $ruta["nombre"]; ?>"</div>
+    	<div class="titulo_panel">Puntos para "<?php echo $ruta["nombre"]; ?>"</div>
         <div class="opcion_panel">
 	        <div class="opcion"><a href="listadorutas.php">Listar Rutas</a></div>
         	<div class="opcion"><a href="crearuta.php">Registrar Nueva Ruta</a></div>
-			<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>" style="text-decoration:none; color:#FFF;">Crear nuevo punto de ruta</a></div>
+			<div class="opcion" style="background:#F00; color:#FFF;"><a href="crearpuntoruta.php?idRuta=<?php echo $_GET["idRuta"];?>"  style="text-decoration:none; color:#FFF;">Crear nuevo punto de ruta</a></div>
 			
         </div>
         <div class="capa_formulario">
@@ -404,7 +399,7 @@
 				<div class="linea_formulario"></div>		
 				<div class="linea_formulario"><div class="linea_titulo_2">Puntos de la ruta</div></div>	
 				<div class="linea_formulario">
-					<div class="linea_titulo">Antes de hacer clic en "Finalizar ruta" indique en los campos de texto el orden secuencial en que van los puntos de la ruta</div>
+					<div class="linea_titulo">Antes de hacer clic en "Finalizar ruta" indique en los campos de texto el orden secuencial de los puntos de la ruta</div>
 				</div>			
 				<div class="capa_tabla_fotos">
         			<table border="0" class="estilo_tabla" id="highlight-table" align="center">
